@@ -1,0 +1,10 @@
+.DS_Store
+Thumbs.db
+/.build
+/Packages
+/Package.resolved
+/*.xcodeproj
+/.idea
+/.swiftpm
+/.vscode
+/Sources/SwiftXML/main.swift
