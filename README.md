@@ -6,6 +6,8 @@ This library is published under the Apache License v2.0 with Runtime Library Exc
 
 Inventor and project lead: [struktaris](https://struktaris.de).
 
+On the [page of the SwiftXML GitHub organization](https://github.com/swiftxml) you will find an overview of the project and packages related to SwiftXML.
+
 ```swift
 let transformation = XTransformation {
 
