@@ -70,6 +70,70 @@ final class SwiftXMLTests: XCTestCase {
         XCTAssertEqual(foundC, false)
     }
     
+    func testRemovalOfLastInTransformation1() throws {
+        let document = try parseXML(fromText: """
+            <a>
+                <b><c label="remove me"/><d/></b>
+            </a>
+            """)
+        
+        let transformation = XTransformation {
+            
+            XRule(forElements: "c") { c in
+                if c["label"] == "remove me" {
+                    c.replace {
+                        XElement("c")
+                    }
+                } else {
+                    c["label"] = "keep"
+                }
+            }
+        }
+        
+        transformation.execute(inDocument: document)
+        
+        XCTAssertEqual(document.serialized(pretty: true), """
+            <a>
+                <b><c label="keep"/><d/></b>
+            </a>
+            """)
+    }
+    
+    
+    
+    func testRemovalOfLastInTransformation2() throws {
+        let document = try parseXML(fromText: """
+            <a>
+                <b><c label="remove me"/><d/></b>
+            </a>
+            """)
+        
+        let transformation = XTransformation {
+            
+            XRule(forElements: "c") { c in
+                if c["label"] == "remove me" {
+                    c.remove()
+                } else {
+                    c["label"] = "keep"
+                }
+            }
+            
+            XRule(forElements: "d") { d in
+                d.insertPrevious {
+                    XElement("c")
+                }
+            }
+        }
+        
+        transformation.execute(inDocument: document)
+        
+        XCTAssertEqual(document.serialized(pretty: true), """
+            <a>
+                <b><c label="keep"/><d/></b>
+            </a>
+            """)
+    }
+    
     let documentSource1 = """
         <a>
             <b id="1"/>
