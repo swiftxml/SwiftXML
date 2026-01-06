@@ -86,6 +86,36 @@ public final class XDocument: XNode, XBranchInternal {
         _firstChild(condition)
     }
     
+    public var lastChild: XElement? { _lastChild }
+    
+    public func lastChild(_ name: String) -> XElement? {
+        _lastChild(name)
+    }
+    
+    public func lastChild(prefix: String?, _ name: String) -> XElement? {
+        _lastChild(prefix: prefix, name)
+    }
+    
+    public func lastChild(_ names: [String]) -> XElement? {
+        _lastChild(names)
+    }
+    
+    public func lastChild(prefix: String?, _ names: [String]) -> XElement? {
+        _lastChild(prefix: prefix, names)
+    }
+    
+    public func lastChild(_ names: String...) -> XElement? {
+        _lastChild(names)
+    }
+    
+    public func lastChild(prefix: String?, _ names: String...) -> XElement? {
+        _lastChild(prefix: prefix, names)
+    }
+    
+    public func lastChild(_ condition: (XElement) -> Bool) -> XElement? {
+        _lastChild(condition)
+    }
+    
     public var xPath: String { "/" }
     
     var __firstContent: XContent? = nil

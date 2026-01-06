@@ -1186,6 +1186,7 @@ public protocol XBranch: XNode {
     func firstContent(_ condition: (XContent) -> Bool) -> XContent?
     var lastContent: XContent? { get }
     func lastContent(_ condition: (XContent) -> Bool) -> XContent?
+    
     var firstChild: XElement? { get }
     func firstChild(_ name: String) -> XElement?
     func firstChild(prefix: String?, _ name: String) -> XElement?
@@ -1194,6 +1195,16 @@ public protocol XBranch: XNode {
     func firstChild(_ names: String...) -> XElement?
     func firstChild(prefix: String?, _ names: String...) -> XElement?
     func firstChild(_ condition: (XElement) -> Bool) -> XElement?
+    
+    var lastChild: XElement? { get }
+    func lastChild(_ name: String) -> XElement?
+    func lastChild(prefix: String?, _ name: String) -> XElement?
+    func lastChild(_ names: [String]) -> XElement?
+    func lastChild(prefix: String?, _ names: [String]) -> XElement?
+    func lastChild(_ names: String...) -> XElement?
+    func lastChild(prefix: String?, _ names: String...) -> XElement?
+    func lastChild(_ condition: (XElement) -> Bool) -> XElement?
+    
     var isEmpty: Bool { get }
     func add(@XContentBuilder builder: () -> [XContent])
     func addFirst(@XContentBuilder builder: () -> [XContent])
@@ -1255,6 +1266,54 @@ extension XBranchInternal {
                 return child
             }
             node = theNode._next
+        }
+        return nil
+    }
+    
+    public var _lastChild: XElement? {
+        var node = __lastContent
+        while let theNode = node {
+            if let child = theNode as? XElement {
+                return child
+            }
+            node = theNode._previous
+        }
+        return nil
+    }
+    
+    public func _lastChild(prefix: String? = nil, _ name: String) -> XElement? {
+        var node = __lastContent
+        while let theNode = node {
+            if let child = theNode as? XElement, child.prefix == prefix, child.name == name {
+                return child
+            }
+            node = theNode._previous
+        }
+        return nil
+    }
+    
+    public func _lastChild(prefix: String? = nil, _ names: [String]) -> XElement? {
+        var node = __lastContent
+        while let theNode = node {
+            if let child = theNode as? XElement, child.prefix == prefix, names.contains(child.name) {
+                return child
+            }
+            node = theNode._previous
+        }
+        return nil
+    }
+    
+    public func _lastChild(prefix: String? = nil, _ names: String...) -> XElement? {
+        _lastChild(prefix: prefix, names)
+    }
+    
+    public func _lastChild(_ condition: (XElement) -> Bool) -> XElement? {
+        var node = __lastContent
+        while let theNode = node {
+            if let child = theNode as? XElement, condition(child) {
+                return child
+            }
+            node = theNode._previous
         }
         return nil
     }
@@ -1922,6 +1981,36 @@ public final class XElement: XContent, XBranchInternal, CustomStringConvertible 
     
     public func firstChild(_ condition: (XElement) -> Bool) -> XElement? {
         _firstChild(condition)
+    }
+    
+    public var lastChild: XElement? { _lastChild }
+    
+    public func lastChild(_ name: String) -> XElement? {
+        _lastChild(name)
+    }
+    
+    public func lastChild(prefix: String?, _ name: String) -> XElement? {
+        _lastChild(prefix: prefix, name)
+    }
+    
+    public func lastChild(_ names: [String]) -> XElement? {
+        _lastChild(names)
+    }
+    
+    public func lastChild(prefix: String?, _ names: [String]) -> XElement? {
+        _lastChild(prefix: prefix, names)
+    }
+    
+    public func lastChild(_ names: String...) -> XElement? {
+        _lastChild(names)
+    }
+    
+    public func lastChild(prefix: String?, _ names: String...) -> XElement? {
+        _lastChild(prefix: prefix, names)
+    }
+    
+    public func lastChild(_ condition: (XElement) -> Bool) -> XElement? {
+        _lastChild(condition)
     }
     
     func setDocument(document newDocument: XDocument?) {

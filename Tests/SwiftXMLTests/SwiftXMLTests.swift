@@ -1112,6 +1112,8 @@ final class SwiftXMLTests: XCTestCase {
         
         XCTAssertEqual(Array(start.allContent.map{ $0.description }), allContent)
         XCTAssertEqual(Array(start.allContentReversed.map{ $0.description }), allContent.reversed())
+        
+        XCTAssertEqual(document.firstChild!.lastChild!.xPath, "/sentences[1]/sentence[2]")
     }
     
     func testReversedAllTexts() throws {
