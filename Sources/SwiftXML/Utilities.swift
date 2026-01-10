@@ -20,7 +20,7 @@ public extension XBranch {
         try self.traverse { node in
             if let text = node as? XText, let parent = text.parent, allowingTextInElementsForPrefix[parent.prefix ?? ""]?.contains(parent.name) != true {
                 guard text.isWhitespace else {
-                    throw SwiftXMLError("non-whitespace text in <\(parent.prefix?.appending(":") ?? "")\(parent.name)")
+                    throw SwiftXMLError("non-whitespace text in <\(parent.prefix?.appending(":") ?? "")\(parent.name)>")
                 }
                 text.remove()
             }
@@ -31,7 +31,7 @@ public extension XBranch {
         try self.traverse { node in
             if let text = node as? XText, let parent = text.parent, parent.prefix == nil, !allowingTextInElementsWithoutPrefix.contains(parent.name) {
                 guard text.isWhitespace else {
-                    throw SwiftXMLError("non-whitespace text in <\(parent.prefix?.appending(":") ?? "")\(parent.name)")
+                    throw SwiftXMLError("non-whitespace text in <\(parent.prefix?.appending(":") ?? "")\(parent.name)>")
                 }
                 text.remove()
             }
