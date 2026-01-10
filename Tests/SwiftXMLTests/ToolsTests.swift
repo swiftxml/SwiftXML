@@ -140,7 +140,8 @@ final class ToolsTests: XCTestCase {
                 <p id="par-5.10-2"><begin/>Ja, </p>
                 <p id="par-5.10-3">das ist so <span>1 %</span>, echt.<end/></p>
             </section>
-            """, textAllowedInElementWithName: ["p", "span"])
+            """)
+        try document.removeFormatting(allowingTextInElementsWithoutPrefix: ["p", "span"])
         
         let start = document.firstChild?.children.first?.allTexts.first
         let end = document.firstChild?.children.dropFirst().first?.allTexts.dropFirst(2).first

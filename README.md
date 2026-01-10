@@ -93,16 +93,14 @@ Suppose you have an XML file `input.xml` with the following content:
 It is very easy to parse this XML file into an `XDocument` instance:
 
 ```swift
-let textAllowedInElementWithName = ["title", "td"]
-
 let document = try parseXML(
     fromPath: "input.xml",
-    registeringAttributes: .selected(["label"]),
-    textAllowedInElementWithName: textAllowedInElementWithName
+    registeringAttributes: .selected(["label"])
 )
+try document.removeFormatting(allowingTextInElementsWithoutPrefix: textAllowedInElementWithName)
 ```
 
-The `textAllowedInElementWithName:` argument is there to help removing unnessary whitespace as long as no other method, e.g. an upcoming validation feature, is used to remove it. You might as well just dispense with this argument and leave the whitespace as it is in the XML source. The `registeringAttributes:` argument registers certain attributes to they can be accesssed directly, the direct access to the “label” attributes is used in this example.
+The `removeFormatting(allowingTextInElementsWithoutPrefix:)` method is there to help removing unnessary whitespace as long as no other method, e.g. an upcoming validation feature, is used to remove it. There also exist versions allowing to specify prefixes or namespace URIs together with the element names. You might as well just dispense with this argument and leave the whitespace as it is in the XML source. The `registeringAttributes:` argument registers certain attributes to they can be accesssed directly, the direct access to the “label” attributes is used in this example.
 
 Your can easily access and change elements in your document:
 
@@ -140,11 +138,11 @@ After applying this transformation, the document can be then written to a file:
 try document.write(
     toPath: "output.xml",
     pretty: true,
-    textAllowedInElementWithName: textAllowedInElementWithName
+    allowingTextInElementsWithoutPrefix: textAllowedInElementWithName
 )
 ```
 
-The `pretty: true` argument (which can also be set for the `echo(...)` and `serialized(...)` methods) adds linebreaks and indentations to make the serialized XML look pretty (and the `textAllowedInElementWithName:` makes sure no mixed content environment gets unwanted whitespace added). This is convient here in the examples, but in practice you might better dispense with this argument or use a production (see the according documentation below).
+The `pretty: true` argument (which can also be set for the `echo(...)` and `serialized(...)` methods) adds linebreaks and indentations to make the serialized XML look pretty (and the `allowingTextInElementsWithoutPrefix:` makes sure no mixed content environment gets unwanted whitespace added, see also the versions allowing to specify prefixes or namespace URIs together with the element names). This is convient here in the examples, but in practice you might better dispense with this argument or use a production (see the according documentation below).
 
 The content of the file `output.xml` is then:
 
@@ -317,7 +315,6 @@ public func parseXML(
     registeringAttributesForNamespaces: AttributeWithNamespaceURIRegisterMode = .none,
     registeringAttributeValuesForForNamespaces: AttributeWithNamespaceURIRegisterMode = .none,
     sourceInfo: String? = nil,
-    textAllowedInElementWithName: [String]? = nil,
     internalEntityAutoResolve: Bool = false,
     internalEntityResolver: InternalEntityResolver? = nil,
     internalEntityResolverHasToResolve: Bool = true,
@@ -364,7 +361,7 @@ func parseXML(
 ) throws -> XDocument
 ```
 
-The optional `textAllowedInElementWithName` can specify which element allow text content, so insignificant space can easily get removed during parsing as long as no validation method is available, and this list can also be used for pretty-printing XML. If no text is allowed in the context but the text is not whitespace, an error is thrown.
+Note that insignificant space that was used to format the serialized document is also part to the parsed document. It can be removed by the `removeFormatting` method of a document or, as planned, by an upcoming validation method.
 
 All internal entity references in attribute values have to be replaced by text during parsing. In order to achieve this (in case that internal entity references occur at all in attribute values in the source), an `InternalEntityResolver` can be provided. An `InternalEntityResolver` has to implement the following method:
 
@@ -567,7 +564,8 @@ let document = try parseXML(fromText: """
 <a>
     <b>Hello</b>
 </a>
-""", textAllowedInElementWithName: { $0 == "b" })
+""")
+try document.removeFormatting(allowingTextInElementsWithoutPrefix: ["b"])
 
 for content in document.allContent {
     if let sourceRange = content.sourceRange {
@@ -1994,7 +1992,8 @@ let document = try parseXML(fromText: """
             </warning>
         </section>
     </document>
-    """, textAllowedInElementWithName: { $0 == "paragraph" })
+    """)
+try document.removeFormatting(allowingTextInElementsWithoutPrefix: ["paragraph"])
 
 let transformation = XTransformation {
 

@@ -30,9 +30,9 @@ final class FromReadmeTests: XCTestCase {
                     </table>
                 </book>
                 """,
-            registeringAttributes: .selected(["label"]),
-            textAllowedInElementWithName: textAllowedInElementWithName
+            registeringAttributes: .selected(["label"])
         )
+        try document.removeFormatting(allowingTextInElementsWithoutPrefix: textAllowedInElementWithName)
         
         let transformation = XTransformation {
 
@@ -62,7 +62,7 @@ final class FromReadmeTests: XCTestCase {
         transformation.execute(inDocument: document)
         
         XCTAssertEqual(
-            document.serialized(pretty: true, textAllowedInElementWithName: textAllowedInElementWithName),
+            document.serialized(pretty: true, allowingTextInElementsWithoutPrefix: textAllowedInElementWithName),
             """
             <book>
                 <table>
@@ -92,9 +92,9 @@ final class FromReadmeTests: XCTestCase {
                     </table>
                 </book>
                 """,
-            registeringAttributes: .selected(["label"]),
-            textAllowedInElementWithName: ["title", "td"]
+            registeringAttributes: .selected(["label"])
         )
+        try document.removeFormatting(allowingTextInElementsWithoutPrefix: ["title", "td"])
         
         let transformation = XTransformation {
 
@@ -150,8 +150,8 @@ final class FromReadmeTests: XCTestCase {
     
     func testRemoveElementsWhileIteration() throws{
         let document = try parseXML(fromText: """
-        <a><item id="1" remove="true"/><item id="2"/><item id="3" remove="true"/><item id="4"/></a>
-        """)
+            <a><item id="1" remove="true"/><item id="2"/><item id="3" remove="true"/><item id="4"/></a>
+            """)
 
         document.traverse { content in
             if let element = content as? XElement, element["remove"] == "true" {
@@ -164,10 +164,11 @@ final class FromReadmeTests: XCTestCase {
     
     func testPrintContentWithSourceRanges() throws{
         let document = try parseXML(fromText: """
-        <a>
-            <b>Hello</b>
-        </a>
-        """, textAllowedInElementWithName: ["b"])
+            <a>
+                <b>Hello</b>
+            </a>
+            """)
+        try document.removeFormatting(allowingTextInElementsWithoutPrefix: ["b"])
         
         XCTAssertEqual(
             document.allContent.map{ "\($0.sourceRange!): \($0)" }.joined(separator: "\n"),
@@ -517,7 +518,8 @@ final class FromReadmeTests: XCTestCase {
                     </warning>
                 </section>
             </document>
-            """, textAllowedInElementWithName: ["paragraph"])
+            """)
+        try document.removeFormatting(allowingTextInElementsWithoutPrefix: ["paragraph"])
         
         let transformation = XTransformation {
             
@@ -580,7 +582,8 @@ final class FromReadmeTests: XCTestCase {
                     </warning>
                 </section>
             </document>
-            """, textAllowedInElementWithName: ["paragraph"])
+            """)
+        try document.removeFormatting(allowingTextInElementsWithoutPrefix: ["paragraph"])
         
         let transformation = XTransformation {
             
@@ -643,7 +646,8 @@ final class FromReadmeTests: XCTestCase {
                     </warning>
                 </section>
             </document>
-            """, textAllowedInElementWithName: ["paragraph"])
+            """)
+        try document.removeFormatting(allowingTextInElementsWithoutPrefix: ["paragraph"])
         
         let transformation = XTransformation {
             
@@ -717,7 +721,8 @@ final class FromReadmeTests: XCTestCase {
                     </warning>
                 </section>
             </document>
-            """, textAllowedInElementWithName: ["paragraph"])
+            """)
+        try document.removeFormatting(allowingTextInElementsWithoutPrefix: ["paragraph"])
         
         for section in document.elements("section") {
             section.traverse { node in
@@ -774,17 +779,15 @@ final class FromReadmeTests: XCTestCase {
     
     func testSubscriptsOfSequences() throws {
         
-        let document = try parseXML(
-            fromText: """
+        let document = try parseXML(fromText: """
             <document>
                 <title>The Title</title>
                 <p id="1">The first paragraph.</p>
                 <p id="2">The second paragraph.</p>
                 <annex>This is the annex.</annex>
             </document>
-            """,
-            textAllowedInElementWithName: ["title", "p", "annex"]
-        )
+            """)
+        try document.removeFormatting(allowingTextInElementsWithoutPrefix: ["title", "p", "annex"])
         
         XCTAssertEqual(document.children.children("p")["id"].joined(separator: " "), "1 2")
         XCTAssertEqual(document.children.children("p")[2]?.description ?? "-", #"<p id="2">"#)

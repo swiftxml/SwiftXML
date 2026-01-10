@@ -14,6 +14,56 @@ import FoundationEssentials
 import Foundation
 #endif
 
+public extension XBranch {
+    
+    func removeFormatting(allowingTextInElementsForPrefix: [String:[String]]) throws {
+        try self.traverse { node in
+            if let text = node as? XText, let parent = text.parent, allowingTextInElementsForPrefix[parent.prefix ?? ""]?.contains(parent.name) != true {
+                guard text.isWhitespace else {
+                    throw SwiftXMLError("non-whitespace text in <\(parent.prefix?.appending(":") ?? "")\(parent.name)")
+                }
+                text.remove()
+            }
+        }
+    }
+    
+    func removeFormatting(allowingTextInElementsWithoutPrefix: [String]) throws {
+        try self.traverse { node in
+            if let text = node as? XText, let parent = text.parent, parent.prefix == nil, !allowingTextInElementsWithoutPrefix.contains(parent.name) {
+                guard text.isWhitespace else {
+                    throw SwiftXMLError("non-whitespace text in <\(parent.prefix?.appending(":") ?? "")\(parent.name)")
+                }
+                text.remove()
+            }
+        }
+    }
+    
+}
+
+public extension XDocument {
+    
+    func getNamesForPrefix(fromNamesForURI namesForURI: [String:[String]]) throws -> [String:[String]] {
+        var prefixAndNames = [String:[String]]()
+        var emptyPrefixURI: String? = nil
+        for (namespaceURI,elementNames) in namesForURI {
+            let prefixKey = self.prefix(forNamespaceURI: namespaceURI) ?? ""
+            if prefixKey == ""  {
+                if let emptyPrefixURI {
+                    throw SwiftXMLError("URIs \"\(emptyPrefixURI)\" and \"\(namespaceURI)\" both resolve to empty prefix")
+                }
+                emptyPrefixURI = namespaceURI
+            }
+            prefixAndNames[prefixKey] = elementNames
+        }
+        return prefixAndNames
+    }
+    
+    func removeFormatting(allowingTextInElementsForNamespaceURI: [String:[String]]) throws {
+        try removeFormatting(allowingTextInElementsForPrefix: getNamesForPrefix(fromNamesForURI: allowingTextInElementsForNamespaceURI))
+    }
+    
+}
+
 public struct SwiftXMLError: LocalizedError, CustomStringConvertible {
 
     private let message: String

@@ -33,7 +33,7 @@ final class SwiftXMLTests: XCTestCase {
             """)
         
         // referencing the function:
-        let f = document.serialized(pretty:textAllowedInElementWithName:indentation:overwritingPrefixesForNamespaceURIs:overwritingPrefixes:suppressDeclarationForNamespaceURIs:)
+        let f = document.serialized(pretty:allowingTextInElementsForNamespaceURI:indentation:overwritingPrefixesForNamespaceURIs:overwritingPrefixes:suppressDeclarationForNamespaceURIs:)
         let noTranslation: [String:String]? = nil
         XCTAssertEqual(f(true, nil, "  ", noTranslation, noTranslation, nil), """
             <a id="1">
@@ -968,9 +968,9 @@ final class SwiftXMLTests: XCTestCase {
             
             XCTAssertEqual(
                 document.serialized(usingProductionTemplate: PrettyPrintProductionTemplate(
-                    textAllowedInElementWithName: ["paragraph", "emphasis"]
+                    allowingTextInElementsWithoutPrefix: ["paragraph", "emphasis"]
                 )),
-                // the 'textAllowedInElementWithName' setting does not make a difference:
+                // the 'allowingTextInElementsWithoutPrefix' setting does not make a difference:
                 """
                 <book>
                     <paragraph><emphasis>hello</emphasis></paragraph>
@@ -1009,7 +1009,7 @@ final class SwiftXMLTests: XCTestCase {
             
             XCTAssertEqual(
                 document.serialized(usingProductionTemplate: PrettyPrintProductionTemplate(
-                    textAllowedInElementWithName: ["paragraph", "emphasis"]
+                    allowingTextInElementsWithoutPrefix: ["paragraph", "emphasis"]
                 )),
                 // the serialization knows from the 'usingProductionTemplate' setting the <paragraph> too is "mixed":
                 """
@@ -1030,11 +1030,12 @@ final class SwiftXMLTests: XCTestCase {
                 </book>
                 """
             
-            let document = try parseXML(fromText: source, textAllowedInElementWithName: ["paragraph", "emphasis"])
+            let document = try parseXML(fromText: source)
+            try document.removeFormatting(allowingTextInElementsWithoutPrefix: ["paragraph", "emphasis"])
             
             XCTAssertEqual(
                 document.serialized,
-                // whitespace immediately in elements that are not mixed (that is knwon from the 'textAllowedInElementWithName' setting) is removed:
+                // whitespace immediately in elements that are not mixed (that is knwon from the 'allowingTextInElementsWithoutPrefix' setting) is removed:
                 """
                 <book><paragraph><emphasis>hello</emphasis></paragraph></book>
                 """
@@ -1042,7 +1043,7 @@ final class SwiftXMLTests: XCTestCase {
             
             XCTAssertEqual(
                 document.serialized(usingProductionTemplate: PrettyPrintProductionTemplate()),
-                // here, the serialization does not know about the 'textAllowedInElementWithName' setting that was used when reading
+                // here, the serialization does not know about the 'allowingTextInElementsWithoutPrefix' setting that was used when reading
                 // (and also should not know, because the output could be a different type of document):
                 """
                 <book>
@@ -1055,7 +1056,7 @@ final class SwiftXMLTests: XCTestCase {
             
             XCTAssertEqual(
                 document.serialized(usingProductionTemplate: PrettyPrintProductionTemplate(
-                    textAllowedInElementWithName: ["paragraph", "emphasis"]
+                    allowingTextInElementsWithoutPrefix: ["paragraph", "emphasis"]
                 )),
                 // the serialization knows from the 'usingProductionTemplate' setting the <paragraph> too is "mixed":
                 """

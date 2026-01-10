@@ -84,7 +84,7 @@ public protocol XProductionTemplate {
         withStartElement startElement: XElement?,
         prefixTranslations: [String:String]?,
         declarationSupressingNamespaceURIs: [String]?
-    ) -> XActiveProduction
+    ) throws -> XActiveProduction
 }
 
 public protocol XActiveProduction {
@@ -155,7 +155,6 @@ public class DefaultProductionTemplate: XProductionTemplate {
     public let escapeGreaterThan: Bool
     public let escapeAllInText: Bool
     public let escapeAll: Bool
-    
     
     public init(
         writeEmptyTags: Bool = true,
@@ -474,18 +473,46 @@ open class ActiveDefaultProduction: XActiveProduction {
 
 public class PrettyPrintProductionTemplate: XProductionTemplate {
     
-    public let textAllowedInElementWithName: [String]?
+    public let allowingTextInElementsForNamespaceURI: [String:[String]]?
+    public let allowingTextInElementsForPrefix: [String:[String]]?
     public let writeEmptyTags: Bool
     public let indentation: String
     public let linebreak: String
     
     public init(
-        textAllowedInElementWithName: [String]? = nil,
+        allowingTextInElementsForNamespaceURI: [String:[String]]? = nil,
         writeEmptyTags: Bool = true,
         indentation: String? = nil,
         linebreak: String? = nil
     ) {
-        self.textAllowedInElementWithName = textAllowedInElementWithName
+        self.allowingTextInElementsForNamespaceURI = allowingTextInElementsForNamespaceURI
+        self.allowingTextInElementsForPrefix = nil
+        self.writeEmptyTags = writeEmptyTags
+        self.indentation = indentation ?? X_DEFAULT_INDENTATION
+        self.linebreak = linebreak ?? X_DEFAULT_LINEBREAK
+    }
+    
+    public init(
+        allowingTextInElementsForPrefix: [String:[String]]?,
+        writeEmptyTags: Bool = true,
+        indentation: String? = nil,
+        linebreak: String? = nil
+    ) {
+        self.allowingTextInElementsForNamespaceURI = nil
+        self.allowingTextInElementsForPrefix = allowingTextInElementsForPrefix
+        self.writeEmptyTags = writeEmptyTags
+        self.indentation = indentation ?? X_DEFAULT_INDENTATION
+        self.linebreak = linebreak ?? X_DEFAULT_LINEBREAK
+    }
+    
+    public init(
+        allowingTextInElementsWithoutPrefix: [String]?,
+        writeEmptyTags: Bool = true,
+        indentation: String? = nil,
+        linebreak: String? = nil
+    ) {
+        self.allowingTextInElementsForNamespaceURI = nil
+        self.allowingTextInElementsForPrefix = allowingTextInElementsWithoutPrefix != nil ? ["": allowingTextInElementsWithoutPrefix!] : nil
         self.writeEmptyTags = writeEmptyTags
         self.indentation = indentation ?? X_DEFAULT_INDENTATION
         self.linebreak = linebreak ?? X_DEFAULT_LINEBREAK
@@ -496,11 +523,15 @@ public class PrettyPrintProductionTemplate: XProductionTemplate {
         withStartElement startElement: XElement?,
         prefixTranslations: [String:String]?,
         declarationSupressingNamespaceURIs: [String]?
-    ) -> XActiveProduction {
-        ActivePrettyPrintProduction(
+    ) throws -> XActiveProduction {
+        try ActivePrettyPrintProduction(
             withStartElement: startElement,
             writer: writer,
-            textAllowedInElementWithName: textAllowedInElementWithName,
+            allowingTextInElementsForPrefix:
+                allowingTextInElementsForPrefix ?? (
+                    allowingTextInElementsForNamespaceURI != nil ?
+                    startElement?.document?.getNamesForPrefix(fromNamesForURI:  allowingTextInElementsForNamespaceURI!) : nil
+                ),
             writeEmptyTags: writeEmptyTags,
             indentation: indentation,
             linebreak: linebreak,
@@ -513,13 +544,13 @@ public class PrettyPrintProductionTemplate: XProductionTemplate {
 
 open class ActivePrettyPrintProduction: ActiveDefaultProduction {
     
-    private let textAllowedInElementWithName: [String]?
+    private let allowingTextInElementsForPrefix: [String:[String]]?
     private let indentation: String
     
     public init(
         withStartElement startElement: XElement?,
         writer: Writer,
-        textAllowedInElementWithName: [String]? = nil,
+        allowingTextInElementsForPrefix: [String:[String]]? = nil,
         writeEmptyTags: Bool = true,
         indentation: String = X_DEFAULT_INDENTATION,
         escapeGreaterThan: Bool = false,
@@ -529,7 +560,7 @@ open class ActivePrettyPrintProduction: ActiveDefaultProduction {
         prefixTranslations: [String:String]?,
         suppressDeclarationForNamespaceURIs declarationSupressingNamespaceURIs: [String]?,
     ) {
-        self.textAllowedInElementWithName = textAllowedInElementWithName
+        self.allowingTextInElementsForPrefix = allowingTextInElementsForPrefix
         self.indentation = indentation
         super.init(
             withStartElement: startElement,
@@ -549,7 +580,7 @@ open class ActivePrettyPrintProduction: ActiveDefaultProduction {
     private var mixed = [Bool]()
     
     open func mightHaveMixedContent(element: XElement) -> Bool {
-        return textAllowedInElementWithName?.contains(element.name) == true || element.content.contains(where: { $0 is XText || $0 is XInternalEntity || $0 is XInternalEntity })
+        return allowingTextInElementsForPrefix?[element.prefix ?? ""]?.contains(element.name) == true || element.content.contains(where: { $0 is XText || $0 is XInternalEntity || $0 is XInternalEntity })
     }
     
     /// This can be used to suppress the "pretty print" before an element.

@@ -441,13 +441,13 @@ public class XNode {
     public func write(
         toWriter writer: Writer,
         pretty: Bool = false,
-        textAllowedInElementWithName: [String]? = nil,
+        allowingTextInElementsForNamespaceURI: [String:[String]]? = nil,
         indentation: String? = nil
     ) throws {
         try write(
             toWriter: writer,
             usingProductionTemplate: pretty ? PrettyPrintProductionTemplate(
-                textAllowedInElementWithName: textAllowedInElementWithName,
+                allowingTextInElementsForNamespaceURI: allowingTextInElementsForNamespaceURI,
                 indentation: indentation
             ) : DefaultProductionTemplate()
         )
@@ -466,7 +466,7 @@ public class XNode {
             forNode: self
         )
         let productionTemplate = productionTemplate ?? DefaultProductionTemplate()
-        let activeProduction = productionTemplate.activeProduction(
+        let activeProduction = try productionTemplate.activeProduction(
             for: writer,
             withStartElement: self as? XElement ?? (self as? XDocument)?.firstChild,
             prefixTranslations: completePrefixTranslations,
@@ -478,13 +478,13 @@ public class XNode {
     public func write(
         toFile fileHandle: FileHandle,
         pretty: Bool = false,
-        textAllowedInElementWithName: [String]? = nil,
+        allowingTextInElementsForNamespaceURI: [String:[String]]? = nil,
         indentation: String? = nil
     ) throws {
         try write(
             toFile: fileHandle,
             usingProductionTemplate: pretty ? PrettyPrintProductionTemplate(
-                textAllowedInElementWithName: textAllowedInElementWithName,
+                allowingTextInElementsForNamespaceURI: allowingTextInElementsForNamespaceURI,
                 indentation: indentation
             ) : DefaultProductionTemplate()
         )
@@ -512,13 +512,13 @@ public class XNode {
     public func write(
         toPath path: String,
         pretty: Bool = false,
-        textAllowedInElementWithName: [String]? = nil,
+        allowingTextInElementsForNamespaceURI: [String:[String]]? = nil,
         indentation: String? = nil
     ) throws {
         try write(
             toPath: path,
             usingProductionTemplate: pretty ? PrettyPrintProductionTemplate(
-                textAllowedInElementWithName: textAllowedInElementWithName,
+                allowingTextInElementsForNamespaceURI: allowingTextInElementsForNamespaceURI,
                 indentation: indentation
             ) : DefaultProductionTemplate()
         )
@@ -555,13 +555,13 @@ public class XNode {
     public func write(
         toURL url: URL,
         pretty: Bool = false,
-        textAllowedInElementWithName: [String]? = nil,
+        allowingTextInElementsForNamespaceURI: [String:[String]]? = nil,
         indentation: String? = nil
     ) throws {
         try write(
             toURL: url,
             usingProductionTemplate: pretty ? PrettyPrintProductionTemplate(
-                textAllowedInElementWithName: textAllowedInElementWithName,
+                allowingTextInElementsForNamespaceURI: allowingTextInElementsForNamespaceURI,
                 indentation: indentation
             ) : DefaultProductionTemplate()
         )
@@ -650,7 +650,7 @@ public class XNode {
     
     public func echo(
         pretty: Bool = false,
-        textAllowedInElementWithName: [String]? = nil,
+        allowingTextInElementsForNamespaceURI: [String:[String]]? = nil,
         indentation: String = X_DEFAULT_INDENTATION,
         overwritingPrefixesForNamespaceURIs prefixesForNamespaceURIs: [String:String]? = nil,
         overwritingPrefixes prefixTranslations: [String:String]? = nil,
@@ -659,7 +659,7 @@ public class XNode {
     ) {
         echo(
             usingProductionTemplate: pretty ? PrettyPrintProductionTemplate(
-                textAllowedInElementWithName: textAllowedInElementWithName,
+                allowingTextInElementsForNamespaceURI: allowingTextInElementsForNamespaceURI,
                 indentation: indentation
             ) : DefaultProductionTemplate(),
             overwritingPrefixesForNamespaceURIs: prefixesForNamespaceURIs,
@@ -697,7 +697,7 @@ public class XNode {
     
     public func serialized(
         pretty: Bool = false,
-        textAllowedInElementWithName: [String]? = nil,
+        allowingTextInElementsForNamespaceURI: [String:[String]]? = nil,
         indentation: String = X_DEFAULT_INDENTATION,
         overwritingPrefixesForNamespaceURIs prefixesForNamespaceURIs: [String:String]? = nil,
         overwritingPrefixes prefixTranslations: [String:String]? = nil,
@@ -705,9 +705,27 @@ public class XNode {
     ) -> String {
         return serialized(
             usingProductionTemplate: pretty ? PrettyPrintProductionTemplate(
-                textAllowedInElementWithName: textAllowedInElementWithName,
+                allowingTextInElementsForNamespaceURI: allowingTextInElementsForNamespaceURI,
                 indentation: indentation
             ) : DefaultProductionTemplate(),
+            overwritingPrefixesForNamespaceURIs: prefixesForNamespaceURIs,
+            overwritingPrefixes: prefixTranslations,
+            suppressDeclarationForNamespaceURIs: declarationSupressingNamespaceURIs
+        )
+    }
+    
+    public func serialized(
+        pretty: Bool = false,
+        allowingTextInElementsWithoutPrefix: [String]?,
+        indentation: String = X_DEFAULT_INDENTATION,
+        overwritingPrefixesForNamespaceURIs prefixesForNamespaceURIs: [String:String]? = nil,
+        overwritingPrefixes prefixTranslations: [String:String]? = nil,
+        suppressDeclarationForNamespaceURIs declarationSupressingNamespaceURIs: [String]? = nil
+    ) -> String {
+        serialized(
+            pretty: pretty,
+            allowingTextInElementsForNamespaceURI: allowingTextInElementsWithoutPrefix != nil ? ["": allowingTextInElementsWithoutPrefix!] : nil,
+            indentation: indentation,
             overwritingPrefixesForNamespaceURIs: prefixesForNamespaceURIs,
             overwritingPrefixes: prefixTranslations,
             suppressDeclarationForNamespaceURIs: declarationSupressingNamespaceURIs
