@@ -14,6 +14,35 @@ import class Foundation.Bundle
 
 final class UtilitiesTest: XCTestCase {
     
+    func testRemovingOfFormatting() throws {
+        let source = """
+            <simple-test:m.simple-inline-formula display-style="expanded" xmlns:latex-test="http://latex-test" xmlns:math-test="http://www.w3.org/1998/Math/MathML" xmlns:simple-test="http://simple-test" xmlns:tr="http://tr">
+                <simple-test:m.variable style="normal">α</simple-test:m.variable>
+                <simple-test:m.variable style="normal">Ω</simple-test:m.variable>
+            </simple-test:m.simple-inline-formula>
+            """
+        
+        let document = try parseXML(fromText: source, namespaceAware: true)
+        
+        // wth error:
+        do {
+            var errorText: String? = nil
+            do {
+                let clone = document.clone
+                try clone.removeFormatting(allowingTextInElementsForPrefix: ["simple-test": []])
+            } catch {
+                errorText = String(describing: error)
+            }
+            XCTAssertEqual(errorText, "non-whitespace text in <simple-test:m.variable>")
+        }
+        
+        // without error:
+        try document.removeFormatting(allowingTextInElementsForPrefix: ["simple-test": ["m.variable"]])
+        XCTAssertEqual(document.serialized, """
+            <simple-test:m.simple-inline-formula display-style="expanded" xmlns:latex-test="http://latex-test" xmlns:math-test="http://www.w3.org/1998/Math/MathML" xmlns:simple-test="http://simple-test" xmlns:tr="http://tr"><simple-test:m.variable style="normal">α</simple-test:m.variable><simple-test:m.variable style="normal">Ω</simple-test:m.variable></simple-test:m.simple-inline-formula>
+            """)
+    }
+    
     func testTwoTieredDictionaryWithStringKeys() throws {
         let dictionary = TwoTieredDictionaryWithStringKeys<String>()
         dictionary.put(key1: "3", key2: "z", value: "3z")
