@@ -17,7 +17,9 @@ import Foundation
 public extension XBranch {
     
     func removeFormatting(allowingTextInElementsForPrefix: [String:[String]]) throws {
-        for element in self.descendants.filter({ allowingTextInElementsForPrefix[$0.prefix ?? ""]?.contains($0.name) != true }) {
+        var elements: XElementSequence
+        if let element = self as? XElement { elements = element.descendantsIncludingSelf } else { elements = self.descendants }
+        for element in elements.filter({ allowingTextInElementsForPrefix[$0.prefix ?? ""]?.contains($0.name) != true }) {
             for text in element.immediateTexts {
                 guard text.isWhitespace else {
                     throw SwiftXMLError("non-whitespace text in <\(element.prefix?.appending(":") ?? "")\(element.name)>")
@@ -28,7 +30,9 @@ public extension XBranch {
     }
     
     func removeFormatting(allowingTextInElementsWithoutPrefix: [String]) throws {
-        for element in self.descendants.filter({ !allowingTextInElementsWithoutPrefix.contains($0.name) }) {
+        var elements: XElementSequence
+        if let element = self as? XElement { elements = element.descendantsIncludingSelf } else { elements = self.descendants }
+        for element in elements.filter({ $0.prefix == nil && !allowingTextInElementsWithoutPrefix.contains($0.name) }) {
             for text in element.immediateTexts {
                 guard text.isWhitespace else {
                     throw SwiftXMLError("non-whitespace text in <\(element.prefix?.appending(":") ?? "")\(element.name)>")
