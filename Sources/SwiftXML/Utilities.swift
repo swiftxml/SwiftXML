@@ -17,10 +17,10 @@ import Foundation
 public extension XBranch {
     
     func removeFormatting(allowingTextInElementsForPrefix: [String:[String]]) throws {
-        try self.traverse { node in
-            if let text = node as? XText, let parent = text.parent, allowingTextInElementsForPrefix[parent.prefix ?? ""]?.contains(parent.name) != true {
+        for element in self.descendants.filter({ allowingTextInElementsForPrefix[$0.prefix ?? ""]?.contains($0.name) != true }) {
+            for text in element.immediateTexts {
                 guard text.isWhitespace else {
-                    throw SwiftXMLError("non-whitespace text in <\(parent.prefix?.appending(":") ?? "")\(parent.name)>")
+                    throw SwiftXMLError("non-whitespace text in <\(element.prefix?.appending(":") ?? "")\(element.name)>")
                 }
                 text.remove()
             }
@@ -28,10 +28,10 @@ public extension XBranch {
     }
     
     func removeFormatting(allowingTextInElementsWithoutPrefix: [String]) throws {
-        try self.traverse { node in
-            if let text = node as? XText, let parent = text.parent, parent.prefix == nil, !allowingTextInElementsWithoutPrefix.contains(parent.name) {
+        for element in self.descendants.filter({ !allowingTextInElementsWithoutPrefix.contains($0.name) }) {
+            for text in element.immediateTexts {
                 guard text.isWhitespace else {
-                    throw SwiftXMLError("non-whitespace text in <\(parent.prefix?.appending(":") ?? "")\(parent.name)>")
+                    throw SwiftXMLError("non-whitespace text in <\(element.prefix?.appending(":") ?? "")\(element.name)>")
                 }
                 text.remove()
             }
