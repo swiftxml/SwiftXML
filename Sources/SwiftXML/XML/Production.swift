@@ -492,7 +492,8 @@ public class PrettyPrintProductionTemplate: XProductionTemplate {
         self.linebreak = linebreak ?? X_DEFAULT_LINEBREAK
     }
     
-    public init(
+    // not make this public because using the template with prefixes independently of the document might break the namespaces!
+    init(
         allowingTextInElementsForPrefix: [String:[String]]?,
         writeEmptyTags: Bool = true,
         indentation: String? = nil,

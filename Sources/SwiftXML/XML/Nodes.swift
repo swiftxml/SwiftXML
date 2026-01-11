@@ -669,6 +669,27 @@ public class XNode {
         )
     }
     
+    public func echo(
+        pretty: Bool = false,
+        allowingTextInElementsForPrefix: [String:[String]]?,
+        indentation: String = X_DEFAULT_INDENTATION,
+        overwritingPrefixesForNamespaceURIs prefixesForNamespaceURIs: [String:String]? = nil,
+        overwritingPrefixes prefixTranslations: [String:String]? = nil,
+        suppressDeclarationForNamespaceURIs declarationSupressingNamespaceURIs: [String]? = nil,
+        terminator: String = "\n"
+    ) {
+        echo(
+            usingProductionTemplate: pretty ? PrettyPrintProductionTemplate(
+                allowingTextInElementsForPrefix: allowingTextInElementsForPrefix,
+                indentation: indentation
+            ) : DefaultProductionTemplate(),
+            overwritingPrefixesForNamespaceURIs: prefixesForNamespaceURIs,
+            overwritingPrefixes: prefixTranslations,
+            suppressDeclarationForNamespaceURIs: declarationSupressingNamespaceURIs,
+            terminator: terminator
+        )
+    }
+    
     public func serialized(
         usingProductionTemplate productionTemplate: XProductionTemplate,
         overwritingPrefixesForNamespaceURIs prefixesForNamespaceURIs: [String:String]? = nil,
@@ -706,6 +727,25 @@ public class XNode {
         return serialized(
             usingProductionTemplate: pretty ? PrettyPrintProductionTemplate(
                 allowingTextInElementsForNamespaceURI: allowingTextInElementsForNamespaceURI,
+                indentation: indentation
+            ) : DefaultProductionTemplate(),
+            overwritingPrefixesForNamespaceURIs: prefixesForNamespaceURIs,
+            overwritingPrefixes: prefixTranslations,
+            suppressDeclarationForNamespaceURIs: declarationSupressingNamespaceURIs
+        )
+    }
+    
+    public func serialized(
+        pretty: Bool = false,
+        allowingTextInElementsForPrefix: [String:[String]]?,
+        indentation: String = X_DEFAULT_INDENTATION,
+        overwritingPrefixesForNamespaceURIs prefixesForNamespaceURIs: [String:String]? = nil,
+        overwritingPrefixes prefixTranslations: [String:String]? = nil,
+        suppressDeclarationForNamespaceURIs declarationSupressingNamespaceURIs: [String]? = nil
+    ) -> String {
+        return serialized(
+            usingProductionTemplate: pretty ? PrettyPrintProductionTemplate(
+                allowingTextInElementsForPrefix: allowingTextInElementsForPrefix,
                 indentation: indentation
             ) : DefaultProductionTemplate(),
             overwritingPrefixesForNamespaceURIs: prefixesForNamespaceURIs,
