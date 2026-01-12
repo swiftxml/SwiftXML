@@ -531,7 +531,7 @@ public class PrettyPrintProductionTemplate: XProductionTemplate {
             allowingTextInElementsForPrefix:
                 allowingTextInElementsForPrefix ?? (
                     allowingTextInElementsForNamespaceURI != nil ?
-                    startElement?.document?.getNamesForPrefix(fromNamesForURI:  allowingTextInElementsForNamespaceURI!) : nil
+                    startElement?.document?.getNamesForPrefix(fromNamesForURI: allowingTextInElementsForNamespaceURI!) : nil
                 ),
             writeEmptyTags: writeEmptyTags,
             indentation: indentation,
