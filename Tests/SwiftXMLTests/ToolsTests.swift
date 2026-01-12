@@ -409,6 +409,52 @@ final class ToolsTests: XCTestCase {
             """)
     }
     
+    func testPretty() throws {
+        
+        let source = """
+            <?xml version="1.0" encoding="us-ascii" standalone="no"?>
+            <!DOCTYPE theName PUBLIC "the public identifier" "the system identifier">
+            <book id="1">
+                <title>My Book Title</title>
+                <paragraph><formula>1</formula></paragraph>
+            </book>
+            """
+        
+        let allowingTextInElementsWithoutPrefix = ["title", "paragraph", "formula"]
+        
+        let document = try parseXML(fromText: source)
+        try document.removeFormatting(allowingTextInElementsWithoutPrefix: allowingTextInElementsWithoutPrefix)
+        
+        XCTAssertEqual(document.serialized, """
+            <?xml version="1.0" encoding="us-ascii" standalone="no"?>
+            <!DOCTYPE book PUBLIC "the public identifier" "the system identifier">
+            <book id="1"><title>My Book Title</title><paragraph><formula>1</formula></paragraph></book>
+            """)
+        
+        let root = document.firstChild!
+        let paragraph = root.firstChild("paragraph")!
+        
+        let prettyRoot = root.serialized(
+            pretty: true,
+            allowingTextInElementsWithoutPrefix: ["paragraph", "formula"]
+        )
+        
+        XCTAssertEqual(prettyRoot, """
+            <book id="1">
+                <title>My Book Title</title>
+                <paragraph><formula>1</formula></paragraph>
+            </book>
+            """)
+        
+        let prettyParagraph = paragraph.serialized(
+            pretty: true,
+            allowingTextInElementsWithoutPrefix: ["paragraph", "formula"]
+        )
+        
+        XCTAssertEqual(prettyParagraph, """
+            <paragraph><formula>1</formula></paragraph>
+            """)
+    }
 }
 
 /// An error with a description.
