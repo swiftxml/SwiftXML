@@ -764,7 +764,7 @@ public class XNode {
     ) -> String {
         serialized(
             pretty: pretty,
-            allowingTextInElementsForNamespaceURI: allowingTextInElementsWithoutPrefix != nil ? ["": allowingTextInElementsWithoutPrefix!] : nil,
+            allowingTextInElementsForPrefix: allowingTextInElementsWithoutPrefix != nil ? ["": allowingTextInElementsWithoutPrefix!] : nil,
             indentation: indentation,
             overwritingPrefixesForNamespaceURIs: prefixesForNamespaceURIs,
             overwritingPrefixes: prefixTranslations,
