@@ -1,5 +1,14 @@
 # SwiftXML
 
+---
+**NOTE:**
+
+In SwiftXML 2.0, `textAllowedInElementWithName` cannot be used any more during parsing. This is in preparation for a future implementation of validation based on an XML schema. `textAllowedInElementWithName` also did not recognize prefixes.
+
+Until then, the new `removeFormatting(...)` methods of `XDocument` can be used to remove unnecessary whitespace after parsing.
+
+---
+
 A library written in Swift to process XML.
 
 This library is published under the Apache License v2.0 with Runtime Library Exception.
