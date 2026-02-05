@@ -22,23 +22,23 @@ final class XValue {
     }
 }
 
-public struct NamespaceURIAndName {
+public struct NamespaceURIAndName: Sendable {
     let namespaceURI: String; let name: String
 }
 
-public struct NamespaceURIAndNameAndValue {
+public struct NamespaceURIAndNameAndValue: Sendable {
     let namespaceURI: String; let name: String; let value: String
 }
 
-public enum AttributeRegisterMode {
+public enum AttributeRegisterMode: Sendable {
     case none; case selected(_ attributeNames: [String]); case all
 }
 
-public enum AttributeWithNamespaceURIRegisterMode {
+public enum AttributeWithNamespaceURIRegisterMode: Sendable {
     case none; case selected(_ namesWithNamespaceURI: [NamespaceURIAndName]); case all
 }
 
-public struct PrefixedName {
+public struct PrefixedName: Sendable {
     let prefix: String; let name: String
     
     /// If prefix is `nil`, this returns `nil`.
@@ -48,9 +48,9 @@ public struct PrefixedName {
     }
 }
 
-// registrer modes for docuemnt:
+// register modes for docuemnt:
 
-public enum AttributeWithPrefixRegisterMode {
+public enum AttributeWithPrefixRegisterMode: Sendable {
     case none; case selected(_ prefixedNames: [PrefixedName]); case all
 }
 
