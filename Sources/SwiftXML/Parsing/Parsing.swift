@@ -47,7 +47,7 @@ public func parseXML(
     case .path(path: let path):
         document._sourcePath = path
     default:
-        break
+        document._sourcePath = sourceInfo
     }
     
     let parser = ConvenienceParser(
@@ -73,7 +73,12 @@ public func parseXML(
         )
     )
     
-    try parser.parse(from: documentSource, sourceInfo: sourceInfo, eventHandlers: eventHandlers, immediateTextHandlingNearEntities: immediateTextHandlingNearEntities)
+    try parser.parse(
+        from: documentSource,
+        sourceInfo: document._sourcePath,
+        eventHandlers: eventHandlers,
+        immediateTextHandlingNearEntities: immediateTextHandlingNearEntities
+    )
     
     return document
 }
