@@ -902,7 +902,7 @@ fileprivate extension String {
             if scalar.value < 127 {
                 texts.append(String(scalar))
             } else {
-                texts.append("&#x\( String(scalar.value, radix: 16, uppercase: true));")
+                texts.append("&#x\(String(scalar.value, radix: 16, uppercase: true));")
             }
         }
         return texts.joined()
