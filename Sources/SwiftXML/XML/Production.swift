@@ -902,19 +902,10 @@ fileprivate extension String {
             if scalar.value < 127 {
                 texts.append(String(scalar))
             } else {
-                texts.append("&#x\( String(scalar.value, radix: 16, uppercase: true).prepending("0", until: 4));")
+                texts.append("&#x\( String(scalar.value, radix: 16, uppercase: true));")
             }
         }
         return texts.joined()
-    }
-    
-    func prepending(_ s: Character, until length: Int) -> String {
-        let missing = length - self.count
-        if missing > 0 {
-            return String(repeating: s, count: missing) + self
-        } else {
-            return self
-        }
     }
     
 }
