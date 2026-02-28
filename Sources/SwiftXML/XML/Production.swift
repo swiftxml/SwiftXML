@@ -411,51 +411,51 @@ open class ActiveDefaultProduction: XActiveProduction {
     open func writeLiteral(literal: XLiteral) throws {
         guard !ignore else { return }
         try write(literal._value)
+        try write(literal.serialized)
     }
     
     open func writeCDATASection(cdataSection: XCDATASection) throws {
         guard !ignore else { return }
-        try write("<![CDATA[\(cdataSection._value)]]>")
+        try write(cdataSection.serialized)
     }
     
     open func writeProcessingInstruction(processingInstruction: XProcessingInstruction) throws {
         guard !ignore else { return }
-        try write("<?\(processingInstruction._target)\(processingInstruction._data != nil ? " \(processingInstruction._data ?? "")" : "")?>")
+        try write(processingInstruction.serialized)
     }
     
     open func writeComment(comment: XComment) throws {
-        guard !ignore else { return }
-        try write("<!--\(comment._value.avoidingDoubleHyphens)-->")
+        try write(comment.serialized)
     }
     
     open func writeInternalEntityDeclaration(internalEntityDeclaration: XInternalEntityDeclaration) throws {
-        try write("\(declarationInInternalSubsetIndentation)<!ENTITY \(internalEntityDeclaration._name) \"\(internalEntityDeclaration._value.escapingDoubleQuotedValueForXML)\">\(linebreak)")
+        try write("\(declarationInInternalSubsetIndentation)\(internalEntityDeclaration.serialized)\(linebreak)")
     }
     
     open func writeExternalEntityDeclaration(externalEntityDeclaration: XExternalEntityDeclaration) throws {
-        try write("\(declarationInInternalSubsetIndentation)<!ENTITY \(externalEntityDeclaration._name)\(externalEntityDeclaration._publicID != nil ? " PUBLIC \"\(externalEntityDeclaration._publicID ?? "")\"" : " SYSTEM") \"\(externalEntityDeclaration._systemID)\">\(linebreak)")
+        try write("\(declarationInInternalSubsetIndentation)\(externalEntityDeclaration.serialized)\(linebreak)")
     }
     
     open func writeUnparsedEntityDeclaration(unparsedEntityDeclaration: XUnparsedEntityDeclaration) throws {
-        try write("\(declarationInInternalSubsetIndentation)<!ENTITY \(unparsedEntityDeclaration._name)\(unparsedEntityDeclaration._publicID != nil ? " PUBLIC \"\(unparsedEntityDeclaration._publicID ?? "")\"" : " SYSTEM") \"\(unparsedEntityDeclaration._systemID)\" NDATA \(unparsedEntityDeclaration._notationName)>\(linebreak)")
+        try write("\(declarationInInternalSubsetIndentation)\(unparsedEntityDeclaration.serialized)\(linebreak)")
     }
     
     open func writeNotationDeclaration(notationDeclaration: XNotationDeclaration) throws {
-        try write("\(declarationInInternalSubsetIndentation)<!NOTATION \(notationDeclaration._name)\(notationDeclaration._publicID != nil ? " PUBLIC \"\(notationDeclaration._publicID ?? "")\"" : "")\(notationDeclaration._systemID != nil ? "\(notationDeclaration._publicID == nil ? " SYSTEM" : "") \"\(notationDeclaration._systemID ?? "")\"" : "")\(linebreak)>")
+        try write("\(declarationInInternalSubsetIndentation)\(notationDeclaration.serialized)\(linebreak)")
     }
     
     open func writeParameterEntityDeclaration(parameterEntityDeclaration: XParameterEntityDeclaration) throws {
-        try write("\(declarationInInternalSubsetIndentation)<!ENTITY % \(parameterEntityDeclaration._name) \"\(parameterEntityDeclaration._value.escapingDoubleQuotedValueForXML)\"\(linebreak)>")
+        try write("\(declarationInInternalSubsetIndentation)\(parameterEntityDeclaration.serialized)\(linebreak)")
     }
     
     open func writeInternalEntity(internalEntity: XInternalEntity) throws {
         guard !ignore else { return }
-        try write("&\(internalEntity._name);")
+        try write(internalEntity.serialized)
     }
     
     open func writeExternalEntity(externalEntity: XExternalEntity) throws {
         guard !ignore else { return }
-        try write("&\(externalEntity._name);")
+        try write(externalEntity.serialized)
     }
     
     open func writeElementDeclaration(elementDeclaration: XElementDeclaration) throws {

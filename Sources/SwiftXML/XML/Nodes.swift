@@ -44,7 +44,7 @@ public enum InsertionMode { case skipping; case following }
 /// This is the general kind of thing that can occur as the content in the body of an XML document.
 /// (The body of an XML document is everything except the XML declaration and the XML document
 /// declaration with the optional internal subset.
-public class XNode {
+public class XNode: CustomStringConvertible {
     
     /// Return the first ancestor with a certain name if it exists.
     public func ancestor(_ name: String) -> XElement? {
@@ -1990,7 +1990,7 @@ func enclosing(isolator1: _Isolator_, isolator2: _Isolator_) -> [XContent] {
     return result
 }
 
-public final class XElement: XContent, XBranchInternal, CustomStringConvertible {
+public final class XElement: XContent, XBranchInternal {
 
     /// This methods replaces the subject and returns the replacements.
     /// To facilitate the application in common use cases, the replacements are
@@ -2653,7 +2653,7 @@ protocol ToBePeparedForMoving {
     func resetAfterMove()
 }
 
-public final class XText: XContent, XTextualContentRepresentation, ToBePeparedForMoving, CustomStringConvertible, ExpressibleByStringLiteral {
+public final class XText: XContent, XTextualContentRepresentation, ToBePeparedForMoving, ExpressibleByStringLiteral {
 
     /// This methods replaces the subject and returns the replacements.
     /// To facilitate the application in common use cases, the replacements are
@@ -2874,7 +2874,7 @@ public final class XText: XContent, XTextualContentRepresentation, ToBePeparedFo
 /*
  `XLiteral` has a text value that is meant to be serialized "as is" without XML-escaping.
  */
-public final class XLiteral: XContent, XTextualContentRepresentation, ToBePeparedForMoving, CustomStringConvertible {
+public final class XLiteral: XContent, XTextualContentRepresentation, ToBePeparedForMoving {
     
     /// This methods replaces the subject and returns the replacements.
     /// To facilitate the application in common use cases, the replacements are
@@ -2932,12 +2932,6 @@ public final class XLiteral: XContent, XTextualContentRepresentation, ToBePepare
             if newText.isEmpty {
                 self.remove()
             }
-        }
-    }
-    
-    public override var description: String {
-        get {
-            _value
         }
     }
     
@@ -3000,6 +2994,14 @@ public final class XLiteral: XContent, XTextualContentRepresentation, ToBePepare
     public override func removed() -> XLiteral {
         remove()
         return self
+    }
+    
+    public override var serialized: String {
+        _value
+    }
+    
+    public override var description: String {
+        serialized
     }
 }
 
@@ -3084,6 +3086,14 @@ public final class XInternalEntity: XContent {
         remove()
         return self
     }
+    
+    public override var serialized: String {
+        "&\(_name);"
+    }
+    
+    public override var description: String {
+        serialized
+    }
 }
 
 public final class XExternalEntity: XContent {
@@ -3167,9 +3177,17 @@ public final class XExternalEntity: XContent {
         remove()
         return self
     }
+    
+    public override var serialized: String {
+        "&\(_name);"
+    }
+    
+    public override var description: String {
+        serialized
+    }
 }
 
-public final class XProcessingInstruction: XContent, CustomStringConvertible {
+public final class XProcessingInstruction: XContent {
     
     /// This methods replaces the subject and returns the replacements.
     /// To facilitate the application in common use cases, the replacements are
@@ -3257,14 +3275,6 @@ public final class XProcessingInstruction: XContent, CustomStringConvertible {
         }
     }
     
-    public override var description: String {
-        get {
-            """
-            <?\(_target)\(_data?.isEmpty == false ? " " : "")\(_data ?? "")?>
-            """
-        }
-    }
-    
     public var target: String {
         get {
             return _target
@@ -3312,6 +3322,16 @@ public final class XProcessingInstruction: XContent, CustomStringConvertible {
     public override func removed() -> XProcessingInstruction {
         remove()
         return self
+    }
+    
+    public override var serialized: String {
+        """
+        <?\(_target)\(_data?.isEmpty == false ? " " : "")\(_data ?? "")?>
+        """
+    }
+    
+    public override var description: String {
+        serialized
     }
 }
 
@@ -3405,6 +3425,14 @@ public final class XComment: XContent {
         remove()
         return self
     }
+    
+    public override var serialized: String {
+        "<!--\(_value.avoidingDoubleHyphens)-->"
+    }
+    
+    public override var description: String {
+        serialized
+    }
 }
 
 public final class XCDATASection: XContent, XTextualContentRepresentation {
@@ -3492,6 +3520,14 @@ public final class XCDATASection: XContent, XTextualContentRepresentation {
         remove()
         return self
     }
+    
+    public override var serialized: String {
+        "<![CDATA[\(_value)]]>"
+    }
+    
+    public override var description: String {
+        serialized
+    }
 }
 
 public class XDeclarationInInternalSubset {
@@ -3527,7 +3563,7 @@ public class XDeclarationInInternalSubset {
 /**
  internal entity declaration
  */
-public final class XInternalEntityDeclaration: XDeclarationInInternalSubset {
+public final class XInternalEntityDeclaration: XDeclarationInInternalSubset, CustomStringConvertible {
     
     var _value: String
     
@@ -3554,12 +3590,20 @@ public final class XInternalEntityDeclaration: XDeclarationInInternalSubset {
         theClone._sourceRange = self._sourceRange
         return theClone
     }
+    
+    public var serialized: String {
+        "<!ENTITY \(_name) \"\(_value.escapingDoubleQuotedValueForXML)\">"
+    }
+    
+    public var description: String {
+        serialized
+    }
 }
 
 /**
  parsed external entity declaration
  */
-public final class XExternalEntityDeclaration: XDeclarationInInternalSubset {
+public final class XExternalEntityDeclaration: XDeclarationInInternalSubset, CustomStringConvertible {
     
     var _publicID: String?
     var _systemID: String
@@ -3597,12 +3641,20 @@ public final class XExternalEntityDeclaration: XDeclarationInInternalSubset {
         theClone._sourceRange = self._sourceRange
         return theClone
     }
+    
+    public var serialized: String {
+        "<!ENTITY \(_name)\(_publicID != nil ? " PUBLIC \"\(_publicID ?? "")\"" : " SYSTEM") \"\(_systemID)\">"
+    }
+    
+    public var description: String {
+        serialized
+    }
 }
 
 /**
  unparsed external entity declaration
  */
-public final class XUnparsedEntityDeclaration: XDeclarationInInternalSubset {
+public final class XUnparsedEntityDeclaration: XDeclarationInInternalSubset, CustomStringConvertible {
     
     var _publicID: String?
     var _systemID: String
@@ -3651,12 +3703,20 @@ public final class XUnparsedEntityDeclaration: XDeclarationInInternalSubset {
         theClone._sourceRange = self._sourceRange
         return theClone
     }
+    
+    public var serialized: String {
+        "<!ENTITY \(_name)\(_publicID != nil ? " PUBLIC \"\(_publicID ?? "")\"" : " SYSTEM") \"\(_systemID)\" NDATA \(_notationName)>"
+    }
+    
+    public var description: String {
+        serialized
+    }
 }
 
 /**
  notation declaration
  */
-public final class XNotationDeclaration: XDeclarationInInternalSubset {
+public final class XNotationDeclaration: XDeclarationInInternalSubset, CustomStringConvertible {
     
     var _publicID: String?
     var _systemID: String?
@@ -3693,6 +3753,14 @@ public final class XNotationDeclaration: XDeclarationInInternalSubset {
         let theClone = XNotationDeclaration(name: _name, publicID: _publicID, systemID: _systemID)
         theClone._sourceRange = self._sourceRange
         return theClone
+    }
+    
+    public var serialized: String {
+        "<!NOTATION \(_name)\(_publicID != nil ? " PUBLIC \"\(_publicID ?? "")\"" : "")\(_systemID != nil ? "\(_publicID == nil ? " SYSTEM" : "") \"\(_systemID ?? "")\"" : "")>"
+    }
+    
+    public var description: String {
+        serialized
     }
 }
 
@@ -3763,7 +3831,7 @@ public final class XAttributeListDeclaration: XDeclarationInInternalSubset {
 /**
  parameter entity declaration
  */
-public final class XParameterEntityDeclaration: XDeclarationInInternalSubset {
+public final class XParameterEntityDeclaration: XDeclarationInInternalSubset, CustomStringConvertible {
     
     var _value: String
     
@@ -3789,5 +3857,13 @@ public final class XParameterEntityDeclaration: XDeclarationInInternalSubset {
         let theClone = XParameterEntityDeclaration(name: _name, value: _value)
         theClone._sourceRange = self._sourceRange
         return theClone
+    }
+    
+    public var serialized: String {
+        "<!ENTITY % \(_name) \"\(_value.escapingDoubleQuotedValueForXML)\">"
+    }
+    
+    public var description: String {
+        serialized
     }
 }
