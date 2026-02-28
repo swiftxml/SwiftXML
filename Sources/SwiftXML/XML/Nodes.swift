@@ -3767,7 +3767,7 @@ public final class XNotationDeclaration: XDeclarationInInternalSubset, CustomStr
 /**
  element declaration
  */
-public final class XElementDeclaration: XDeclarationInInternalSubset {
+public final class XElementDeclaration: XDeclarationInInternalSubset, CustomStringConvertible {
     
     var _literal: String
     
@@ -3793,6 +3793,14 @@ public final class XElementDeclaration: XDeclarationInInternalSubset {
         let theClone = XElementDeclaration(name: _name, literal: _literal)
         theClone._sourceRange = self._sourceRange
         return theClone
+    }
+    
+    public var serialized: String {
+        _literal
+    }
+    
+    public var description: String {
+        serialized
     }
 }
 
@@ -3825,6 +3833,14 @@ public final class XAttributeListDeclaration: XDeclarationInInternalSubset {
         let theClone = XAttributeListDeclaration(name: _name, literal: _literal)
         theClone._sourceRange = self._sourceRange
         return theClone
+    }
+    
+    public var serialized: String {
+        _literal
+    }
+    
+    public var description: String {
+        serialized
     }
 }
 

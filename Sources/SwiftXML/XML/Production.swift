@@ -458,11 +458,11 @@ open class ActiveDefaultProduction: XActiveProduction {
     }
     
     open func writeElementDeclaration(elementDeclaration: XElementDeclaration) throws {
-        try write("\(declarationInInternalSubsetIndentation)\(elementDeclaration._literal)\(linebreak)")
+        try write("\(declarationInInternalSubsetIndentation)\(elementDeclaration.serialized)\(linebreak)")
     }
     
     open func writeAttributeListDeclaration(attributeListDeclaration: XAttributeListDeclaration) throws {
-        try write("\(declarationInInternalSubsetIndentation)\(attributeListDeclaration._literal)\(linebreak)")
+        try write("\(declarationInInternalSubsetIndentation)\(attributeListDeclaration.serialized)\(linebreak)")
     }
     
     open func writeDocumentEnd(document: XDocument) throws {
