@@ -410,7 +410,6 @@ open class ActiveDefaultProduction: XActiveProduction {
     
     open func writeLiteral(literal: XLiteral) throws {
         guard !ignore else { return }
-        try write(literal._value)
         try write(literal.serialized)
     }
     
