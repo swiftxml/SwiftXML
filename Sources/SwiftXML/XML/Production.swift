@@ -64,14 +64,33 @@ public class BufferedFileWriter: Writer {
 
 public class CollectingWriter: Writer, CustomStringConvertible {
     
-    public init() {}
+    private var combineThreshold: Int
+    
+    public init(combineThreshold: Int = 1000) {
+        self.combineThreshold = combineThreshold
+    }
     
     private var texts = [String]()
+    private var count: Int = 0
+    private var combinedText: String = ""
     
-    public var description: String { get { texts.joined() } }
+    private func combine() {
+        combinedText += texts.joined()
+        texts.removeAll(keepingCapacity: true)
+        count = 0
+    }
+    
+    public var description: String {
+        combine()
+        return combinedText
+    }
     
     public func write(_ text: String) {
         texts.append(text)
+        count += 1
+        if count == combineThreshold {
+            combine()
+        }
     }
     
     public func close() throws {}
