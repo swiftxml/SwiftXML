@@ -400,8 +400,10 @@ final class NamespacesTests: XCTestCase {
         let document = try parseXML(fromText: source, namespaceAware: true)
 
         for b in document.descendants(prefix: "myPrefix", "b") {
-            b.set(prefix: "newPrefix", name: "c")
+            b.set(prefix: "newPrefix", name: "c", attributes: ["attName1": "attVal2"], prefixedAttributes: ["newPrefix": ["prefixedAttName1": "prefixedAttVal2"]])
             XCTAssertTrue(b.has(prefix: "newPrefix", name: "c"))
+            XCTAssertTrue(b["attName1"] == "attVal2")
+            XCTAssertTrue(b["newPrefix", "prefixedAttName1"] == "prefixedAttVal2")
         }
         
         XCTAssertEqual(

@@ -2284,7 +2284,7 @@ public final class XElement: XContent, XBranchInternal {
         }
     }
     
-    public func set(prefix: String?, name: String) {
+    public func set(prefix: String?, name: String, attributes: [String:String?]? = nil, prefixedAttributes: [String:[String:String?]]? = nil) {
         let actualPrefix = prefix?.isEmpty == true ? nil : prefix
         if actualPrefix != _prefix || name != _name {
             if let theDocument = _registeringDocument {
@@ -2298,6 +2298,8 @@ public final class XElement: XContent, XBranchInternal {
                 _name = name
             }
         }
+        self.setAttributes(attributes: attributes)
+        self.setPrefixedAttributes(prefixedAttributes: prefixedAttributes)
     }
     
     public func has(prefix: String?, name: String) -> Bool {
