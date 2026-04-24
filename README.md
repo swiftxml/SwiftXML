@@ -12,7 +12,7 @@ In **SwiftXML 3.0,** the following _breaking changes_ have been made:
 - renamed `parseXML` to `readXML`
 - `serialized(...)`: renamed `suppressDeclarationForNamespaceURIs` to `suppressingDeclarationForNamespaceURIs`
 - protocol `XProductionTemplate`: added argument `suppressingNamespaceDeclarations` to `activeProduction(...)` (which then should suppress all namespace declarations when serializing)
-- The new enum `XTextEscapeMode` replaces the old arguemnts `escapeGreaterThan`, `escapeAllInText`, and `escapeAll` for serialization.
+- The new enum `XTextEscapeMode` replaces the old arguments `escapeGreaterThan`, `escapeAllInText`, and `escapeAll` for serialization.
 
 ---
 
