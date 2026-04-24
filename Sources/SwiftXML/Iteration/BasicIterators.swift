@@ -2207,7 +2207,7 @@ public final class XDescendantsIncludingSelfIterator: XElementIteratorProtocol {
 public enum XVerticalDirection {
     case down, up
     
-    var reversed: Self {
+    public var reversed: Self {
         switch self {
         case .down: .up
         case .up: .down

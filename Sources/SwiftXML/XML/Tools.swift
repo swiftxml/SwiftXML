@@ -22,7 +22,7 @@ import SwiftXMLParser
 public enum XHorizontalDirection {
     case previous; case next
     
-    var reversed: Self {
+    public var reversed: Self {
         switch self {
         case .previous: .next
         case .next: .previous
