@@ -76,7 +76,7 @@ public extension XElement {
     
     /// Get the edging child (the first or last) in the specified direction.
     /// (Other content at the edge will be skipped.)
-    func edgeChild(in direction: XHorizontalDirection) -> XElement? {
+    func edgeChild(proceeding direction: XHorizontalDirection) -> XElement? {
         switch direction {
         case .previous:
             self.firstChild
