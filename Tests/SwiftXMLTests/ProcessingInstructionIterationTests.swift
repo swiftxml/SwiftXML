@@ -16,7 +16,7 @@ final class ProcessingInstructionIterationTests: XCTestCase {
             """
         
         print(">>>>>>>>>>>>>>>>>>>>>>")
-        let document = try parseXML(fromText: source)
+        let document = try readXML(fromText: source)
         
         document.descendants("b").first?.add {
             XProcessingInstruction(target: "MyTarget", data: "PI added later with same target.")

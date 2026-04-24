@@ -18,7 +18,7 @@ final class FromReadmeTests: XCTestCase {
         
         let textAllowedInElementWithName = ["title", "td"]
         
-        let document = try parseXML(
+        let document = try readXML(
             fromText: """
                 <book>
                     <table label="1">
@@ -79,7 +79,7 @@ final class FromReadmeTests: XCTestCase {
     
     func testFirstExampleWithReplacedByForSequence() throws {
         
-        let document = try parseXML(
+        let document = try readXML(
             fromText: """
                 <book>
                     <table label="1">
@@ -137,7 +137,7 @@ final class FromReadmeTests: XCTestCase {
     }
     
     func testParsingAndJoiningIDs() throws {
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <test>
               <b id="1"/>
               <b id="2"/>
@@ -149,7 +149,7 @@ final class FromReadmeTests: XCTestCase {
     }
     
     func testRemoveElementsWhileIteration() throws{
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <a><item id="1" remove="true"/><item id="2"/><item id="3" remove="true"/><item id="4"/></a>
             """)
 
@@ -163,7 +163,7 @@ final class FromReadmeTests: XCTestCase {
     }
     
     func testPrintContentWithSourceRanges() throws{
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <a>
                 <b>Hello</b>
             </a>
@@ -181,7 +181,7 @@ final class FromReadmeTests: XCTestCase {
     }
     
     func testExistingItems() throws{
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
         <a><c/><b id="1"/><b id="2"/><d/><b id="3"/></a>
         """)
 
@@ -191,7 +191,7 @@ final class FromReadmeTests: XCTestCase {
     }
     
     func testContentSequenceCondition() throws{
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
         <a><b/><c take="true"/><d/><e take="true"/></a>
         """)
 
@@ -201,7 +201,7 @@ final class FromReadmeTests: XCTestCase {
     }
     
     func testChainedIterators() throws{
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
         <a>
             <b>
                 <c>
@@ -303,7 +303,7 @@ final class FromReadmeTests: XCTestCase {
     }
     
     func testAddElementToDocument() throws {
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
         <a><b id="1"/><b id="2"/></a>
         """)
 
@@ -432,7 +432,7 @@ final class FromReadmeTests: XCTestCase {
     }
     
     func testReplaceNodeWithContent() throws {
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <text><bold><bold>Hello</bold></bold></text>
             """)
         for bold in document.descendants("bold") { bold.replace { bold.content } }
@@ -507,7 +507,7 @@ final class FromReadmeTests: XCTestCase {
     
     func testTransformationWithInverseOrder() throws {
         
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <document>
                 <section>
                     <hint>
@@ -571,7 +571,7 @@ final class FromReadmeTests: XCTestCase {
     
     func testTransformationWithAnnotations() throws {
         
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <document>
                 <section>
                     <hint>
@@ -635,7 +635,7 @@ final class FromReadmeTests: XCTestCase {
     
     func testTransformationWithBackLinks() throws {
         
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <document>
                 <section>
                     <hint>
@@ -710,7 +710,7 @@ final class FromReadmeTests: XCTestCase {
     
     func testTransformWithTraversal() throws {
         
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <document>
                 <section>
                     <hint>
@@ -779,7 +779,7 @@ final class FromReadmeTests: XCTestCase {
     
     func testSubscriptsOfSequences() throws {
         
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <document>
                 <title>The Title</title>
                 <p id="1">The first paragraph.</p>
@@ -797,7 +797,7 @@ final class FromReadmeTests: XCTestCase {
     
     func testTextHandling() throws {
         
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <doc>
                 <paragraph>Hello world!</paragraph>
                 <paragraph>world world world</paragraph>
@@ -846,7 +846,7 @@ final class FromReadmeTests: XCTestCase {
             </a>
             """
 
-        let document = try parseXML(fromText: source, registeringAttributeValuesFor: .selected([ "id", "refid"]))
+        let document = try readXML(fromText: source, registeringAttributeValuesFor: .selected([ "id", "refid"]))
         
         XCTAssertEqual(
             """
@@ -875,12 +875,12 @@ final class FromReadmeTests: XCTestCase {
         XCTAssertEqual(processingInstruction.serialized, "<?test hello?>")
         
         // except the first space character, whitespace and quotes are included in the data:
-        XCTAssertEqual((try parseXML(fromText: "<?prefix-type    data ?>").firstContent as? XProcessingInstruction)?.data, "   data ")
-        XCTAssertEqual((try parseXML(fromText: #"<?prefix-type "data"?>"#).firstContent as? XProcessingInstruction)?.data, #""data""#)
-        XCTAssertEqual((try parseXML(fromText: "<?prefix-type 'data' ?>").firstContent as? XProcessingInstruction)?.data, "'data' ")
+        XCTAssertEqual((try readXML(fromText: "<?prefix-type    data ?>").firstContent as? XProcessingInstruction)?.data, "   data ")
+        XCTAssertEqual((try readXML(fromText: #"<?prefix-type "data"?>"#).firstContent as? XProcessingInstruction)?.data, #""data""#)
+        XCTAssertEqual((try readXML(fromText: "<?prefix-type 'data' ?>").firstContent as? XProcessingInstruction)?.data, "'data' ")
         
         // check target with "prefix":
-        XCTAssertEqual((try parseXML(fromText: "<?prefix-type data?>").firstContent as? XProcessingInstruction)?.target, "prefix-type")
+        XCTAssertEqual((try readXML(fromText: "<?prefix-type data?>").firstContent as? XProcessingInstruction)?.target, "prefix-type")
     }
     
 }

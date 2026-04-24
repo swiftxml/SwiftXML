@@ -2202,13 +2202,24 @@ public final class XDescendantsIncludingSelfIterator: XElementIteratorProtocol {
     }
 }
 
-public enum XDirection { case down, up }
+/// The vertical direction.
+/// Use the `reversed` property to get the reversed direction.
+public enum XVerticalDirection {
+    case down, up
+    
+    var reversed: Self {
+        switch self {
+        case .down: .up
+        case .up: .down
+        }
+    }
+}
 
 public final class XDirectionIndicator {
     
-    var _direction: XDirection = .down
+    var _direction: XVerticalDirection = .down
     
-    public var direction: XDirection { _direction }
+    public var direction: XVerticalDirection { _direction }
     
     public init() {}
 }

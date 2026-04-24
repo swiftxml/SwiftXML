@@ -22,7 +22,7 @@ final class UtilitiesTest: XCTestCase {
             </simple-test:m.simple-inline-formula>
             """
         
-        let document = try parseXML(fromText: source, namespaceAware: true)
+        let document = try readXML(fromText: source, namespaceAware: true)
         
         // wth error:
         do {

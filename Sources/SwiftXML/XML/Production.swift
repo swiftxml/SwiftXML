@@ -102,7 +102,8 @@ public protocol XProductionTemplate {
         for writer: Writer,
         withStartElement startElement: XElement?,
         prefixTranslations: [String:String]?,
-        declarationSupressingNamespaceURIs: [String]?
+        suppressingDeclarationForNamespaceURIs declarationSupressingNamespaceURIs: [String]?,
+        suppressingNamespaceDeclarations: Bool
     ) throws -> XActiveProduction
 }
 
@@ -171,41 +172,35 @@ public class DefaultProductionTemplate: XProductionTemplate {
     
     public let writeEmptyTags: Bool
     public let linebreak: String
-    public let escapeGreaterThan: Bool
-    public let escapeAllInText: Bool
-    public let escapeAll: Bool
+    public let textEscapeMode: XTextEscapeMode
     
     public init(
         writeEmptyTags: Bool = true,
-        escapeGreaterThan: Bool = false,
-        escapeAllInText: Bool = false,
-        escapeAll: Bool = false,
+        textEscapeMode: XTextEscapeMode = .minimal,
         linebreak: String = X_DEFAULT_LINEBREAK,
-        
+        suppressingNamespaceDeclarations: Bool = false
     ) {
         self.writeEmptyTags = writeEmptyTags
         self.linebreak = linebreak
-        self.escapeGreaterThan = escapeGreaterThan
-        self.escapeAllInText = escapeAllInText
-        self.escapeAll = escapeAll
+        self.textEscapeMode = textEscapeMode
     }
     
     public func activeProduction(
         for writer: Writer,
         withStartElement startElement: XElement?,
         prefixTranslations: [String:String]?,
-        declarationSupressingNamespaceURIs: [String]? = nil
+        suppressingDeclarationForNamespaceURIs declarationSupressingNamespaceURIs: [String]? = nil,
+        suppressingNamespaceDeclarations: Bool = false
     ) -> XActiveProduction {
         ActiveDefaultProduction(
             withStartElement: startElement,
             writer: writer,
             writeEmptyTags: writeEmptyTags,
-            escapeGreaterThan: escapeGreaterThan,
-            escapeAllInText: escapeAllInText,
-            escapeAll: escapeAll,
             linebreak: linebreak,
+            textEscapeMode: textEscapeMode,
             prefixTranslations: prefixTranslations,
-            suppressDeclarationForNamespaceURIs: declarationSupressingNamespaceURIs
+            suppressDeclarationForNamespaceURIs: declarationSupressingNamespaceURIs,
+            suppressingNamespaceDeclarations: suppressingNamespaceDeclarations
         )
     }
     
@@ -220,9 +215,7 @@ open class ActiveDefaultProduction: XActiveProduction {
         try writer.write(text)
     }
     
-    let escapeGreaterThan: Bool
-    let escapeAllInText: Bool
-    let escapeAll: Bool
+    let textEscapeMode: XTextEscapeMode
     private let writeEmptyTags: Bool
     
     private let _linebreak: String
@@ -235,27 +228,26 @@ open class ActiveDefaultProduction: XActiveProduction {
     
     public let prefixTranslations: [String:String]?
     public let declarationSupressingNamespaceURIs: [String]?
+    public let suppressingNamespaceDeclarations: Bool
     
     public init(
         withStartElement startElement: XElement?,
         writer: Writer,
         writeEmptyTags: Bool = true,
-        escapeGreaterThan: Bool = false,
-        escapeAllInText: Bool = false,
-        escapeAll: Bool = false,
         linebreak: String = X_DEFAULT_LINEBREAK,
+        textEscapeMode: XTextEscapeMode = .minimal,
         prefixTranslations: [String:String]?,
-        suppressDeclarationForNamespaceURIs declarationSupressingNamespaceURIs: [String]? = nil
+        suppressDeclarationForNamespaceURIs declarationSupressingNamespaceURIs: [String]?,
+        suppressingNamespaceDeclarations: Bool
     ) {
         self.startElement = startElement
         self.writer = writer
         self.writeEmptyTags = writeEmptyTags
-        self.escapeGreaterThan = escapeGreaterThan
-        self.escapeAllInText = escapeAllInText
-        self.escapeAll = escapeAll
+        self.textEscapeMode = textEscapeMode
         self._linebreak = linebreak
         self.prefixTranslations = prefixTranslations
         self.declarationSupressingNamespaceURIs = declarationSupressingNamespaceURIs
+        self.suppressingNamespaceDeclarations = suppressingNamespaceDeclarations
     }
     
     private var _declarationInInternalSubsetIndentation = " "
@@ -351,10 +343,7 @@ open class ActiveDefaultProduction: XActiveProduction {
     open func writeAttributeValue(name: String, value: String, element: XElement) throws {
         guard !ignore else { return }
         try write(
-            (
-                escapeAll ? value.escapingAllForXML :
-                (escapeGreaterThan ? value.escapingDoubleQuotedValueForXML.replacing(">", with: "&gt;") : value.escapingDoubleQuotedValueForXML)
-            )
+            value.escapingForXML(withEscapeMode: textEscapeMode, usingQuoteEscapeMode: .escapingDoubleQuotedValue)
                 .replacing("\n", with: "&#x0A;").replacing("\r", with: "&#x0D;")
         )
     }
@@ -374,7 +363,7 @@ open class ActiveDefaultProduction: XActiveProduction {
         guard !ignore else { return }
         if element === startElement, let document = element.document, !document._prefixToNamespaceURI.isEmpty {
             for (prefix, uri) in document._prefixToNamespaceURI.sorted(by: < ) {
-                if let declarationSupressingNamespaceURIs, declarationSupressingNamespaceURIs.contains(uri) { continue }
+                if suppressingNamespaceDeclarations || declarationSupressingNamespaceURIs?.contains(uri) == true { continue }
                 let attributeName: String
                 if let prefixTranslations, let translatedPrefix = prefixTranslations[prefix] {
                     if translatedPrefix.isEmpty {
@@ -421,10 +410,7 @@ open class ActiveDefaultProduction: XActiveProduction {
     
     open func writeText(text: XText) throws {
         guard !ignore else { return }
-        try write(
-            escapeAll || escapeAllInText ? text.value.escapingAllForXML :
-                (escapeGreaterThan ? text.value.escapingForXML.replacing(">", with: "&gt;") : text.value.escapingForXML)
-        )
+        try write(text.value.escapingForXML(withEscapeMode: textEscapeMode))
     }
     
     open func writeLiteral(literal: XLiteral) throws {
@@ -496,18 +482,22 @@ public class PrettyPrintProductionTemplate: XProductionTemplate {
     public let writeEmptyTags: Bool
     public let indentation: String
     public let linebreak: String
+    public let textEscapeMode: XTextEscapeMode
     
     public init(
         allowingTextInElementsForNamespaceURI: [String:[String]]? = nil,
         writeEmptyTags: Bool = true,
         indentation: String? = nil,
-        linebreak: String? = nil
+        linebreak: String? = nil,
+        textEscapeMode: XTextEscapeMode = .minimal,
+        suppressingNamespaceDeclarations: Bool = false
     ) {
         self.allowingTextInElementsForNamespaceURI = allowingTextInElementsForNamespaceURI
         self.allowingTextInElementsForPrefix = nil
         self.writeEmptyTags = writeEmptyTags
         self.indentation = indentation ?? X_DEFAULT_INDENTATION
         self.linebreak = linebreak ?? X_DEFAULT_LINEBREAK
+        self.textEscapeMode = textEscapeMode
     }
     
     // not make this public because using the template with prefixes independently of the document might break the namespaces!
@@ -515,33 +505,38 @@ public class PrettyPrintProductionTemplate: XProductionTemplate {
         allowingTextInElementsForPrefix: [String:[String]]?,
         writeEmptyTags: Bool = true,
         indentation: String? = nil,
-        linebreak: String? = nil
+        linebreak: String? = nil,
+        textEscapeMode: XTextEscapeMode = .minimal
     ) {
         self.allowingTextInElementsForNamespaceURI = nil
         self.allowingTextInElementsForPrefix = allowingTextInElementsForPrefix
         self.writeEmptyTags = writeEmptyTags
         self.indentation = indentation ?? X_DEFAULT_INDENTATION
         self.linebreak = linebreak ?? X_DEFAULT_LINEBREAK
+        self.textEscapeMode = textEscapeMode
     }
     
     public init(
         allowingTextInElementsWithoutPrefix: [String]?,
         writeEmptyTags: Bool = true,
         indentation: String? = nil,
-        linebreak: String? = nil
+        linebreak: String? = nil,
+        textEscapeMode: XTextEscapeMode = .minimal,
     ) {
         self.allowingTextInElementsForNamespaceURI = nil
         self.allowingTextInElementsForPrefix = allowingTextInElementsWithoutPrefix != nil ? ["": allowingTextInElementsWithoutPrefix!] : nil
         self.writeEmptyTags = writeEmptyTags
         self.indentation = indentation ?? X_DEFAULT_INDENTATION
         self.linebreak = linebreak ?? X_DEFAULT_LINEBREAK
+        self.textEscapeMode = textEscapeMode
     }
     
     public func activeProduction(
         for writer: Writer,
         withStartElement startElement: XElement?,
         prefixTranslations: [String:String]?,
-        declarationSupressingNamespaceURIs: [String]?
+        suppressingDeclarationForNamespaceURIs declarationSupressingNamespaceURIs: [String]?,
+        suppressingNamespaceDeclarations: Bool
     ) throws -> XActiveProduction {
         try ActivePrettyPrintProduction(
             withStartElement: startElement,
@@ -554,8 +549,10 @@ public class PrettyPrintProductionTemplate: XProductionTemplate {
             writeEmptyTags: writeEmptyTags,
             indentation: indentation,
             linebreak: linebreak,
+            textEscapeMode: textEscapeMode,
             prefixTranslations: prefixTranslations,
-            suppressDeclarationForNamespaceURIs: declarationSupressingNamespaceURIs
+            suppressDeclarationForNamespaceURIs: declarationSupressingNamespaceURIs,
+            suppressingNamespaceDeclarations: suppressingNamespaceDeclarations
         )
     }
     
@@ -563,7 +560,7 @@ public class PrettyPrintProductionTemplate: XProductionTemplate {
 
 open class ActivePrettyPrintProduction: ActiveDefaultProduction {
     
-    private let allowingTextInElementsForPrefix: [String:[String]]?
+    let allowingTextInElementsForPrefix: [String:[String]]?
     private let indentation: String
     
     public init(
@@ -572,12 +569,11 @@ open class ActivePrettyPrintProduction: ActiveDefaultProduction {
         allowingTextInElementsForPrefix: [String:[String]]? = nil,
         writeEmptyTags: Bool = true,
         indentation: String = X_DEFAULT_INDENTATION,
-        escapeGreaterThan: Bool = false,
-        escapeAllInText: Bool = false,
-        escapeAll: Bool = false,
         linebreak: String = X_DEFAULT_LINEBREAK,
+        textEscapeMode: XTextEscapeMode = .minimal,
         prefixTranslations: [String:String]?,
         suppressDeclarationForNamespaceURIs declarationSupressingNamespaceURIs: [String]?,
+        suppressingNamespaceDeclarations: Bool
     ) {
         self.allowingTextInElementsForPrefix = allowingTextInElementsForPrefix
         self.indentation = indentation
@@ -585,12 +581,11 @@ open class ActivePrettyPrintProduction: ActiveDefaultProduction {
             withStartElement: startElement,
             writer: writer,
             writeEmptyTags: writeEmptyTags,
-            escapeGreaterThan: escapeGreaterThan,
-            escapeAllInText: escapeAllInText,
-            escapeAll: escapeAll,
             linebreak: linebreak,
+            textEscapeMode: textEscapeMode,
             prefixTranslations: prefixTranslations,
-            suppressDeclarationForNamespaceURIs: declarationSupressingNamespaceURIs
+            suppressDeclarationForNamespaceURIs: declarationSupressingNamespaceURIs,
+            suppressingNamespaceDeclarations: suppressingNamespaceDeclarations
         )
     }
     
@@ -651,9 +646,7 @@ public class HTMLProductionTemplate: XProductionTemplate {
     public let linebreak: String
     public let suppressDocumentTypeDeclaration: Bool
     public let writeAsASCII: Bool
-    public let escapeGreaterThan: Bool
-    public let escapeAllInText: Bool
-    public let escapeAll: Bool
+    public let textEscapeMode: XTextEscapeMode
     public let suppressUncessaryPrettyPrintAtAnchors: Bool
     
     public init(
@@ -661,18 +654,14 @@ public class HTMLProductionTemplate: XProductionTemplate {
         linebreak: String = X_DEFAULT_LINEBREAK,
         suppressDocumentTypeDeclaration: Bool = false,
         writeAsASCII: Bool = false,
-        escapeGreaterThan: Bool = false,
-        escapeAllInText: Bool = false,
-        escapeAll: Bool = false,
+        textEscapeMode: XTextEscapeMode = .minimal,
         suppressUncessaryPrettyPrintAtAnchors: Bool = false
     ) {
         self.indentation = indentation
         self.linebreak = linebreak
         self.suppressDocumentTypeDeclaration = suppressDocumentTypeDeclaration
         self.writeAsASCII = writeAsASCII
-        self.escapeGreaterThan = escapeGreaterThan
-        self.escapeAllInText = escapeAllInText
-        self.escapeAll = escapeAll
+        self.textEscapeMode = textEscapeMode
         self.suppressUncessaryPrettyPrintAtAnchors = suppressUncessaryPrettyPrintAtAnchors
     }
     
@@ -680,7 +669,8 @@ public class HTMLProductionTemplate: XProductionTemplate {
         for writer: Writer,
         withStartElement startElement: XElement?,
         prefixTranslations: [String:String]?,
-        declarationSupressingNamespaceURIs: [String]?
+        suppressingDeclarationForNamespaceURIs declarationSupressingNamespaceURIs: [String]?,
+        suppressingNamespaceDeclarations: Bool
     ) -> XActiveProduction {
         ActiveHTMLProduction(
             withStartElement: startElement,
@@ -689,12 +679,11 @@ public class HTMLProductionTemplate: XProductionTemplate {
             linebreak: linebreak,
             suppressDocumentTypeDeclaration: suppressDocumentTypeDeclaration,
             writeAsASCII: writeAsASCII,
-            escapeGreaterThan: escapeGreaterThan,
-            escapeAllInText: escapeAllInText,
-            escapeAll: escapeAll,
+            textEscapeMode: textEscapeMode,
             suppressUncessaryPrettyPrintAtAnchors: suppressUncessaryPrettyPrintAtAnchors,
             prefixTranslations: prefixTranslations,
-            suppressDeclarationForNamespaceURIs: declarationSupressingNamespaceURIs
+            suppressDeclarationForNamespaceURIs: declarationSupressingNamespaceURIs,
+            suppressingNamespaceDeclarations: suppressingNamespaceDeclarations
         )
     }
     
@@ -717,12 +706,11 @@ open class ActiveHTMLProduction: ActivePrettyPrintProduction {
         linebreak: String = X_DEFAULT_LINEBREAK,
         suppressDocumentTypeDeclaration: Bool = false,
         writeAsASCII: Bool = false,
-        escapeGreaterThan: Bool = false,
-        escapeAllInText: Bool = false,
-        escapeAll: Bool = false,
+        textEscapeMode: XTextEscapeMode,
         suppressUncessaryPrettyPrintAtAnchors: Bool = false,
         prefixTranslations: [String:String]?,
-        suppressDeclarationForNamespaceURIs declarationSupressingNamespaceURIs: [String]?
+        suppressDeclarationForNamespaceURIs declarationSupressingNamespaceURIs: [String]?,
+        suppressingNamespaceDeclarations: Bool
     ) {
         htmlEmptyTags = [
             "area",
@@ -787,14 +775,14 @@ open class ActiveHTMLProduction: ActivePrettyPrintProduction {
         super.init(
             withStartElement: startElement,
             writer: writer,
+            allowingTextInElementsForPrefix: nil,
             writeEmptyTags: false,
             indentation: indentation,
-            escapeGreaterThan: escapeGreaterThan,
-            escapeAllInText: escapeAllInText,
-            escapeAll: escapeAll,
             linebreak: linebreak,
+            textEscapeMode: textEscapeMode,
             prefixTranslations: prefixTranslations,
-            suppressDeclarationForNamespaceURIs: declarationSupressingNamespaceURIs
+            suppressDeclarationForNamespaceURIs: declarationSupressingNamespaceURIs,
+            suppressingNamespaceDeclarations: suppressingNamespaceDeclarations
         )
     }
     
@@ -888,10 +876,7 @@ open class ActiveHTMLProduction: ActivePrettyPrintProduction {
     }
     
     open override func writeText(text: XText) throws {
-        var result = (escapeAll || escapeAllInText) ? text._value.escapingAllForXML : text._value.escapingForXML
-        if escapeGreaterThan {
-            result = result.replacing(">", with: "&gt;")
-        }
+        var result = text._value.escapingForXML(withEscapeMode: textEscapeMode)
         if writeAsASCII {
             result = result.asciiWithXMLCharacterReferences
         }
@@ -899,11 +884,8 @@ open class ActiveHTMLProduction: ActivePrettyPrintProduction {
     }
     
     open override func writeAttributeValue(name: String, value: String, element: XElement) throws {
-        var result = (
-                escapeAll ? value.escapingAllForXML :
-                (escapeGreaterThan ? value.escapingDoubleQuotedValueForXML.replacing(">", with: "&gt;") : value.escapingDoubleQuotedValueForXML)
-            )
-                .replacing("\n", with: "&#x0A;").replacing("\r", with: "&#x0D;")
+        var result = value.escapingForXML(withEscapeMode: textEscapeMode, usingQuoteEscapeMode: .escapingDoubleQuotedValue)
+            .replacing("\n", with: "&#x0A;").replacing("\r", with: "&#x0D;")
         if writeAsASCII {
             result = result.asciiWithXMLCharacterReferences
         }

@@ -17,6 +17,76 @@ import Foundation
 import SwiftXMLInterfaces
 import SwiftXMLParser
 
+/// The horizontal direction.
+/// Use the `reversed` property to get the reversed direction.
+public enum XHorizontalDirection {
+    case previous; case next
+    
+    var reversed: Self {
+        switch self {
+        case .previous: .next
+        case .next: .previous
+        }
+    }
+}
+
+public extension XElement {
+    
+    /// Get the touching content in the specified direction.
+    func touching(proceeding direction: XHorizontalDirection) -> XContent? {
+        switch direction {
+        case .previous:
+            self.previousTouching
+        case .next:
+            self.nextTouching
+        }
+    }
+    
+    /// Has the element touching content in the specified direction?
+    func hasTouching(proceeding direction: XHorizontalDirection) -> Bool {
+        touching(proceeding: direction) != nil
+    }
+    
+    /// Get the neighbouring element in the specified direction.
+    /// (Other content in between does not matter.)
+    func neighbour(proceeding direction: XHorizontalDirection) -> XElement? {
+        switch direction {
+        case .previous:
+            self.previousElement
+        case .next:
+            self.nextElement
+        }
+    }
+    
+    /// Has the element a neighbouring element in the specified direction?
+    /// (Other content in between will be skipped.)
+    func hasNeighbour(proceeding direction: XHorizontalDirection) -> Bool {
+        neighbour(proceeding: direction) != nil
+    }
+    
+    /// Get the edging content (the first or last) in the specified direction.
+    func edgeContent(proceeding direction: XHorizontalDirection) -> XContent? {
+        switch direction {
+        case .previous:
+            self.firstContent
+        case .next:
+            self.lastContent
+        }
+    }
+    
+    /// Get the edging child (the first or last) in the specified direction.
+    /// (Other content at the edge will be skipped.)
+    func edgeChild(in direction: XHorizontalDirection) -> XElement? {
+        switch direction {
+        case .previous:
+            self.firstChild
+        case .next:
+            self.lastChild
+        }
+    }
+    
+}
+
 /// Info that a correction in the call to `copyXStructure` has to use.
 public struct StructureCopyInfo {
     public let structure: XContent

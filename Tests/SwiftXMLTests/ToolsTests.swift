@@ -16,7 +16,7 @@ import SwiftXML
 final class ToolsTests: XCTestCase {
     
     func testCopyXStructure1() throws {
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <standard><sec id="sub-9.4.1.1" sec-type="clause">
                     <label>9.4.1.1</label>
                     <title>Typ „alphabetisch“ (alphabetic)</title>
@@ -47,7 +47,7 @@ final class ToolsTests: XCTestCase {
     }
     
     func testCopyXStructure2() throws {
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <standard><sec id="sub-9.4.1.1" sec-type="clause">
                     <label>9.4.1.1</label>
                     <title>Typ „alphabetisch“ (alphabetic)</title>
@@ -78,7 +78,7 @@ final class ToolsTests: XCTestCase {
     }
     
     func testCopyXStructure3() throws {
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <standard><sec id="sub-9.4.1.1" sec-type="clause">
                     <label>9.4.1.1</label>
                     <title>Der Titel</title>
@@ -114,7 +114,7 @@ final class ToolsTests: XCTestCase {
     }
     
     func testCopyXStructure4() throws {
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <p id="par-7.1-1">In <ref>Abschnitt 1</ref> und <ref>Abschnitt 2</ref> muss man schauen.</p>
             """)
         
@@ -135,7 +135,7 @@ final class ToolsTests: XCTestCase {
     }
     
     func testCopyXStructure5() throws {
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <section>
                 <p id="par-5.10-2"><begin/>Ja, </p>
                 <p id="par-5.10-3">das ist so <span>1 %</span>, echt.<end/></p>
@@ -167,7 +167,7 @@ final class ToolsTests: XCTestCase {
             <div><h1>The title</h1><p>1st paragraph</p><a name="anchor1"/><p>2nd paragraph</p><div id="id1"/><script/></div>
             """
         XCTAssertEqual(
-            try parseXML(fromText: source).serialized(usingProductionTemplate: HTMLProductionTemplate()),
+            try readXML(fromText: source).serialized(usingProductionTemplate: HTMLProductionTemplate()),
             """
             <!DOCTYPE html>
             <div>
@@ -187,7 +187,7 @@ final class ToolsTests: XCTestCase {
             <div><a><img/></a></div>
             """
         XCTAssertEqual(
-            try parseXML(fromText: source).serialized(usingProductionTemplate: HTMLProductionTemplate()),
+            try readXML(fromText: source).serialized(usingProductionTemplate: HTMLProductionTemplate()),
             """
             <!DOCTYPE html>
             <div><a><img/></a></div>
@@ -200,7 +200,7 @@ final class ToolsTests: XCTestCase {
             <div><a><img/></a><span></span></div>
             """
         XCTAssertEqual(
-            try parseXML(fromText: source).serialized(usingProductionTemplate: HTMLProductionTemplate()),
+            try readXML(fromText: source).serialized(usingProductionTemplate: HTMLProductionTemplate()),
             """
             <!DOCTYPE html>
             <div><a><img/></a><span></span></div>
@@ -213,7 +213,7 @@ final class ToolsTests: XCTestCase {
             <div><a><img/></a><p></p></div>
             """
         XCTAssertEqual(
-            try parseXML(fromText: source).serialized(usingProductionTemplate: HTMLProductionTemplate()),
+            try readXML(fromText: source).serialized(usingProductionTemplate: HTMLProductionTemplate()),
             """
             <!DOCTYPE html>
             <div>
@@ -229,7 +229,7 @@ final class ToolsTests: XCTestCase {
             <div><a name="anchor1"/><a name="anchor2"/><p></p></div>
             """
         XCTAssertEqual(
-            try parseXML(fromText: source).serialized(
+            try readXML(fromText: source).serialized(
                 usingProductionTemplate: HTMLProductionTemplate()
             ),
             """
@@ -248,7 +248,7 @@ final class ToolsTests: XCTestCase {
             <div><a name="anchor1"/><a name="anchor2"/><p></p></div>
             """
         XCTAssertEqual(
-            try parseXML(fromText: source).serialized(
+            try readXML(fromText: source).serialized(
                 usingProductionTemplate: HTMLProductionTemplate(
                     suppressUncessaryPrettyPrintAtAnchors: true
                 )
@@ -267,7 +267,7 @@ final class ToolsTests: XCTestCase {
             <div></div>
             """
         XCTAssertEqual(
-            try parseXML(fromText: source).serialized(
+            try readXML(fromText: source).serialized(
                 usingProductionTemplate: HTMLProductionTemplate(
                     suppressUncessaryPrettyPrintAtAnchors: true
                 )
@@ -284,7 +284,7 @@ final class ToolsTests: XCTestCase {
             <div>Hello<div>world</div><div>!</div></div>
             """
         XCTAssertEqual(
-            try parseXML(fromText: source).serialized(
+            try readXML(fromText: source).serialized(
                 usingProductionTemplate: HTMLProductionTemplate(
                     suppressUncessaryPrettyPrintAtAnchors: true
                 )
@@ -304,7 +304,7 @@ final class ToolsTests: XCTestCase {
             <div><div class="table"><table><tr><td>1</td></tr></table></div></div>
             """
         XCTAssertEqual(
-            try parseXML(fromText: source).serialized(
+            try readXML(fromText: source).serialized(
                 usingProductionTemplate: HTMLProductionTemplate(
                     suppressUncessaryPrettyPrintAtAnchors: true
                 )
@@ -329,7 +329,7 @@ final class ToolsTests: XCTestCase {
             <div>Hello<div class="table"><table><tr><td>1</td></tr></table></div></div>
             """
         XCTAssertEqual(
-            try parseXML(fromText: source).serialized(
+            try readXML(fromText: source).serialized(
                 usingProductionTemplate: HTMLProductionTemplate(
                     suppressUncessaryPrettyPrintAtAnchors: true
                 )
@@ -354,7 +354,7 @@ final class ToolsTests: XCTestCase {
             <div><span>leading span of the wrapper block</span><div>a block within the block</div>followed by text <a>an anchor</a><span>and a text</span> and some more text <span>and another span</span> <div>and another div</div></div>
             """
         XCTAssertEqual(
-            try parseXML(fromText: source).serialized(
+            try readXML(fromText: source).serialized(
                 usingProductionTemplate: HTMLProductionTemplate(
                     suppressUncessaryPrettyPrintAtAnchors: true
                 )
@@ -374,7 +374,7 @@ final class ToolsTests: XCTestCase {
             <div><object data="tables/1.html" type="txt/html"><object data="tables/tablePlaceHolder.png" type="image/png">Picture missing. No alternative text available.</object></object></div>
             """
         XCTAssertEqual(
-            try parseXML(fromText: source).serialized(
+            try readXML(fromText: source).serialized(
                 usingProductionTemplate: HTMLProductionTemplate(
                     suppressUncessaryPrettyPrintAtAnchors: true
                 )
@@ -422,7 +422,7 @@ final class ToolsTests: XCTestCase {
         
         let allowingTextInElementsWithoutPrefix = ["title", "paragraph", "formula"]
         
-        let document = try parseXML(fromText: source)
+        let document = try readXML(fromText: source)
         try document.removeFormatting(allowingTextInElementsWithoutPrefix: allowingTextInElementsWithoutPrefix)
         
         XCTAssertEqual(document.serialized, """

@@ -17,7 +17,7 @@ import Foundation
 import SwiftXMLInterfaces
 import SwiftXMLParser
 
-public func parseXML(
+public func readXML(
     from documentSource: XDocumentSource,
     namespaceAware: Bool = false,
     silentEmptyRootPrefix: Bool = false,
@@ -83,7 +83,7 @@ public func parseXML(
     return document
 }
 
-public func parseXML(
+public func readXML(
     fromPath path: String,
     namespaceAware: Bool = false,
     silentEmptyRootPrefix: Bool = false,
@@ -104,7 +104,7 @@ public func parseXML(
     eventHandlers: [XEventHandler]? = nil,
     immediateTextHandlingNearEntities: ImmediateTextHandlingNearEntities = .atExternalEntities
 ) throws -> XDocument {
-    try parseXML(
+    try readXML(
         from: .path(path),
         namespaceAware: namespaceAware,
         silentEmptyRootPrefix: silentEmptyRootPrefix,
@@ -127,7 +127,7 @@ public func parseXML(
     )
 }
 
-public func parseXML(
+public func readXML(
     fromURL url: URL,
     namespaceAware: Bool = false,
     silentEmptyRootPrefix: Bool = false,
@@ -148,7 +148,7 @@ public func parseXML(
     eventHandlers: [XEventHandler]? = nil,
     immediateTextHandlingNearEntities: ImmediateTextHandlingNearEntities = .atExternalEntities
 ) throws -> XDocument {
-    try parseXML(
+    try readXML(
         from: .url(url),
         namespaceAware: namespaceAware,
         silentEmptyRootPrefix: silentEmptyRootPrefix,
@@ -170,7 +170,7 @@ public func parseXML(
     )
 }
 
-public func parseXML(
+public func readXML(
     fromText text: String,
     namespaceAware: Bool = false,
     silentEmptyRootPrefix: Bool = false,
@@ -191,7 +191,7 @@ public func parseXML(
     eventHandlers: [XEventHandler]? = nil,
     immediateTextHandlingNearEntities: ImmediateTextHandlingNearEntities = .atExternalEntities
 ) throws -> XDocument {
-    try parseXML(
+    try readXML(
         from: .text(text),
         namespaceAware: namespaceAware,
         silentEmptyRootPrefix: silentEmptyRootPrefix,
@@ -214,7 +214,7 @@ public func parseXML(
     )
 }
 
-public func parseXML(
+public func readXML(
     fromData data: Data,
     namespaceAware: Bool = false,
     silentEmptyRootPrefix: Bool = false,
@@ -237,7 +237,7 @@ public func parseXML(
     externalWrapperNameAttribute: String? = nil,
     externalWrapperPathAttribute: String? = nil
 ) throws -> XDocument {
-    try parseXML(
+    try readXML(
         from: .data(data),
         namespaceAware: namespaceAware,
         silentEmptyRootPrefix: silentEmptyRootPrefix,

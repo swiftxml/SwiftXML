@@ -78,7 +78,7 @@ final class NamespacesTests: XCTestCase {
             </a>
             """
         
-        let document = try parseXML(fromText: source, namespaceAware: true)
+        let document = try readXML(fromText: source, namespaceAware: true)
         
         XCTAssertEqual(document.serialized(pretty: true), """
             <a some-attribute="blabla1" z-some-attribute="blabla2" xmlns:math="http://www.w3.org/1998/Math/MathML" xmlns:nonmath="http://nonmath">
@@ -95,7 +95,7 @@ final class NamespacesTests: XCTestCase {
             </a>
             """
         
-        let document = try parseXML(fromText: source, namespaceAware: true)
+        let document = try readXML(fromText: source, namespaceAware: true)
         
         XCTAssertEqual(document.elements(prefix: "nonmath", "a").first?.serialized(pretty: true), """
             <nonmath:a xmlns:math="http://www.w3.org/1998/Math/MathML" xmlns:nonmath="http://nonmath"/>
@@ -114,7 +114,7 @@ final class NamespacesTests: XCTestCase {
             </a>
             """
         
-        let document = try parseXML(fromText: source, namespaceAware: true)
+        let document = try readXML(fromText: source, namespaceAware: true)
         document.firstChild?.addFirst { XElement(prefix: "x", "x") }
         
         XCTAssertEqual(document.serialized(pretty: true), """
@@ -182,7 +182,7 @@ final class NamespacesTests: XCTestCase {
         
         do {
             // normal reading while recognizing namespaces:
-            let document = try parseXML(fromText: source, namespaceAware: true)
+            let document = try readXML(fromText: source, namespaceAware: true)
             XCTAssertEqual(document.namespacePrefixesAndURIs.map{ "\"\($0.0)\" -> \"\($0.1)\"" }.joined(separator: ", "), #""a" -> "http://a", "c" -> "http://c""#)
             XCTAssertEqual(document.firstChild?["xmlns"], nil)
             XCTAssertEqual(document.firstChild?.prefix, "a")
@@ -217,7 +217,7 @@ final class NamespacesTests: XCTestCase {
         
         do {
             // no prefix for prefixless namespace at root:
-            let document = try parseXML(fromText: source, namespaceAware: true, silentEmptyRootPrefix: true)
+            let document = try readXML(fromText: source, namespaceAware: true, silentEmptyRootPrefix: true)
             XCTAssertEqual(document.namespacePrefixesAndURIs.map{ "\"\($0.0)\" -> \"\($0.1)\"" }.joined(separator: ", "), #""" -> "http://a", "c" -> "http://c""#)
             XCTAssertEqual(document.firstChild?["xmlns"], nil)
             XCTAssertEqual(document.firstChild?.prefix, nil)
@@ -257,7 +257,7 @@ final class NamespacesTests: XCTestCase {
             </a>
             """
         
-        let document = try parseXML(fromText: source, namespaceAware: true)
+        let document = try readXML(fromText: source, namespaceAware: true)
         
         XCTAssertEqual(Array(document.descendants(prefix: "math", "mi").map{ $0.name }), ["mi"])
         XCTAssertEqual(Array(document.descendants(prefix: "math").map{ $0.name }), ["math", "mi"])
@@ -280,7 +280,7 @@ final class NamespacesTests: XCTestCase {
             </a>
             """
         
-        let document = try parseXML(fromText: source, namespaceAware: true)
+        let document = try readXML(fromText: source, namespaceAware: true)
         
         XCTAssertEqual(
             document.descendants.map { element in
@@ -308,7 +308,7 @@ final class NamespacesTests: XCTestCase {
             </a>
             """
         
-        let document = try parseXML(fromText: source, namespaceAware: true)
+        let document = try readXML(fromText: source, namespaceAware: true)
         
         XCTAssertEqual(
             document.descendants.map { element in
@@ -343,7 +343,7 @@ final class NamespacesTests: XCTestCase {
             </a>
             """
         
-        let document = try parseXML(fromText: source, namespaceAware: true)
+        let document = try readXML(fromText: source, namespaceAware: true)
         
         XCTAssertEqual(
             document.descendants.map { element in
@@ -381,7 +381,7 @@ final class NamespacesTests: XCTestCase {
             </a>
             """
         
-        let document = try parseXML(fromText: source, namespaceAware: true)
+        let document = try readXML(fromText: source, namespaceAware: true)
         
         XCTAssertEqual(
             document.descendants(prefix: "myPrefix").map{ "element \"\($0.name)\" with prefix \"\($0.prefix ?? "")\"" }.joined(separator: "\n"),
@@ -397,7 +397,7 @@ final class NamespacesTests: XCTestCase {
             </a>
             """
         
-        let document = try parseXML(fromText: source, namespaceAware: true)
+        let document = try readXML(fromText: source, namespaceAware: true)
 
         for b in document.descendants(prefix: "myPrefix", "b") {
             b.set(prefix: "newPrefix", name: "c", attributes: ["attName1": "attVal2"], prefixedAttributes: ["newPrefix": ["prefixedAttName1": "prefixedAttVal2"]])
@@ -438,7 +438,7 @@ final class NamespacesTests: XCTestCase {
             </a>
             """
 
-        let document = try parseXML(fromText: source, namespaceAware: true, keepComments: true)
+        let document = try readXML(fromText: source, namespaceAware: true, keepComments: true)
         
         XCTAssertEqual(
             document.serialized(),
@@ -469,7 +469,7 @@ final class NamespacesTests: XCTestCase {
             </a>
             """
 
-        let document = try parseXML(fromText: source, namespaceAware: true, keepComments: true)
+        let document = try readXML(fromText: source, namespaceAware: true, keepComments: true)
         
         XCTAssertEqual(
             document.serialized(),
@@ -500,7 +500,7 @@ final class NamespacesTests: XCTestCase {
             </math:math>
             """
 
-        let document = try parseXML(fromText: source, namespaceAware: true, keepComments: true)
+        let document = try readXML(fromText: source, namespaceAware: true, keepComments: true)
         
         XCTAssertEqual(
             document.serialized(),
@@ -539,7 +539,7 @@ final class NamespacesTests: XCTestCase {
             </a>
             """
         
-        let document = try parseXML(fromText: source, namespaceAware: true, keepComments: true)
+        let document = try readXML(fromText: source, namespaceAware: true, keepComments: true)
         
         XCTAssertEqual(
             document.serialized(),
@@ -575,7 +575,7 @@ final class NamespacesTests: XCTestCase {
             </a>
             """
 
-        let document = try parseXML(fromText: source, namespaceAware: true, keepComments: true)
+        let document = try readXML(fromText: source, namespaceAware: true, keepComments: true)
         
         XCTAssertEqual(
             document.serialized(),
@@ -598,7 +598,7 @@ final class NamespacesTests: XCTestCase {
             </a>
             """
         
-        let document = try parseXML(fromText: source, namespaceAware: true, keepComments: true)
+        let document = try readXML(fromText: source, namespaceAware: true, keepComments: true)
         
         XCTAssertEqual(
             document.serialized(),
@@ -620,7 +620,7 @@ final class NamespacesTests: XCTestCase {
             </a>
             """
         
-        let document = try parseXML(fromText: source, namespaceAware: true, keepComments: true)
+        let document = try readXML(fromText: source, namespaceAware: true, keepComments: true)
         
         XCTAssertEqual(
             document.serialized(),
@@ -641,7 +641,7 @@ final class NamespacesTests: XCTestCase {
             </a>
             """
         
-        let document = try parseXML(fromText: source, namespaceAware: true, keepComments: true)
+        let document = try readXML(fromText: source, namespaceAware: true, keepComments: true)
         
         XCTAssertEqual(
             document.serialized(),
@@ -663,7 +663,7 @@ final class NamespacesTests: XCTestCase {
             </base:a>
             """
         
-        let document = try parseXML(fromText: source, namespaceAware: true, keepComments: true)
+        let document = try readXML(fromText: source, namespaceAware: true, keepComments: true)
         
         XCTAssertEqual(
             document.serialized(),
@@ -683,7 +683,7 @@ final class NamespacesTests: XCTestCase {
             </document>
             """
         
-        let document1 = try parseXML(fromText: source1, namespaceAware: true, keepComments: true)
+        let document1 = try readXML(fromText: source1, namespaceAware: true, keepComments: true)
         
         let source2 = """
             <document xmlns:math2="http://www.w3.org/1998/Math/MathML">
@@ -691,7 +691,7 @@ final class NamespacesTests: XCTestCase {
             </document>
             """
         
-        let document2 = try parseXML(fromText: source2, namespaceAware: true, keepComments: true)
+        let document2 = try readXML(fromText: source2, namespaceAware: true, keepComments: true)
         
         let clone = document2.elements(prefix: document2.prefix(forNamespaceURI: "http://www.w3.org/1998/Math/MathML"), "math").first?.clone
         
@@ -720,7 +720,7 @@ final class NamespacesTests: XCTestCase {
             </document>
             """
         
-        var document: XDocument? = try parseXML(fromText: source, namespaceAware: true, keepComments: true)
+        var document: XDocument? = try readXML(fromText: source, namespaceAware: true, keepComments: true)
         
         let math = document?.descendants(prefix: "math").first
         XCTAssertNotNil(math)
@@ -819,7 +819,7 @@ final class NamespacesTests: XCTestCase {
             </a>
             """
 
-        let document = try parseXML(fromText: source, namespaceAware: true)
+        let document = try readXML(fromText: source, namespaceAware: true)
 
         XCTAssertEqual(
             document.serialized(),

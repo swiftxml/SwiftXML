@@ -17,7 +17,7 @@ final class SequenceTypesTestTests: XCTestCase {
     
     func testWithoutNames() throws {
         
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <test><a/>text<b/><c/><d/><e/><f/>text<g/></test>
             """)
         
@@ -40,7 +40,7 @@ final class SequenceTypesTestTests: XCTestCase {
     
     func testWithNames() throws {
         
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <test><a/>text<b/><c/>text<c/><c/><d/><e/><e/>text<e/><f/>text<g/></test>
             """)
         

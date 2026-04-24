@@ -3,9 +3,16 @@
 ---
 **NOTE:**
 
-In SwiftXML 2.0, `textAllowedInElementWithName` cannot be used any more during parsing. This is in preparation for a future implementation of validation based on an XML schema. `textAllowedInElementWithName` also did not recognize prefixes.
+In **SwiftXML 2.0,** `textAllowedInElementWithName` cannot be used any more during parsing. This is in preparation for a future implementation of validation based on an XML schema. `textAllowedInElementWithName` also did not recognize prefixes.
 
 Until then, the new `removeFormatting(...)` methods of `XDocument` can be used to remove unnecessary whitespace after parsing.
+
+In **SwiftXML 3.0,** the following _breaking changes_ have been made:
+
+- renamed `parseXML` to `readXML`
+- `serialized(...)`: renamed `suppressDeclarationForNamespaceURIs` to `suppressingDeclarationForNamespaceURIs`
+- protocol `XProductionTemplate`: added argument `suppressingNamespaceDeclarations` to `activeProduction(...)` (which then should suppress all namespace declarations when serializing)
+- The new enum `XTextEscapeMode` replaces the old arguemnts `escapeGreaterThan`, `escapeAllInText`, and `escapeAll` for serialization.
 
 ---
 
@@ -102,7 +109,7 @@ Suppose you have an XML file `input.xml` with the following content:
 It is very easy to parse this XML file into an `XDocument` instance:
 
 ```swift
-let document = try parseXML(
+let document = try readXML(
     fromPath: "input.xml",
     registeringAttributes: .selected(["label"])
 )
@@ -231,7 +238,7 @@ The following features are important:
 The following code takes any `<item>` with an integer value of `multiply` larger than 1 and additionally inserts an item with a `multiply` number one less, while removing the `multiply` value on the existing item (the library will be explained in more detail in subsequent sections):
 
 ```swift
-let document = try parseXML(fromText: """
+let document = try readXML(fromText: """
 <a><item multiply="3"/></a>
 """)
 
@@ -258,7 +265,7 @@ Note that in this example – just to show you that it works – each new item i
 The elements returned by an iteration can even be removed without stopping the (lazy!) iteration:
 
 ```swift
-let document = try parseXML(fromText: """
+let document = try readXML(fromText: """
 <a><item id="1" remove="true"/><item id="2"/><item id="3" remove="true"/><item id="4"/></a>
 """)
 
@@ -315,7 +322,7 @@ The following functions take a source and return an XML document instance (`XDoc
 Reading from a URL which references a local file:
 
 ```swift
-public func parseXML(
+public func readXML(
     from documentSource: XDocumentSource,
     namespaceAware: Bool = false,
     silentEmptyRootPrefix: Bool = false,
@@ -341,21 +348,21 @@ public func parseXML(
 And accordingly:
 
 ```swift
-func parseXML(
+func readXML(
     fromPath: String,
     ...
 ) throws -> XDocument
 ```
 
 ```swift
-func parseXML(
+func readXML(
     fromText: String,
     ...
 ) throws -> XDocument
 ```
 
 ```swift
-func parseXML(
+func readXML(
     fromData: Data,
     ...
 ) throws -> XDocument
@@ -364,7 +371,7 @@ func parseXML(
 If you want to be indifferent about which kind of source to process, use `XDocumentSource` for the source definition and use:
 
 ```swift
-func parseXML(
+func readXML(
     from: XDocumentSource,
     ...
 ) throws -> XDocument
@@ -390,7 +397,7 @@ The content of external parsed entities are not inserted by default, but they ar
 
 When the content of an external parsed entitiy is inserted, you can declare an element name `externalWrapperElement`: the inserted content then gets wrapped into an element of that name with the information about the entity in the attributes `name`, `systemID`, and `path` (`path` being optional, as an external parsed entity might get resolved without an explicit path). (During later processing, you might want to change this representation, e.g. if the external parsed entity reference is the only content of an element, you might replace the wrapper by its content and set the according information as some attachments of the parent element, so validation of the document succeeds.)
 
-One a more event handlers can be given a `parseXML` call, which implement `XEventHandler` from [XMLInterfaces](https://github.com/swiftxml/SwiftXMLInterfaces). This allows for the user of the library to catch any event during parsing like entering or leaving an element. E.g., the resolving of an internal entity reference could depend on the location inside the document (and not only on the name of the element or attribute), so this information can be collected by such an event handler.
+One a more event handlers can be given a `readXML` call, which implement `XEventHandler` from [XMLInterfaces](https://github.com/swiftxml/SwiftXMLInterfaces). This allows for the user of the library to catch any event during parsing like entering or leaving an element. E.g., the resolving of an internal entity reference could depend on the location inside the document (and not only on the name of the element or attribute), so this information can be collected by such an event handler.
 
 `keepComments` (default: `false`) decides if a comment should be preserved (as `XComment`), else they will be discarded without notice. `keepCDATASections` (default: `false`) decides if a CDATA section should be preserved (as `XCDATASection`), else all CDATA sections get resolved as text.
 
@@ -569,7 +576,7 @@ If the parser (as it is the case with the [SwiftXMLParser](https://github.com/sw
 Example:
 
 ```swift
-let document = try parseXML(fromText: """
+let document = try readXML(fromText: """
 <a>
     <b>Hello</b>
 </a>
@@ -623,7 +630,7 @@ You can also get a sequence of attribute values (optional Strings) from a sequen
 Example:
 
 ```swift
-let document = try parseXML(fromText: """
+let document = try readXML(fromText: """
     <test>
       <b id="1"/>
       <b id="2"/>
@@ -726,12 +733,12 @@ You can also use a prefix in the first (optional) argument for direct access to 
 
 ## Direct access to attributes
 
-To directly find where an attribute with a certain name is set, you can use an analogue to the direct access to elements, but for efficiency reason you have to specify the attribute names which can be used for such a direct access. You specify these attribute names when creating a document (e.g. `XDocument(registeringAttributes: .selected(["id", "label"]))`) or indirecting when using the parse functions (e.g. `try parseXML(fromText: "...", registeringAttributes: .selected(["id", "label"]))`). You can also register attributes for a certain namespace or a prefix and then list them by additionally using the `prefix:` argument, see the section on prefixes and namespaces.
+To directly find where an attribute with a certain name is set, you can use an analogue to the direct access to elements, but for efficiency reason you have to specify the attribute names which can be used for such a direct access. You specify these attribute names when creating a document (e.g. `XDocument(registeringAttributes: .selected(["id", "label"]))`) or indirecting when using the parse functions (e.g. `try readXML(fromText: "...", registeringAttributes: .selected(["id", "label"]))`). You can also register attributes for a certain namespace or a prefix and then list them by additionally using the `prefix:` argument, see the section on prefixes and namespaces.
 
 Example:
 
 ```swift
-let document = try parseXML(fromText: """
+let document = try readXML(fromText: """
     <test>
       <x a="1"/>
       <x b="2"/>
@@ -761,7 +768,7 @@ let source = """
     </a>
     """
 
-let document = try parseXML(fromText: source, registeringValuesForAttributes: .selected(["id", "refid"]))
+let document = try readXML(fromText: source, registeringValuesForAttributes: .selected(["id", "refid"]))
 
 print(#"id="1":"#)
 print(document.registeredValues("1", forAttribute: "id").map{ $0.element.description }.joined(separator: "\n"))
@@ -813,7 +820,7 @@ let source = """
     </a>
     """
 
-let document = try parseXML(fromText: source)
+let document = try readXML(fromText: source)
 
 print(
     document.processingInstructions(ofTarget: "MyTarget")
@@ -1020,7 +1027,7 @@ for descendant in myElement.descendants {
 Note that a sequence might be used several times:
 
 ```swift
-let document = try parseXML(fromText: """
+let document = try readXML(fromText: """
 <a><c/><d/><e/></a>
 """)
 
@@ -1073,7 +1080,7 @@ var existing: XElementSequence?
 In the following example, a sequence is first tested for existing items and, if items exist, then used:
 
 ```swift
-let document = try parseXML(fromText: """
+let document = try readXML(fromText: """
 <a><c/><b id="1"/><b id="2"/><d/><b id="3"/></a>
 """)
 
@@ -1122,6 +1129,10 @@ var asElementSequence: XElementSequence
 
 (These two methods are used in the tests of the library.)
 
+## Finding related content with parameterized direction
+
+To be able to formulate algorithms that work in both forward and backward direction, use the mnethods `touching(proceeding:)`, `hasTouching(proceeding:)`, `neighbour(proceeding:)`, `hasNeighbour(proceeding:)`, `edgeContent(proceeding:)`, `edgeChild(proceeding:)` of `XElement` which get a direction in form of `XDirection` as argument. Use the property `reversed` of `XDirection` to reverse a direction.
+
 ## Finding related nodes with filters
 
 Besides methods like `filter(_:)` and `prefix(while:)` that always come with Swift and that can be applied to the sequences defined by SwiftXML, the methods from SwiftXML for finding related nodes like `descendants` offer arguments for filtering and stop conditions that allow a short and concise notation, especially when a filter and a stop condition is combined.
@@ -1140,7 +1151,7 @@ Sequences of a more specific type are returned in sensible cases. The `untilAndI
 Example:
 
 ```swift
-let document = try parseXML(fromText: """
+let document = try readXML(fromText: """
 <a><b/><c take="true"/><d/><e take="true"/></a>
 """)
 
@@ -1204,7 +1215,7 @@ Iterators can also be chained. The second iterator is executed on each of the no
 Example:
 
 ```swift
-let document = try parseXML(fromText: """
+let document = try readXML(fromText: """
 <a>
     <b>
         <c>
@@ -1447,7 +1458,7 @@ Note that if you insert an element into another document that is part of a docum
 Example: a newly constructed element gets added to a document:
 
 ```swift
-let document = try parseXML(fromText: """
+let document = try readXML(fromText: """
 <a><b id="1"/><b id="2"/></a>
 """)
 
@@ -1813,7 +1824,7 @@ Output:
 Similarly, if you replace a node, the content that gets inserted in place of the node is by default included in the iteration. Example: Assume you would like to replace every occurrence of some `<bold>` element by its content:
 
 ```swift
-let document = try parseXML(fromText: """
+let document = try readXML(fromText: """
     <text><bold><bold>Hello</bold></bold></text>
     """)
 for bold in document.descendants("bold") { bold.replace { bold.content } }
@@ -1835,7 +1846,7 @@ This can be very convenient when processing text, e.g. it is then very straightf
 You can avoid merging of text `text` with other texts by setting the `isolated` property to `true` (you can also choose to set this value during initialization of an XText). Consider the following example where the occurrences of a search text gets a greenish background. In this example, you do not want `part` to be added to `text` in the iteration:
 
 ```swift
-let document = try parseXML(fromText: """
+let document = try readXML(fromText: """
     <doc>
         <paragraph>Hello world!</paragraph>
         <paragraph>world world world</paragraph>
@@ -1892,7 +1903,7 @@ In a rule, the user defines what to do with elements or attributes certain names
 Example:
 
 ```swift
-let document = try parseXML(fromText: """
+let document = try readXML(fromText: """
 <a><formula id="1"/></a>
 """)
 
@@ -1990,7 +2001,7 @@ As noted in the last section, the order of rules a crucial in some transformatio
 The “inverse order” of rules goes from the inner elements to the outer element so that the context is still unchanged when the rule applies, note the lookup of `element.parent?.name` to differentiate the color of the text:
 
 ```swift
-let document = try parseXML(fromText: """
+let document = try readXML(fromText: """
     <document>
         <section>
             <hint>
@@ -2224,7 +2235,7 @@ During the reading of the document, an element that uses a namespace prefix defi
 
 When you add an element to a document with a `prefix` property for which a namespace URI is registered, you supposedly want to reference this namespace.
 
-During serialization, every prefix value which is not `nil` is written as the prefix of the name (with a separating colon). Use the arguments `overwritingPrefixesForNamespaceURIs:` and `overwritingPrefixes:` of the serialization and output methods (each with an according map which has the prefixes for the serialization as values) to change prefixes in the serialization, where an empty String value means not outputting a prefix. Independently from those two arguments, use the argument `suppressDeclarationForNamespaceURIs:` to suppress the according namespace declarations in the output. Be careful with those settings as there is no check for consistency.
+During serialization, every prefix value which is not `nil` is written as the prefix of the name (with a separating colon). Use the arguments `overwritingPrefixesForNamespaceURIs:` and `overwritingPrefixes:` of the serialization and output methods (each with an according map which has the prefixes for the serialization as values) to change prefixes in the serialization, where an empty String value means not outputting a prefix. Independently from those two arguments, use the argument `suppressingDeclarationForNamespaceURIs:` to suppress the according namespace declarations in the output. Be careful with those settings as there is no check for consistency.
 
 Some XML documents declare a namespace at the top of the document in the form `xmlns="..."` i.e. without a prefix to define the schema to be used for the document. When reading such a document with `namespaceAware: true`, consequently a prefix is created for this namespace and used for all according elements to conserve the affiliation to the namespace. Rules and the usual name based searches then have to take that prefix into account. If you want to avoid this, use the setting `silentEmptyRootPrefix: true` when parsing. The according namespace URI is then still registered at the document, but with prefix value `""`, and the according elements then have no prefix value set (their prefix value is `nil`), so no prefix value has to be considered in rules and searches. We then call this namespace a “silent” namespace. The method `prefix(forNamespaceURI:)` of the document returns `nil` for such a namespace, so you can use the prefix returned by this method for rules and searches regardless of the setting of `silentEmptyRootPrefix:` and also use this prefix in the construction of according elements. When adding an element without a prefix in the face of a silent namespace, the element is considerd to belong to the silent namespace.
 
@@ -2248,7 +2259,7 @@ let source = """
     </a>
     """
 
-let document = try parseXML(fromText: source, namespaceAware: true)
+let document = try readXML(fromText: source, namespaceAware: true)
 
 document.echo()
 ```

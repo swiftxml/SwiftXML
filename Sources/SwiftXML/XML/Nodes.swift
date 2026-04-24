@@ -458,7 +458,8 @@ public class XNode: CustomStringConvertible {
         usingProductionTemplate productionTemplate: XProductionTemplate? = nil,
         overwritingPrefixesForNamespaceURIs prefixesForNamespaceURIs: [String:String]? = nil,
         overwritingPrefixes prefixTranslations: [String:String]? = nil,
-        suppressDeclarationForNamespaceURIs declarationSupressingNamespaceURIs: [String]? = nil
+        suppressingDeclarationForNamespaceURIs declarationSupressingNamespaceURIs: [String]? = nil,
+        suppressingNamespaceDeclarations: Bool = false
     ) throws {
         let completePrefixTranslations = getCompletePrefixTranslations(
             prefixTranslations: prefixTranslations,
@@ -470,7 +471,8 @@ public class XNode: CustomStringConvertible {
             for: writer,
             withStartElement: self as? XElement ?? (self as? XDocument)?.firstChild,
             prefixTranslations: completePrefixTranslations,
-            declarationSupressingNamespaceURIs: declarationSupressingNamespaceURIs
+            suppressingDeclarationForNamespaceURIs: declarationSupressingNamespaceURIs,
+            suppressingNamespaceDeclarations: suppressingNamespaceDeclarations
         )
         try self.applyProduction(activeProduction: activeProduction)
     }
@@ -504,7 +506,7 @@ public class XNode: CustomStringConvertible {
                 usingProductionTemplate: productionTemplate,
                 overwritingPrefixesForNamespaceURIs: prefixesForNamespaceURIs,
                 overwritingPrefixes: prefixTranslations,
-                suppressDeclarationForNamespaceURIs: declarationSupressingNamespaceURIs
+                        suppressingDeclarationForNamespaceURIs: declarationSupressingNamespaceURIs
             )
         }
     }
@@ -621,7 +623,7 @@ public class XNode: CustomStringConvertible {
                 usingProductionTemplate: productionTemplate,
                 overwritingPrefixesForNamespaceURIs: prefixesForNamespaceURIs,
                 overwritingPrefixes: prefixTranslations,
-                suppressDeclarationForNamespaceURIs: declarationSupressingNamespaceURIs
+                        suppressingDeclarationForNamespaceURIs: declarationSupressingNamespaceURIs
             )
         }
     }
@@ -703,7 +705,7 @@ public class XNode: CustomStringConvertible {
                 usingProductionTemplate: productionTemplate,
                 overwritingPrefixesForNamespaceURIs: prefixesForNamespaceURIs,
                 overwritingPrefixes: prefixTranslations,
-                suppressDeclarationForNamespaceURIs: declarationSupressingNamespaceURIs
+                        suppressingDeclarationForNamespaceURIs: declarationSupressingNamespaceURIs
             )
         }
         catch {

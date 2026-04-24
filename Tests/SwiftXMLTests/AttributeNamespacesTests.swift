@@ -75,7 +75,7 @@ final class AttributeNamespacesTests: XCTestCase {
             </a>
             """
         
-        let document = try parseXML(fromText: source, namespaceAware: true)
+        let document = try readXML(fromText: source, namespaceAware: true)
         
         let b = document.elements("b").first
         let c = document.elements("c").first
@@ -110,7 +110,7 @@ final class AttributeNamespacesTests: XCTestCase {
             </a>
             """
         
-        let document = try parseXML(fromText: source, namespaceAware: true)
+        let document = try readXML(fromText: source, namespaceAware: true)
         
         XCTAssertEqual(document.serialized, """
             <a xmlns:z="https://z1" xmlns:z2="https://z2">
@@ -142,10 +142,10 @@ final class AttributeNamespacesTests: XCTestCase {
             <c xmlns:z="\(namespaceURI2)"/>
             """
         
-        let document1 = try parseXML(fromText: source1, namespaceAware: true)
-        let documentWithSameNamespaceForPrefix = try parseXML(fromText: sourceWithSameNamespaceForPrefix, namespaceAware: true)
-        let documentWithSameNamespaceButDifferentPrefix = try parseXML(fromText: sourceWithSameNamespaceButDifferentPrefix, namespaceAware: true)
-        let documentWithDifferentNamespaceForSamePrefix = try parseXML(fromText: sourceWithDifferentNamespaceForSamePrefix, namespaceAware: true)
+        let document1 = try readXML(fromText: source1, namespaceAware: true)
+        let documentWithSameNamespaceForPrefix = try readXML(fromText: sourceWithSameNamespaceForPrefix, namespaceAware: true)
+        let documentWithSameNamespaceButDifferentPrefix = try readXML(fromText: sourceWithSameNamespaceButDifferentPrefix, namespaceAware: true)
+        let documentWithDifferentNamespaceForSamePrefix = try readXML(fromText: sourceWithDifferentNamespaceForSamePrefix, namespaceAware: true)
         
         let b = document1.elements("b").first
         XCTAssertNotNil(b)
@@ -177,7 +177,7 @@ final class AttributeNamespacesTests: XCTestCase {
             </a>
             """
         
-        let document = try parseXML(
+        let document = try readXML(
             fromText: source,
             namespaceAware: true,
             registeringAttributesForNamespaces: .selected([NamespaceURIAndName(namespaceURI: namespaceURI, name: "id")])
@@ -239,7 +239,7 @@ final class AttributeNamespacesTests: XCTestCase {
             </a>
             """
         
-        let document = try parseXML(
+        let document = try readXML(
             fromText: source,
             namespaceAware: true,
             registeringAttributeValuesForForNamespaces: .selected([

@@ -81,7 +81,29 @@ public struct SwiftXMLError: LocalizedError, CustomStringConvertible {
     public var errorDescription: String? { message }
 }
 
+
+/// What to escape in text when serializing.
+public enum XTextEscapeMode {
+    case minimal
+    case escapeGreaterThan
+    case escapeAll
+}
+
+/// How to escape quotes.
+public enum XQuoteEscapeMode {
+    case keep
+    case escapingDoubleQuotedValue
+    case escapingSimpleQuoted
+    case all
+}
+
 public extension String {
+    
+    var escapingForXML: String {
+        self
+            .replacing("&", with: "&amp;")
+            .replacing("<", with: "&lt;")
+    }
     
     var escapingAllForXML: String {
         self
@@ -92,10 +114,30 @@ public extension String {
             .replacing("'", with: "&apos;")
     }
     
-    var escapingForXML: String {
-        self
-            .replacing("&", with: "&amp;")
-            .replacing("<", with: "&lt;")
+    /// Escaping quotes.
+    func escapingQuotes(usingQuoteEscapeMode quoteEscapeMode: XQuoteEscapeMode = .all) -> String {
+        switch quoteEscapeMode {
+        case .keep:
+            self
+        case .escapingDoubleQuotedValue:
+            replacing("\"", with: "&quot;")
+        case .escapingSimpleQuoted:
+            replacing("'", with: "&apos;")
+        case .all:
+            replacing("\"", with: "&quot;").replacing("'", with: "&apos;")
+        }
+    }
+    
+    /// Escaping certain characters for the serialization of XML.
+    func escapingForXML(withEscapeMode escapeMode: XTextEscapeMode = .minimal, usingQuoteEscapeMode quoteEscapeMode: XQuoteEscapeMode = .keep) -> String {
+        switch escapeMode {
+        case .minimal:
+            escapingForXML.escapingQuotes(usingQuoteEscapeMode: quoteEscapeMode)
+        case .escapeGreaterThan:
+            escapingForXML.replacing(">", with: "&gt;").escapingQuotes(usingQuoteEscapeMode: quoteEscapeMode)
+        case .escapeAll:
+            escapingAllForXML
+        }
     }
     
     var escapingDoubleQuotedValueForXML: String {

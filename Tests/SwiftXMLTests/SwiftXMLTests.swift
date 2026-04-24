@@ -19,7 +19,7 @@ final class SwiftXMLTests: XCTestCase {
         let source = """
             <a id="1"><b id="2"/><b id="3"/></a>
             """
-        let document = try parseXML(fromText: source)
+        let document = try readXML(fromText: source)
         
         XCTAssertEqual(document.serialized, """
             <a id="1"><b id="2"/><b id="3"/></a>
@@ -44,7 +44,7 @@ final class SwiftXMLTests: XCTestCase {
     }
     
     func testRemovalInTransformation() throws {
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <a>
                 <b><c/></b>
             </a>
@@ -71,7 +71,7 @@ final class SwiftXMLTests: XCTestCase {
     }
     
     func testRemovalOfLastInTransformation1() throws {
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <a>
                 <b><c label="remove me"/><d/></b>
             </a>
@@ -102,7 +102,7 @@ final class SwiftXMLTests: XCTestCase {
     
     
     func testRemovalOfLastInTransformation2() throws {
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <a>
                 <b><c label="remove me"/><d/></b>
             </a>
@@ -143,7 +143,7 @@ final class SwiftXMLTests: XCTestCase {
         """
     
     func testForInLoop() throws {
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <a id="1">
                 <b id="2"/>
                 <b id="3"/>
@@ -157,7 +157,7 @@ final class SwiftXMLTests: XCTestCase {
     }
     
     func testAttributeFromDocument() throws {
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <a id="1">
                 <b id="2"/>
                 <b id="3"/>
@@ -169,7 +169,7 @@ final class SwiftXMLTests: XCTestCase {
     }
     
     func testAttributeFromClonedDocumentDefault() throws {
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <a id="1">
                 <b id="2"/>
                 <b id="3"/>
@@ -187,7 +187,7 @@ final class SwiftXMLTests: XCTestCase {
     }
     
     func testAttributeFromClonedDocumentNonDefault() throws {
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <a id="1">
                 <b id="2"/>
                 <b id="3"/>
@@ -223,7 +223,7 @@ final class SwiftXMLTests: XCTestCase {
                 <b id="3"/>
             </a>
             """
-        let document = try parseXML(fromText: source)
+        let document = try readXML(fromText: source)
         let clone = document.clone
         XCTAssertEqual(clone.serialized(), source)
     }
@@ -297,7 +297,7 @@ final class SwiftXMLTests: XCTestCase {
     }
     
     func testTypedIterator() throws {
-        let document = try parseXML(fromText: documentSource1)
+        let document = try readXML(fromText: documentSource1)
         let sequence = document.children.filter { $0.name == "a" }.children.drop(while: { Int($0["id"] ?? "1") ?? 1 < 2 }).filter { $0["drop"] != "yes" }
         var iterator = TypedIterator(for: sequence)
         let next: XElement? = iterator.next()
@@ -305,7 +305,7 @@ final class SwiftXMLTests: XCTestCase {
     }
     
     func testLaziness() throws {
-        let document = try parseXML(fromText: documentSource1)
+        let document = try readXML(fromText: documentSource1)
         let sequence = document.children.filter { $0.name == "a" }.children
         document.children.filter { $0.name == "a" }.first?.add { XElement("b", ["id": "4"]) }
         XCTAssertEqual(sequence["id"].compactMap{ $0 }.joined(separator: ", "), #"1, 2, 3, 4"#)
@@ -378,7 +378,7 @@ final class SwiftXMLTests: XCTestCase {
     func testXMLConsumable() throws {
         
         do {
-            let document = try parseXML(fromText: documentSource1)
+            let document = try readXML(fromText: documentSource1)
             let element = XElement("test") {
                 XElement("title") {
                     "this is the title"
@@ -396,8 +396,8 @@ final class SwiftXMLTests: XCTestCase {
         }
         
         do {
-            let document1 = try parseXML(fromText: documentSource1)
-            let document2 = try parseXML(fromText: documentSource1)
+            let document1 = try readXML(fromText: documentSource1)
+            let document2 = try readXML(fromText: documentSource1)
             let element = XElement("test") {
                 document1.children.children
                 document2.children.children
@@ -416,7 +416,7 @@ final class SwiftXMLTests: XCTestCase {
         }
         
         do {
-            let document = try parseXML(fromText: documentSource1)
+            let document = try readXML(fromText: documentSource1)
             let element = XElement("test") {
                 XElement("title") {
                     "this is the title"
@@ -433,7 +433,7 @@ final class SwiftXMLTests: XCTestCase {
         }
         
         do {
-            let document = try parseXML(fromText: documentSource1)
+            let document = try readXML(fromText: documentSource1)
             let element = XElement("test") {
                 document.children.children.filter { $0.name == "b" }.drop(while: { Int($0["id"] ?? "1") ?? 1 < 2 }).filter { $0["drop"] != "yes" }
             }
@@ -446,8 +446,8 @@ final class SwiftXMLTests: XCTestCase {
         }
         
         do {
-            let document1 = try parseXML(fromText: documentSource1)
-            let document2 = try parseXML(fromText: documentSource1)
+            let document1 = try readXML(fromText: documentSource1)
+            let document2 = try readXML(fromText: documentSource1)
             let element = XElement("test") {
                 document1.children.children.filter { $0.name == "b" }.drop(while: { Int($0["id"] ?? "1") ?? 1 < 2 }).filter { $0["drop"] != "yes" }
                 document2.children.children.filter { $0.name == "b" }.drop(while: { Int($0["id"] ?? "1") ?? 1 < 2 }).filter { $0["drop"] != "yes" }
@@ -463,7 +463,7 @@ final class SwiftXMLTests: XCTestCase {
     }
     
     func testSomeAttributesRegistered() throws {
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <test>
               <x a="1"/>
               <x b="2"/>
@@ -482,7 +482,7 @@ final class SwiftXMLTests: XCTestCase {
     }
     
     func testSomeAttributesRegisteredAfterMovingToNewDocument() throws {
-        let oldDocument = try parseXML(fromText: """
+        let oldDocument = try readXML(fromText: """
             <test>
               <x a="1"/>
               <x b="2"/>
@@ -505,7 +505,7 @@ final class SwiftXMLTests: XCTestCase {
     }
     
     func testAttributeValueSequence() throws {
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <test>
               <b id="1"/>
               <b id="2"/>
@@ -517,7 +517,7 @@ final class SwiftXMLTests: XCTestCase {
     }
     
     func testFirstSecondThird() throws {
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <test>
               <b id="1"/>
               <b id="2"/>
@@ -535,7 +535,7 @@ final class SwiftXMLTests: XCTestCase {
     
     func testAsync() async throws {
         
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <test>
               <b id="1"/>
               <b id="2"/>
@@ -657,7 +657,7 @@ final class SwiftXMLTests: XCTestCase {
     
     func testElementsWithNames() async throws {
         
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <a>
                 <b id="b1"/>
                 <c id="c1"/>
@@ -684,7 +684,7 @@ final class SwiftXMLTests: XCTestCase {
     
     func testAttributesWithNames() async throws {
            
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
            <a>
                <x b="b1"/>
                <x c="c1"/>
@@ -748,7 +748,7 @@ final class SwiftXMLTests: XCTestCase {
     }
     
     func testTexts() throws {
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <paragraph>Hello <bold>world</bold>!</paragraph>
             """)
         XCTAssertEqual(document.children.first!.immediateTexts.map{ "\"\($0.value)\"" }.joined(separator: ", "), #""Hello ", "!""#)
@@ -760,14 +760,14 @@ final class SwiftXMLTests: XCTestCase {
     }
     
     func testAllTexts() throws {
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <paragraph>Hello <bold>world</bold>!</paragraph>
             """)
         XCTAssertEqual(document.allTexts.map{ "\"\($0.value)\"" }.joined(separator: ", "), #""Hello ", "world", "!""#)
     }
     
     func testTraversalWithRemoval() throws {
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <a><b><c/></b>TEXT</a>
             """)
         
@@ -791,7 +791,7 @@ final class SwiftXMLTests: XCTestCase {
     }
     
     func testSingleElementNameIteratorWithRemoval() throws {
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <a><b id="1"/><b id="2"/></a>
             """)
         
@@ -808,7 +808,7 @@ final class SwiftXMLTests: XCTestCase {
     }
     
     func testSingleAttributeNameIteratorWithRemoval() throws {
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <a><b id="1"/><b id="2"/></a>
             """, registeringAttributes: .selected(["id"]))
         
@@ -825,7 +825,7 @@ final class SwiftXMLTests: XCTestCase {
     }
     
     func testMultipleAttributeNamesIteratorWithRemoval() throws {
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <a type="type1"><b id="1"/><b id="2"/></a>
             """, registeringAttributes: .selected(["type", "id"]))
         
@@ -845,7 +845,7 @@ final class SwiftXMLTests: XCTestCase {
     }
     
     func testMultipleElementNamesIteratorWithRemoval() throws {
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <a><b id="1"/><b id="2"/></a>
             """)
         
@@ -865,7 +865,7 @@ final class SwiftXMLTests: XCTestCase {
     }
     
     func testNamespacePrefixes() throws {
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
             <a xmlns:a="http://a" xmlns:b="http://b"/>
             """, namespaceAware: true)
         print(document.namespacePrefixesAndURIs)
@@ -944,7 +944,7 @@ final class SwiftXMLTests: XCTestCase {
                 </book>
                 """
             
-            let document = try parseXML(fromText: source)
+            let document = try readXML(fromText: source)
             
             XCTAssertEqual(
                 document.serialized,
@@ -985,7 +985,7 @@ final class SwiftXMLTests: XCTestCase {
                 <book><paragraph><emphasis>hello</emphasis></paragraph></book>
                 """
             
-            let document = try parseXML(fromText: source)
+            let document = try readXML(fromText: source)
             
             XCTAssertEqual(
                 document.serialized,
@@ -1030,7 +1030,7 @@ final class SwiftXMLTests: XCTestCase {
                 </book>
                 """
             
-            let document = try parseXML(fromText: source)
+            let document = try readXML(fromText: source)
             try document.removeFormatting(allowingTextInElementsWithoutPrefix: ["paragraph", "emphasis"])
             
             XCTAssertEqual(
@@ -1083,13 +1083,13 @@ final class SwiftXMLTests: XCTestCase {
     }
     
     func testNewlineInAttributeReverse() throws {
-        let document = try parseXML(fromText: #"<element1 att1="hello&#x0A;world"/>"#)
+        let document = try readXML(fromText: #"<element1 att1="hello&#x0A;world"/>"#)
         
         XCTAssertEqual(document.children.first?["att1"], "hello\nworld")
     }
     
     func testTextForElementSequence() throws {
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
         <sentences>
             <sentence><word>Hello</word> <word>world</word></sentence>
             <sentence><word>Feel</word> <word>good</word></sentence>
@@ -1100,7 +1100,7 @@ final class SwiftXMLTests: XCTestCase {
     }
     
     func testReversedAllContent() throws {
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
         <sentences>
             <sentence><word>Hello</word>, <word>world</word></sentence>
             <sentence><word>Feel</word> <word>good</word></sentence>
@@ -1118,7 +1118,7 @@ final class SwiftXMLTests: XCTestCase {
     }
     
     func testReversedAllTexts() throws {
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
         <sentences>
             <sentence><word>Hello</word>, <word>world</word></sentence>
             <sentence><word>Feel</word> <word>good</word></sentence>
@@ -1164,12 +1164,12 @@ final class SwiftXMLTests: XCTestCase {
             """
         
         // parse without an internal entity resolver, all internal entities are kept with any notice:
-        XCTAssertEqual(try parseXML(
+        XCTAssertEqual(try readXML(
             fromText: source
         ).serialized(), "<a>&ent1;&ent2;</a>")
         
         // leave unresolved internal entities:
-        XCTAssertEqual(try parseXML(
+        XCTAssertEqual(try readXML(
             fromText: source,
             internalEntityResolver: MyInternalEntityResolver(),
             internalEntityResolverHasToResolve: false
@@ -1178,7 +1178,7 @@ final class SwiftXMLTests: XCTestCase {
         // error unresolved internal entities:
         var errorMessage: String? = nil
         do {
-            _ = try parseXML(
+            _ = try readXML(
                 fromText: source,
                 internalEntityResolver: MyInternalEntityResolver(),
                 internalEntityResolverHasToResolve: true
@@ -1191,7 +1191,7 @@ final class SwiftXMLTests: XCTestCase {
     }
     
     func testReplaceByLazySequence() throws {
-        let document = try parseXML(fromText: """
+        let document = try readXML(fromText: """
         <document><index.item>z</index.item><index.item>x</index.item><index.item>a</index.item><index.item>m</index.item></document>
         """)
         
@@ -1316,7 +1316,7 @@ final class SwiftXMLTests: XCTestCase {
             </a>
             """
 
-        let document = try parseXML(fromText: source, registeringAttributeValuesFor: .selected(["id", "refid"]))
+        let document = try readXML(fromText: source, registeringAttributeValuesFor: .selected(["id", "refid"]))
         
         // cannot find them by name only:
         XCTAssertEqual(
