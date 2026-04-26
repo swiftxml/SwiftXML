@@ -13,6 +13,7 @@ In **SwiftXML 3.0,** the following _breaking changes_ have been made:
 - `serialized(...)`: renamed `suppressDeclarationForNamespaceURIs` to `suppressingDeclarationForNamespaceURIs`
 - protocol `XProductionTemplate`: added argument `suppressingNamespaceDeclarations` to `activeProduction(...)` (which then should suppress all namespace declarations when serializing)
 - The new enum `XTextEscapeMode` replaces the old arguments `escapeGreaterThan`, `escapeAllInText`, and `escapeAll` for serialization.
+- `XDirection` is renamed to `XHierarchicalDirection`.
 
 ---
 
@@ -1131,7 +1132,7 @@ var asElementSequence: XElementSequence
 
 ## Finding related content with parameterized direction
 
-To be able to formulate algorithms that work in both forward and backward direction, use the mnethods `touching(proceeding:)`, `hasTouching(proceeding:)`, `neighbour(proceeding:)`, `hasNeighbour(proceeding:)`, `edgeContent(proceeding:)`, `edgeChild(proceeding:)` of `XElement` which get a direction in form of `XDirection` as argument. Use the property `reversed` of `XDirection` to reverse a direction.
+To be able to formulate algorithms that work in both forward and backward direction, use the mnethods `touching(proceeding:)`, `hasTouching(proceeding:)`, `neighbour(proceeding:)`, `hasNeighbour(proceeding:)`, `edgeContent(proceeding:)`, `edgeChild(proceeding:)` of `XElement` which get a direction in form of `XSequenceDirection` as argument. Use the property `reversed` of `XSequenceDirection` to reverse a direction.
 
 ## Finding related nodes with filters
 

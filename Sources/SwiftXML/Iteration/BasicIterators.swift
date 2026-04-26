@@ -2204,7 +2204,7 @@ public final class XDescendantsIncludingSelfIterator: XElementIteratorProtocol {
 
 /// The vertical direction.
 /// Use the `reversed` property to get the reversed direction.
-public enum XVerticalDirection {
+public enum XHierarchicalDirection {
     case down, up
     
     public var reversed: Self {
@@ -2215,11 +2215,11 @@ public enum XVerticalDirection {
     }
 }
 
-public final class XDirectionIndicator {
+public final class XHierarchicalDirectionIndicator {
     
-    var _direction: XVerticalDirection = .down
+    var _direction: XHierarchicalDirection = .down
     
-    public var direction: XVerticalDirection { _direction }
+    public var direction: XHierarchicalDirection { _direction }
     
     public init() {}
 }
@@ -2235,14 +2235,14 @@ public final class XTreeIterator: XContentIteratorProtocol {
     var started = false
     weak var startNode: XNode?
     weak var currentNode: XNode? = nil
-    var directionIndicator: XDirectionIndicator
+    var hierarchicalDirectionIndicator: XHierarchicalDirectionIndicator
     
     public init(
         startNode: XNode,
-        directionIndicator: XDirectionIndicator
+        hierarchicalDirectionIndicator: XHierarchicalDirectionIndicator
     ) {
         self.startNode = startNode
-        self.directionIndicator = directionIndicator
+        self.hierarchicalDirectionIndicator = hierarchicalDirectionIndicator
     }
     
     private var downDirection = true
@@ -2254,12 +2254,12 @@ public final class XTreeIterator: XContentIteratorProtocol {
                    let branch = currentNode as? XBranchInternal {
                     if let firstChild = branch.__firstContent {
                         currentNode = firstChild
-                        directionIndicator._direction = .down
+                        hierarchicalDirectionIndicator._direction = .down
                         return currentNode as? XContent
                     }
                     else {
                         downDirection = false
-                        directionIndicator._direction = .up
+                        hierarchicalDirectionIndicator._direction = .up
                         return branch as? XContent
                     }
                 }
@@ -2270,7 +2270,7 @@ public final class XTreeIterator: XContentIteratorProtocol {
                 if let next = currentNode?._next {
                     currentNode = next
                     downDirection = true
-                    directionIndicator._direction = .down
+                    hierarchicalDirectionIndicator._direction = .down
                     return next
                 }
                 else {
@@ -2279,7 +2279,7 @@ public final class XTreeIterator: XContentIteratorProtocol {
                     }
                     currentNode = currentNode?._parent
                     if let theCurrentNode = currentNode as? XBranchInternal {
-                        directionIndicator._direction = .up
+                        hierarchicalDirectionIndicator._direction = .up
                         return theCurrentNode as? XContent
                     }
                     else {

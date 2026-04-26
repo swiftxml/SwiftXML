@@ -392,9 +392,9 @@ public class XNode: CustomStringConvertible {
     public var lastInTree: XNode { get { getLastInTree() } }
     
     public func traverse(down: (XNode) throws -> (), up: ((XNode) throws -> ())? = nil) rethrows {
-        let directionIndicator = XDirectionIndicator()
-        for  node in XTraversalSequence(node: self, directionIndicator: directionIndicator) {
-            switch directionIndicator.direction {
+        let hierarchicalDirectionIndicator = XHierarchicalDirectionIndicator()
+        for  node in XTraversalSequence(node: self, hierarchicalDirectionIndicator: hierarchicalDirectionIndicator) {
+            switch hierarchicalDirectionIndicator.direction {
             case .down:
                 try down(node)
             case .up:
@@ -406,9 +406,9 @@ public class XNode: CustomStringConvertible {
     }
     
     public func traverse(down: (XNode) async throws -> (), up: ((XNode) async throws -> ())? = nil) async rethrows {
-        let directionIndicator = XDirectionIndicator()
-        for node in XTraversalSequence(node: self, directionIndicator: directionIndicator) {
-            switch directionIndicator.direction {
+        let hierarchicalDirectionIndicator = XHierarchicalDirectionIndicator()
+        for node in XTraversalSequence(node: self, hierarchicalDirectionIndicator: hierarchicalDirectionIndicator) {
+            switch hierarchicalDirectionIndicator.direction {
             case .down:
                 try await down(node)
             case .up:

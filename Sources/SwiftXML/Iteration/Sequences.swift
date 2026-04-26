@@ -481,15 +481,15 @@ public final class XAttributeSequenceIncludingCondition: XAttributeSequence {
 public final class XTraversalSequence: XContentSequence {
     
     let node: XNode
-    let directionIndicator: XDirectionIndicator
+    let hierarchicalDirectionIndicator: XHierarchicalDirectionIndicator
     
-    public init(node: XNode, directionIndicator: XDirectionIndicator) {
+    public init(node: XNode, hierarchicalDirectionIndicator: XHierarchicalDirectionIndicator) {
         self.node = node
-        self.directionIndicator = directionIndicator
+        self.hierarchicalDirectionIndicator = hierarchicalDirectionIndicator
     }
     
     public override func makeIterator() -> XContentIterator {
-        return XBidirectionalContentIterator(contentIterator: XTreeIterator(startNode: node, directionIndicator: directionIndicator))
+        return XBidirectionalContentIterator(contentIterator: XTreeIterator(startNode: node, hierarchicalDirectionIndicator: hierarchicalDirectionIndicator))
     }
 }
 

@@ -19,7 +19,7 @@ import SwiftXMLParser
 
 /// The horizontal direction.
 /// Use the `reversed` property to get the reversed direction.
-public enum XHorizontalDirection {
+public enum XSequenceDirection {
     case previous; case next
     
     public var reversed: Self {
@@ -33,7 +33,7 @@ public enum XHorizontalDirection {
 public extension XElement {
     
     /// Get the touching content in the specified direction.
-    func touching(proceeding direction: XHorizontalDirection) -> XContent? {
+    func touching(proceeding direction: XSequenceDirection) -> XContent? {
         switch direction {
         case .previous:
             self.previousTouching
@@ -43,13 +43,13 @@ public extension XElement {
     }
     
     /// Has the element touching content in the specified direction?
-    func hasTouching(proceeding direction: XHorizontalDirection) -> Bool {
+    func hasTouching(proceeding direction: XSequenceDirection) -> Bool {
         touching(proceeding: direction) != nil
     }
     
     /// Get the neighbouring element in the specified direction.
     /// (Other content in between does not matter.)
-    func neighbour(proceeding direction: XHorizontalDirection) -> XElement? {
+    func neighbour(proceeding direction: XSequenceDirection) -> XElement? {
         switch direction {
         case .previous:
             self.previousElement
@@ -60,12 +60,12 @@ public extension XElement {
     
     /// Has the element a neighbouring element in the specified direction?
     /// (Other content in between will be skipped.)
-    func hasNeighbour(proceeding direction: XHorizontalDirection) -> Bool {
+    func hasNeighbour(proceeding direction: XSequenceDirection) -> Bool {
         neighbour(proceeding: direction) != nil
     }
     
     /// Get the edging content (the first or last) in the specified direction.
-    func edgeContent(proceeding direction: XHorizontalDirection) -> XContent? {
+    func edgeContent(proceeding direction: XSequenceDirection) -> XContent? {
         switch direction {
         case .previous:
             self.firstContent
@@ -76,7 +76,7 @@ public extension XElement {
     
     /// Get the edging child (the first or last) in the specified direction.
     /// (Other content at the edge will be skipped.)
-    func edgeChild(proceeding direction: XHorizontalDirection) -> XElement? {
+    func edgeChild(proceeding direction: XSequenceDirection) -> XElement? {
         switch direction {
         case .previous:
             self.firstChild
