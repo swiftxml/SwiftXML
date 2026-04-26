@@ -17,12 +17,25 @@ import Foundation
 import SwiftXMLInterfaces
 import SwiftXMLParser
 
-/// The horizontal direction.
+/// The hierarchical direction.
 /// Use the `reversed` property to get the reversed direction.
-public enum XSequenceDirection {
+public enum XHierarchicalDirection {
+    case down, up
+    
+    public var opposite: Self {
+        switch self {
+        case .down: .up
+        case .up: .down
+        }
+    }
+}
+
+/// The sequential direction.
+/// Use the `reversed` property to get the reversed direction.
+public enum XSequentialDirection {
     case previous; case next
     
-    public var reversed: Self {
+    public var opposite: Self {
         switch self {
         case .previous: .next
         case .next: .previous
@@ -33,7 +46,7 @@ public enum XSequenceDirection {
 public extension XElement {
     
     /// Get the touching content in the specified direction.
-    func touching(proceeding direction: XSequenceDirection) -> XContent? {
+    func touching(proceeding direction: XSequentialDirection) -> XContent? {
         switch direction {
         case .previous:
             self.previousTouching
@@ -43,13 +56,13 @@ public extension XElement {
     }
     
     /// Has the element touching content in the specified direction?
-    func hasTouching(proceeding direction: XSequenceDirection) -> Bool {
+    func hasTouching(proceeding direction: XSequentialDirection) -> Bool {
         touching(proceeding: direction) != nil
     }
     
     /// Get the neighbouring element in the specified direction.
     /// (Other content in between does not matter.)
-    func neighbour(proceeding direction: XSequenceDirection) -> XElement? {
+    func neighbour(proceeding direction: XSequentialDirection) -> XElement? {
         switch direction {
         case .previous:
             self.previousElement
@@ -60,12 +73,12 @@ public extension XElement {
     
     /// Has the element a neighbouring element in the specified direction?
     /// (Other content in between will be skipped.)
-    func hasNeighbour(proceeding direction: XSequenceDirection) -> Bool {
+    func hasNeighbour(proceeding direction: XSequentialDirection) -> Bool {
         neighbour(proceeding: direction) != nil
     }
     
     /// Get the edging content (the first or last) in the specified direction.
-    func edgeContent(proceeding direction: XSequenceDirection) -> XContent? {
+    func edgeContent(proceeding direction: XSequentialDirection) -> XContent? {
         switch direction {
         case .previous:
             self.firstContent
@@ -76,7 +89,7 @@ public extension XElement {
     
     /// Get the edging child (the first or last) in the specified direction.
     /// (Other content at the edge will be skipped.)
-    func edgeChild(proceeding direction: XSequenceDirection) -> XElement? {
+    func edgeChild(proceeding direction: XSequentialDirection) -> XElement? {
         switch direction {
         case .previous:
             self.firstChild

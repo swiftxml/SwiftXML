@@ -7,13 +7,15 @@ In **SwiftXML 2.0,** `textAllowedInElementWithName` cannot be used any more duri
 
 Until then, the new `removeFormatting(...)` methods of `XDocument` can be used to remove unnecessary whitespace after parsing.
 
-In **SwiftXML 3.0,** the following _breaking changes_ have been made:
+In **SwiftXML 3,** the following _breaking changes_ have been made:
 
-- renamed `parseXML` to `readXML`
-- `serialized(...)`: renamed `suppressDeclarationForNamespaceURIs` to `suppressingDeclarationForNamespaceURIs`
-- protocol `XProductionTemplate`: added argument `suppressingNamespaceDeclarations` to `activeProduction(...)` (which then should suppress all namespace declarations when serializing)
+- `parseXML` is renamed  to `readXML`.
+- In `serialized(...)`: `suppressDeclarationForNamespaceURIs` is renamed to `suppressingDeclarationForNamespaceURIs`.
+- In protocol `XProductionTemplate`: `suppressingNamespaceDeclarations` is added to `activeProduction(...)` (which then should suppress all namespace declarations when serializing).
 - The new enum `XTextEscapeMode` replaces the old arguments `escapeGreaterThan`, `escapeAllInText`, and `escapeAll` for serialization.
-- `XDirection` is renamed to `XHierarchicalDirection`.
+- `XDirection` is renamed to `XSequentialDirection`.
+
+Some new methods have been introduced in SwiftXML 3 to help formulate algorithms that work in both forward and backward direction, cf. the section “Finding related content with parameterized direction”.
 
 ---
 
@@ -1132,7 +1134,7 @@ var asElementSequence: XElementSequence
 
 ## Finding related content with parameterized direction
 
-To be able to formulate algorithms that work in both forward and backward direction, use the mnethods `touching(proceeding:)`, `hasTouching(proceeding:)`, `neighbour(proceeding:)`, `hasNeighbour(proceeding:)`, `edgeContent(proceeding:)`, `edgeChild(proceeding:)` of `XElement` which get a direction in form of `XSequenceDirection` as argument. Use the property `reversed` of `XSequenceDirection` to reverse a direction.
+To be able to formulate algorithms that work in both forward and backward direction, use the methods `touching(proceeding:)`, `hasTouching(proceeding:)`, `neighbour(proceeding:)`, `hasNeighbour(proceeding:)`, `edgeContent(proceeding:)`, `edgeChild(proceeding:)` of `XElement` which get a direction in form of `XSequenceDirection` as argument. Use the property `opposite` of `XSequenceDirection` to reverse a direction.
 
 ## Finding related nodes with filters
 
