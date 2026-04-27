@@ -1617,35 +1617,35 @@ public final class XReversedAllContentIncludingSelfIterator: XContentIteratorPro
     
     public func next() -> XContent? {
         if !started {
-            currentContent = startContent
+            currentContent = startContent?.lastInTree
             started = true
             return currentContent
         } else {
-            let nextContent: XNode?
             if currentContent === startContent {
-                nextContent = (startContent as? XBranchInternal)?.lastInTree
+                currentContent = nil
             } else {
-                nextContent = currentContent?.previousInTree
-            }
-            if nextContent === startContent {
-                return nil
+                currentContent = currentContent?.previousInTree
             }
             return currentContent
         }
     }
     
     public func previous() -> XContent? {
-        if started {
-            if currentContent === startContent {
+        if !started || currentContent == nil {
+            return nil
+        } else {
+            if currentContent === startContent?.lastInTree {
                 currentContent = nil
-                started = false
-            } else if currentContent === startContent?.lastInTree {
-                currentContent = startContent
+            } else if currentContent === startContent {
+                currentContent = (startContent as? XElement)?.firstContent
             } else {
                 currentContent = currentContent?.nextInTree
             }
+            if currentContent == nil {
+                started = false
+            }
+            return currentContent
         }
-        return currentContent
     }
 }
 

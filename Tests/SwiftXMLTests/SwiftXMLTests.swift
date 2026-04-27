@@ -1451,4 +1451,41 @@ final class SwiftXMLTests: XCTestCase {
         XCTAssertEqual(start.ancestors("target", until: { $0 === stop }).exist, true)
         
     }
+    
+    func testAllContentReversedIncludingSelf() throws {
+        
+        let element = XElement("a") {
+            XElement("b") {
+                "bla"
+            }
+            XElement("c") {
+                "blabla"
+            }
+        }
+        
+        let _ = XDocument {
+            XElement("root") {
+                element
+            }
+        }
+        
+        XCTAssertEqual(element.allContentIncludingSelf.map{ $0.description }.joined(separator: ", "), #"<a>, <b>, "bla", <c>, "blabla""#)
+        XCTAssertEqual(element.allContentReversedIncludingSelf.map{ $0.description }.joined(separator: ", "), #""blabla", <c>, "bla", <b>, <a>"#)
+        
+        var content: XContent? = nil
+        let iterator = XReversedAllContentIncludingSelfIterator(content: element)
+        content = iterator.next()
+        XCTAssertEqual(content?.description, "\"blabla\"")
+        content = iterator.previous()
+        XCTAssertEqual(content?.description,nil)
+        var result = [String]()
+        for i in 1...6 {
+            result.append("#\(i)")
+            content = iterator.next(); result.append(content?.description ?? "–")
+            content = iterator.next(); result.append(content?.description ?? "–")
+            content = iterator.previous(); result.append(content?.description ?? "–")
+        }
+        XCTAssertEqual(result.joined(separator: ", "), #"#1, "blabla", <c>, "blabla", #2, <c>, "bla", <c>, #3, "bla", <b>, "bla", #4, <b>, <a>, <b>, #5, <a>, –, –, #6, –, –, –"#)
+        
+    }
 }

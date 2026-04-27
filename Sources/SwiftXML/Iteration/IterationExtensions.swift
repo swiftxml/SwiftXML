@@ -1112,7 +1112,7 @@ public extension XContent {
     }
     
     var allContentReversedIncludingSelf: XContentSequence {
-        get { XAllContentIncludingSelfSequence(content: self) }
+        get { XReversedSequenceOfAllContentIncludingSelf(content: self) }
     }
     
     func allContentReversedIncludingSelf(_ condition: @escaping (XContent) -> Bool) -> XContentSequence {
