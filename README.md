@@ -1134,7 +1134,7 @@ var asElementSequence: XElementSequence
 
 ## Finding related content with parameterized direction
 
-To be able to formulate algorithms that work in both forward and backward direction, use the methods `touching(towards:)`, `hasTouching(towards:)`, `neighbour(towards:)`, `hasNeighbour(towards:)`, `edgeContent(towards:)`, `edgeChild(towards:)` of `XElement` which get a direction in form of `XSequenceDirection` as argument. Use the property `opposite` of `XSequenceDirection` to reverse a direction.
+To be able to formulate algorithms that work in both forward and backward direction, use the methods `touching(towards:)`, `hasTouching(towards:)`, `sibling(towards:)`, `hasSibling(towards:)`, `edgeContent(towards:)`, `edgeChild(towards:)` of `XElement`  which get a direction in form of `XSequenceDirection` as argument, and also the variants with first argument `towards:` of the sequence getters `next(...)` etc. Use the property `opposite` of `XSequenceDirection` to reverse a direction.
 
 ## Finding related nodes with filters
 

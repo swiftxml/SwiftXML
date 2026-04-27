@@ -1571,7 +1571,7 @@ public final class XReversedAllContentIterator: XContentIteratorProtocol {
     public func next() -> XContent? {
         let nextNode: XNode?
         if started {
-            nextNode = currentContent?._previousInTree
+            nextNode = currentContent?.previousInTree
         } else {
             nextNode = (node as? XBranchInternal)?.lastInTree
             started = true
@@ -1586,14 +1586,63 @@ public final class XReversedAllContentIterator: XContentIteratorProtocol {
     
     public func previous() -> XContent? {
         if started {
-            let nextNode = currentContent?._nextInTree
+            let nextNode = currentContent?.nextInTree
             if nextNode === node {
                 currentContent = nil
             } else {
-                currentContent = nextNode as? XContent
+                currentContent = nextNode
             }
             if currentContent == nil {
                 started = false
+            }
+        }
+        return currentContent
+    }
+}
+
+/**
+ Iterates though the texts of a branch, reversely.
+ */
+public final class XReversedAllContentIncludingSelfIterator: XContentIteratorProtocol {
+    
+    private var started = false
+    weak var startContent: XContent?
+    weak var currentContent: XContent? = nil
+    
+    public init(
+        content: XContent
+    ) {
+        self.startContent = content
+    }
+    
+    public func next() -> XContent? {
+        if !started {
+            currentContent = startContent
+            started = true
+            return currentContent
+        } else {
+            let nextContent: XNode?
+            if currentContent === startContent {
+                nextContent = (startContent as? XBranchInternal)?.lastInTree
+            } else {
+                nextContent = currentContent?.previousInTree
+            }
+            if nextContent === startContent {
+                return nil
+            }
+            return currentContent
+        }
+    }
+    
+    public func previous() -> XContent? {
+        if started {
+            if currentContent === startContent {
+                currentContent = nil
+                started = false
+            } else if currentContent === startContent?.lastInTree {
+                currentContent = startContent
+            } else {
+                currentContent = currentContent?.nextInTree
             }
         }
         return currentContent
@@ -2009,50 +2058,40 @@ public final class XAllContentsIterator: XContentIteratorProtocol {
  */
 public final class XAllContentsIncludingSelfIterator: XContentIteratorProtocol {
     
-    weak var startNode: XNode?
-    weak var currentNode: XNode? = nil
+    weak var startContent: XContent?
+    weak var currentContent: XContent? = nil
     var started = false
     
     public init(
-        node: XNode
+        content: XContent
     ) {
-        self.startNode = node
+        self.startContent = content
     }
     
     public func next() -> XContent? {
-        repeat {
-            if startNode?.getLastInTree() === currentNode {
-                currentNode = startNode
-                return nil
-            }
-            else if started == false {
-                currentNode = startNode
-                started = true
-            }
-            else {
-                currentNode = currentNode?._nextInTree
-            }
-            if !(currentNode is _Isolator_ || currentNode is XDocument) {
-                return currentNode as? XContent
-            }
-        } while currentNode != nil
-        return nil
+        if currentContent === startContent?.getLastInTree() {
+            currentContent = startContent
+            return nil
+        }
+        else if started == false {
+            currentContent = startContent
+            started = true
+        }
+        else {
+            currentContent = currentContent?.nextInTree
+        }
+        return currentContent
     }
     
     public func previous() -> XContent? {
-        repeat {
-            if currentNode === startNode {
-                currentNode = nil
-                started = false
-            }
-            else {
-                currentNode = currentNode?._previousInTree
-                if !(currentNode is _Isolator_) {
-                    return currentNode as? XContent
-                }
-            }
-        } while currentNode != nil
-        return nil
+        if currentContent === startContent {
+            currentContent = nil
+            started = false
+        }
+        else {
+            currentContent = currentContent?.previousInTree
+        }
+        return currentContent
     }
 }
 

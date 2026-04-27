@@ -60,9 +60,9 @@ public extension XElement {
         touching(towards: direction) != nil
     }
     
-    /// Get the neighbouring element in the specified direction.
+    /// Get the neighbouring element (sibling) in the specified direction.
     /// (Other content in between does not matter.)
-    func neighbour(towards direction: XSequentialDirection) -> XElement? {
+    func sibling(towards direction: XSequentialDirection) -> XElement? {
         switch direction {
         case .previous:
             self.previousElement
@@ -71,10 +71,10 @@ public extension XElement {
         }
     }
     
-    /// Has the element a neighbouring element in the specified direction?
+    /// Has the element a neighbouring element (sibling) in the specified direction?
     /// (Other content in between will be skipped.)
-    func hasNeighbour(towards direction: XSequentialDirection) -> Bool {
-        neighbour(towards: direction) != nil
+    func hasSibling(towards direction: XSequentialDirection) -> Bool {
+        sibling(towards: direction) != nil
     }
     
     /// Get the edging content (the first or last) in the specified direction.

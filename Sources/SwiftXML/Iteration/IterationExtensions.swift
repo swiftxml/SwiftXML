@@ -200,6 +200,55 @@ public extension XNode {
         return XContentSequenceIncludingCondition(sequence: XReversedSequenceOfContent(node: self), untilAndIncluding: condition)
     }
     
+    func content(towards direction: XSequentialDirection) -> XContentSequence {
+        switch direction {
+        case .previous: return contentReversed
+        case .next: return content
+        }
+    }
+    
+    func content(towards direction: XSequentialDirection, _ condition: @escaping (XContent) -> Bool) -> XContentSequence {
+        switch direction {
+        case .previous: return XContentSequenceWithCondition(sequence: XReversedSequenceOfContent(node: self), condition: condition)
+        case .next: return XContentSequenceWithCondition(sequence: XSequenceOfContent(node: self), condition: condition)
+        }
+    }
+    
+    func content(towards direction: XSequentialDirection, _ condition: @escaping (XContent) -> Bool, while whileCondition: @escaping (XContent) -> Bool) -> XContentSequence {
+        switch direction {
+        case .previous: return XContentSequenceWithConditionAndWhileCondition(sequence: XReversedSequenceOfContent(node: self), condition: condition, while: whileCondition)
+        case .next: return XContentSequenceWithConditionAndWhileCondition(sequence: XSequenceOfContent(node: self), condition: condition, while: whileCondition)
+        }
+    }
+    
+    func content(towards direction: XSequentialDirection, _ condition: @escaping (XContent) -> Bool, until untilCondition: @escaping (XContent) -> Bool) -> XContentSequence {
+        switch direction {
+        case .previous: return XContentSequenceWithConditionAndUntilCondition(sequence: XReversedSequenceOfContent(node: self), condition: condition, until: untilCondition)
+        case .next: return XContentSequenceWithConditionAndUntilCondition(sequence: XSequenceOfContent(node: self), condition: condition, until: untilCondition)
+        }
+    }
+    
+    func content(towards direction: XSequentialDirection, while condition: @escaping (XContent) -> Bool) -> XContentSequence {
+        switch direction {
+        case .previous: return XContentSequenceWhileCondition(sequence: XReversedSequenceOfContent(node: self), while: condition)
+        case .next: return XContentSequenceWhileCondition(sequence: XSequenceOfContent(node: self), while: condition)
+        }
+    }
+    
+    func content(towards direction: XSequentialDirection, until condition: @escaping (XContent) -> Bool) -> XContentSequence {
+        switch direction {
+        case .previous: return XContentSequenceUntilCondition(sequence: XReversedSequenceOfContent(node: self), until: condition)
+        case .next: return XContentSequenceUntilCondition(sequence: XSequenceOfContent(node: self), until: condition)
+        }
+    }
+    
+    func content(towards direction: XSequentialDirection, untilAndIncluding condition: @escaping (XContent) -> Bool) -> XContentSequence {
+        switch direction {
+        case .previous: return XContentSequenceIncludingCondition(sequence: XReversedSequenceOfContent(node: self), untilAndIncluding: condition)
+        case .next: return XContentSequenceIncludingCondition(sequence: XSequenceOfContent(node: self), untilAndIncluding: condition)
+        }
+    }
+    
     var immediateTexts: XTextSequence {
         get { XSequenceOfImmediateTexts(node: self) }
     }
@@ -256,6 +305,55 @@ public extension XNode {
         return XTextSequenceIncludingCondition(sequence: XReversedSequenceOfImmediateTexts(node: self), untilAndIncluding: condition)
     }
     
+    func immediateTexts(towards direction: XSequentialDirection) -> XTextSequence {
+        switch direction {
+        case .previous: XReversedSequenceOfImmediateTexts(node: self)
+        case .next: XSequenceOfImmediateTexts(node: self)
+        }
+    }
+    
+    func immediateTexts(towards direction: XSequentialDirection, _ condition: @escaping (XText) -> Bool) -> XTextSequence {
+        switch direction {
+        case .previous: XTextSequenceWithCondition(sequence: XReversedSequenceOfImmediateTexts(node: self), condition: condition)
+        case .next: XTextSequenceWithCondition(sequence: XSequenceOfImmediateTexts(node: self), condition: condition)
+        }
+    }
+    
+    func immediateTexts(towards direction: XSequentialDirection, _ condition: @escaping (XText) -> Bool, while whileCondition: @escaping (XContent) -> Bool) -> XTextSequence {
+        switch direction {
+        case .previous: XTextSequenceWithConditionAndWhileCondition(sequence: XReversedSequenceOfImmediateTexts(node: self), condition: condition, while: whileCondition)
+        case .next: XTextSequenceWithConditionAndWhileCondition(sequence: XSequenceOfImmediateTexts(node: self), condition: condition, while: whileCondition)
+        }
+    }
+    
+    func immediateTexts(towards direction: XSequentialDirection, _ condition: @escaping (XText) -> Bool, until untilCondition: @escaping (XContent) -> Bool) -> XTextSequence {
+        switch direction {
+        case .previous: XTextSequenceWithConditionAndUntilCondition(sequence: XReversedSequenceOfImmediateTexts(node: self), condition: condition, until: untilCondition)
+        case .next: XTextSequenceWithConditionAndUntilCondition(sequence: XSequenceOfImmediateTexts(node: self), condition: condition, until: untilCondition)
+        }
+    }
+    
+    func immediateTexts(towards direction: XSequentialDirection, while condition: @escaping (XText) -> Bool) -> XTextSequence {
+        switch direction {
+        case .previous: XTextSequenceWhileCondition(sequence: XReversedSequenceOfImmediateTexts(node: self), while: condition)
+        case .next: XTextSequenceWhileCondition(sequence: XSequenceOfImmediateTexts(node: self), while: condition)
+        }
+    }
+    
+    func immediateTexts(towards direction: XSequentialDirection, until condition: @escaping (XText) -> Bool) -> XTextSequence {
+        switch direction {
+        case .previous: XTextSequenceUntilCondition(sequence: XReversedSequenceOfImmediateTexts(node: self), until: condition)
+        case .next: XTextSequenceUntilCondition(sequence: XSequenceOfImmediateTexts(node: self), until: condition)
+        }
+    }
+    
+    func immediateTexts(towards direction: XSequentialDirection, untilAndIncluding condition: @escaping (XText) -> Bool) -> XTextSequence {
+        switch direction {
+        case .previous: XTextSequenceIncludingCondition(sequence: XReversedSequenceOfImmediateTexts(node: self), untilAndIncluding: condition)
+        case .next: XTextSequenceIncludingCondition(sequence: XSequenceOfImmediateTexts(node: self), untilAndIncluding: condition)
+        }
+    }
+    
     var allTexts: XTextSequence {
         get { XSequenceOfAllTexts(node: self) }
     }
@@ -310,6 +408,55 @@ public extension XNode {
     
     func allTextsReversed(untilAndIncluding condition: @escaping (XText) -> Bool) -> XTextSequence {
         return XTextSequenceIncludingCondition(sequence: XReversedSequenceOfAllTexts(node: self), untilAndIncluding: condition)
+    }
+    
+    func allTexts(towards direction: XSequentialDirection) -> XTextSequence {
+        switch direction {
+        case .previous: XReversedSequenceOfAllTexts(node: self)
+        case .next: XSequenceOfAllTexts(node: self)
+        }
+    }
+    
+    func allTexts(towards direction: XSequentialDirection, _ condition: @escaping (XText) -> Bool) -> XTextSequence {
+        switch direction {
+        case .previous: XTextSequenceWithCondition(sequence: XReversedSequenceOfAllTexts(node: self), condition: condition)
+        case .next: XTextSequenceWithCondition(sequence: XSequenceOfAllTexts(node: self), condition: condition)
+        }
+    }
+    
+    func allTexts(towards direction: XSequentialDirection, _ condition: @escaping (XText) -> Bool, while whileCondition: @escaping (XContent) -> Bool) -> XTextSequence {
+        switch direction {
+        case .previous: XTextSequenceWithConditionAndWhileCondition(sequence: XReversedSequenceOfAllTexts(node: self), condition: condition, while: whileCondition)
+        case .next: XTextSequenceWithConditionAndWhileCondition(sequence: XSequenceOfAllTexts(node: self), condition: condition, while: whileCondition)
+        }
+    }
+    
+    func allTexts(towards direction: XSequentialDirection, _ condition: @escaping (XText) -> Bool, until untilCondition: @escaping (XContent) -> Bool) -> XTextSequence {
+        switch direction {
+        case .previous: XTextSequenceWithConditionAndUntilCondition(sequence: XReversedSequenceOfAllTexts(node: self), condition: condition, until: untilCondition)
+        case .next: XTextSequenceWithConditionAndUntilCondition(sequence: XSequenceOfAllTexts(node: self), condition: condition, until: untilCondition)
+        }
+    }
+    
+    func allTexts(towards direction: XSequentialDirection, while condition: @escaping (XText) -> Bool) -> XTextSequence {
+        switch direction {
+        case .previous: XTextSequenceWhileCondition(sequence: XReversedSequenceOfAllTexts(node: self), while: condition)
+        case .next: XTextSequenceWhileCondition(sequence: XSequenceOfAllTexts(node: self), while: condition)
+        }
+    }
+    
+    func allTexts(towards direction: XSequentialDirection, until condition: @escaping (XText) -> Bool) -> XTextSequence {
+        switch direction {
+        case .previous: XTextSequenceUntilCondition(sequence: XReversedSequenceOfAllTexts(node: self), until: condition)
+        case .next: XTextSequenceUntilCondition(sequence: XSequenceOfAllTexts(node: self), until: condition)
+        }
+    }
+    
+    func allTexts(towards direction: XSequentialDirection, untilAndIncluding condition: @escaping (XText) -> Bool) -> XTextSequence {
+        switch direction {
+        case .previous: XTextSequenceIncludingCondition(sequence: XReversedSequenceOfAllTexts(node: self), untilAndIncluding: condition)
+        case .next: XTextSequenceIncludingCondition(sequence: XSequenceOfAllTexts(node: self), untilAndIncluding: condition)
+        }
     }
     
     var children: XElementSequence {
@@ -440,6 +587,118 @@ public extension XNode {
         return XElementSequenceIncludingCondition(sequence: XReversedChildrenSequence(node: self), untilAndIncluding: condition)
     }
     
+    func children(towards direction: XSequentialDirection,) -> XElementSequence {
+        switch direction {
+        case .previous: XReversedChildrenSequence(node: self)
+        case .next: XChildrenSequence(node: self)
+        }
+    }
+    
+    func children(towards direction: XSequentialDirection, _ condition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithCondition(sequence: XReversedChildrenSequence(node: self), condition: condition)
+        case .next: XElementSequenceWithCondition(sequence: XChildrenSequence(node: self), condition: condition)
+        }
+    }
+    
+    func children(towards direction: XSequentialDirection, _ condition: @escaping (XElement) -> Bool, while whileCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndWhileCondition(sequence: XReversedChildrenSequence(node: self), condition: condition, while: whileCondition)
+        case .next: XElementSequenceWithConditionAndWhileCondition(sequence: XChildrenSequence(node: self), condition: condition, while: whileCondition)
+        }
+    }
+    
+    func children(towards direction: XSequentialDirection, _ condition: @escaping (XElement) -> Bool, until untilCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndUntilCondition(sequence: XReversedChildrenSequence(node: self), condition: condition, until: untilCondition)
+        case .next: XElementSequenceWithConditionAndUntilCondition(sequence: XChildrenSequence(node: self), condition: condition, until: untilCondition)
+        }
+    }
+    
+    func children(towards direction: XSequentialDirection, prefix: String? = nil, _ name: String) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithCondition(sequence: XReversedChildrenSequence(node: self), prefix: prefix, elementName: name)
+        case .next: XElementSequenceWithCondition(sequence: XChildrenSequence(node: self), prefix: prefix, elementName: name)
+        }
+    }
+    
+    func children(towards direction: XSequentialDirection, prefix: String? = nil, _ name: String, while whileCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndWhileCondition(sequence: XReversedChildrenSequence(node: self), prefix: prefix, elementName: name, while: whileCondition)
+        case .next: XElementSequenceWithConditionAndWhileCondition(sequence: XChildrenSequence(node: self), prefix: prefix, elementName: name, while: whileCondition)
+        }
+    }
+    
+    func children(towards direction: XSequentialDirection, prefix: String? = nil, _ name: String, until untilCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndUntilCondition(sequence: XReversedChildrenSequence(node: self), prefix: prefix, elementName: name, until: untilCondition)
+        case .next: XElementSequenceWithConditionAndUntilCondition(sequence: XChildrenSequence(node: self), prefix: prefix, elementName: name, until: untilCondition)
+        }
+    }
+    
+    func children(towards direction: XSequentialDirection, prefix: String? = nil, _ names: [String]) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithCondition(sequence: XReversedChildrenSequence(node: self), condition: { $0.prefix == prefix && names.contains($0.name) })
+        case .next: XElementSequenceWithCondition(sequence: XChildrenSequence(node: self), condition: { $0.prefix == prefix && names.contains($0.name) })
+        }
+    }
+    
+    func children(towards direction: XSequentialDirection, prefix: String? = nil, _ names: [String], while whileCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndWhileCondition(sequence: XReversedChildrenSequence(node: self), condition: { $0.prefix == prefix && names.contains($0.name) }, while: whileCondition)
+        case .next: XElementSequenceWithConditionAndWhileCondition(sequence: XChildrenSequence(node: self), condition: { $0.prefix == prefix && names.contains($0.name) }, while: whileCondition)
+        }
+    }
+    
+    func children(towards direction: XSequentialDirection, prefix: String? = nil, _ names: [String], until untilCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndUntilCondition(sequence: XReversedChildrenSequence(node: self), condition: { $0.prefix == prefix && names.contains($0.name) }, until: untilCondition)
+        case .next: XElementSequenceWithConditionAndUntilCondition(sequence: XChildrenSequence(node: self), condition: { $0.prefix == prefix && names.contains($0.name) }, until: untilCondition)
+        }
+    }
+    
+    func children(towards direction: XSequentialDirection, prefix: String? = nil, _ names: String...) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithCondition(sequence: XReversedChildrenSequence(node: self), condition: { $0.prefix == prefix && (names.isEmpty || names.contains($0.name)) })
+        case .next: XElementSequenceWithCondition(sequence: XChildrenSequence(node: self), condition: { $0.prefix == prefix && (names.isEmpty || names.contains($0.name)) })
+        }
+    }
+    
+    func children(towards direction: XSequentialDirection, prefix: String? = nil, _ names: String..., while whileCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndWhileCondition(sequence: XReversedChildrenSequence(node: self), condition: { $0.prefix == prefix && (names.isEmpty || names.contains($0.name)) }, while: whileCondition)
+        case .next: XElementSequenceWithConditionAndWhileCondition(sequence: XChildrenSequence(node: self), condition: { $0.prefix == prefix && (names.isEmpty || names.contains($0.name)) }, while: whileCondition)
+        }
+    }
+    
+    func children(towards direction: XSequentialDirection, prefix: String? = nil, _ names: String..., until untilCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndUntilCondition(sequence: XReversedChildrenSequence(node: self), condition: { $0.prefix == prefix && (names.isEmpty || names.contains($0.name)) }, until: untilCondition)
+        case .next: XElementSequenceWithConditionAndUntilCondition(sequence: XChildrenSequence(node: self), condition: { $0.prefix == prefix && (names.isEmpty || names.contains($0.name)) }, until: untilCondition)
+        }
+    }
+    
+    func children(towards direction: XSequentialDirection, while condition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWhileCondition(sequence: XReversedChildrenSequence(node: self), while: condition)
+        case .next: XElementSequenceWhileCondition(sequence: XChildrenSequence(node: self), while: condition)
+        }
+    }
+    
+    func children(towards direction: XSequentialDirection, until condition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceUntilCondition(sequence: XReversedChildrenSequence(node: self), until: condition)
+        case .next: XElementSequenceUntilCondition(sequence: XChildrenSequence(node: self), until: condition)
+        }
+    }
+    
+    func children(towards direction: XSequentialDirection, untilAndIncluding condition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceIncludingCondition(sequence: XChildrenSequence(node: self), untilAndIncluding: condition)
+        case .next: XElementSequenceIncludingCondition(sequence: XChildrenSequence(node: self), untilAndIncluding: condition)
+        }
+    }
+    
     var allContent: XContentSequence {
         get { XAllContentSequence(node: self) }
     }
@@ -468,34 +727,6 @@ public extension XNode {
         return XContentSequenceIncludingCondition(sequence: XAllContentSequence(node: self), untilAndIncluding: condition)
     }
     
-    var allContentIncludingSelf: XContentSequence {
-        get { XAllContentIncludingSelfSequence(node: self) }
-    }
-    
-    func allContentIncludingSelf(_ condition: @escaping (XContent) -> Bool) -> XContentSequence {
-        return XContentSequenceWithCondition(sequence: XAllContentIncludingSelfSequence(node: self), condition: condition)
-    }
-    
-    func allContentIncludingSelf(_ condition: @escaping (XContent) -> Bool, while whileCondition: @escaping (XContent) -> Bool) -> XContentSequence {
-        return XContentSequenceWithConditionAndWhileCondition(sequence: XAllContentIncludingSelfSequence(node: self), condition: condition, while: whileCondition)
-    }
-    
-    func allContentIncludingSelf(_ condition: @escaping (XContent) -> Bool, until untilCondition: @escaping (XContent) -> Bool) -> XContentSequence {
-        return XContentSequenceWithConditionAndUntilCondition(sequence: XAllContentIncludingSelfSequence(node: self), condition: condition, until: untilCondition)
-    }
-    
-    func allContentIncludingSelf(while condition: @escaping (XContent) -> Bool) -> XContentSequence {
-        return XContentSequenceWhileCondition(sequence: XAllContentIncludingSelfSequence(node: self), while: condition)
-    }
-    
-    func allContentIncludingSelf(until condition: @escaping (XContent) -> Bool) -> XContentSequence {
-        return XContentSequenceUntilCondition(sequence: XAllContentIncludingSelfSequence(node: self), until: condition)
-    }
-    
-    func allContentIncludingSelf(untilAndIncluding condition: @escaping (XContent) -> Bool) -> XContentSequence {
-        return XContentSequenceIncludingCondition(sequence: XAllContentIncludingSelfSequence(node: self), untilAndIncluding: condition)
-    }
-    
     var allContentReversed: XContentSequence {
         get { XReversedSequenceOfAllContent(node: self) }
     }
@@ -520,8 +751,57 @@ public extension XNode {
         return XContentSequenceUntilCondition(sequence: XReversedSequenceOfAllContent(node: self), until: condition)
     }
     
-    func allTContentReversed(untilAndIncluding condition: @escaping (XContent) -> Bool) -> XContentSequence {
+    func allContentReversed(untilAndIncluding condition: @escaping (XContent) -> Bool) -> XContentSequence {
         return XContentSequenceIncludingCondition(sequence: XReversedSequenceOfAllContent(node: self), untilAndIncluding: condition)
+    }
+    
+    func allContent(towards direction: XSequentialDirection) -> XContentSequence {
+        switch direction {
+        case .previous: XReversedSequenceOfAllContent(node: self)
+        case .next: XAllContentSequence(node: self)
+        }
+    }
+    
+    func allContent(towards direction: XSequentialDirection, _ condition: @escaping (XContent) -> Bool) -> XContentSequence {
+        switch direction {
+        case .previous: XContentSequenceWithCondition(sequence: XReversedSequenceOfAllContent(node: self), condition: condition)
+        case .next: XContentSequenceWithCondition(sequence: XAllContentSequence(node: self), condition: condition)
+        }
+    }
+    
+    func allContent(towards direction: XSequentialDirection, _ condition: @escaping (XContent) -> Bool, while whileCondition: @escaping (XContent) -> Bool) -> XContentSequence {
+        switch direction {
+        case .previous: XContentSequenceWithConditionAndWhileCondition(sequence: XReversedSequenceOfAllContent(node: self), condition: condition, while: whileCondition)
+        case .next: XContentSequenceWithConditionAndWhileCondition(sequence: XAllContentSequence(node: self), condition: condition, while: whileCondition)
+        }
+    }
+    
+    func allContent(towards direction: XSequentialDirection, _ condition: @escaping (XContent) -> Bool, until untilCondition: @escaping (XContent) -> Bool) -> XContentSequence {
+        switch direction {
+        case .previous: XContentSequenceWithConditionAndUntilCondition(sequence: XReversedSequenceOfAllContent(node: self), condition: condition, until: untilCondition)
+        case .next: XContentSequenceWithConditionAndUntilCondition(sequence: XAllContentSequence(node: self), condition: condition, until: untilCondition)
+        }
+    }
+    
+    func allContent(towards direction: XSequentialDirection, while condition: @escaping (XContent) -> Bool) -> XContentSequence {
+        switch direction {
+        case .previous: XContentSequenceWhileCondition(sequence: XReversedSequenceOfAllContent(node: self), while: condition)
+        case .next: XContentSequenceWhileCondition(sequence: XAllContentSequence(node: self), while: condition)
+        }
+    }
+    
+    func allContent(towards direction: XSequentialDirection, until condition: @escaping (XContent) -> Bool) -> XContentSequence {
+        switch direction {
+        case .previous: XContentSequenceUntilCondition(sequence: XReversedSequenceOfAllContent(node: self), until: condition)
+        case .next: XContentSequenceUntilCondition(sequence: XAllContentSequence(node: self), until: condition)
+        }
+    }
+    
+    func allContent(towards direction: XSequentialDirection, untilAndIncluding condition: @escaping (XContent) -> Bool) -> XContentSequence {
+        switch direction {
+        case .previous: XContentSequenceIncludingCondition(sequence: XReversedSequenceOfAllContent(node: self), untilAndIncluding: condition)
+        case .next: XContentSequenceIncludingCondition(sequence: XAllContentSequence(node: self), untilAndIncluding: condition)
+        }
     }
     
     var descendants: XElementSequence {
@@ -621,7 +901,7 @@ public extension XContent {
     }
     
     var nextIncludingSelf: XContentSequence {
-        get { XNextSequence(content: self) }
+        get { XNextIncludingSelfSequence(content: self) }
     }
     
     func nextIncludingSelf(_ condition: @escaping (XContent) -> Bool) -> XContentSequence {
@@ -704,6 +984,210 @@ public extension XContent {
         return XContentSequenceIncludingCondition(sequence: XPreviousIncludingSelfSequence(content: self), untilAndIncluding: condition)
     }
     
+    func adjacent(towards direction: XSequentialDirection) -> XContentSequence {
+        switch direction {
+        case .previous: XPreviousSequence(content: self)
+        case .next: XNextSequence(content: self)
+        }
+    }
+    
+    func adjacent(towards direction: XSequentialDirection, _ condition: @escaping (XContent) -> Bool) -> XContentSequence {
+        switch direction {
+        case .previous: XContentSequenceWithCondition(sequence: XPreviousSequence(content: self), condition: condition)
+        case .next: XContentSequenceWithCondition(sequence: XNextSequence(content: self), condition: condition)
+        }
+    }
+    
+    func adjacent(towards direction: XSequentialDirection, _ condition: @escaping (XContent) -> Bool, while whileCondition: @escaping (XContent) -> Bool) -> XContentSequence {
+        switch direction {
+        case .previous: XContentSequenceWithConditionAndWhileCondition(sequence: XPreviousSequence(content: self), condition: condition, while: whileCondition)
+        case .next: XContentSequenceWithConditionAndWhileCondition(sequence: XNextSequence(content: self), condition: condition, while: whileCondition)
+        }
+    }
+    
+    func adjacent(towards direction: XSequentialDirection, _ condition: @escaping (XContent) -> Bool, until untilCondition: @escaping (XContent) -> Bool) -> XContentSequence {
+        switch direction {
+        case .previous: XContentSequenceWithConditionAndUntilCondition(sequence: XPreviousSequence(content: self), condition: condition, until: untilCondition)
+        case .next: XContentSequenceWithConditionAndUntilCondition(sequence: XNextSequence(content: self), condition: condition, until: untilCondition)
+        }
+    }
+    
+    func adjacent(towards direction: XSequentialDirection, while condition: @escaping (XContent) -> Bool) -> XContentSequence {
+        switch direction {
+        case .previous: XContentSequenceWhileCondition(sequence: XPreviousSequence(content: self), while: condition)
+        case .next: XContentSequenceWhileCondition(sequence: XNextSequence(content: self), while: condition)
+        }
+    }
+    
+    func adjacent(towards direction: XSequentialDirection, until condition: @escaping (XContent) -> Bool) -> XContentSequence {
+        switch direction {
+        case .previous: XContentSequenceUntilCondition(sequence: XPreviousSequence(content: self), until: condition)
+        case .next: XContentSequenceUntilCondition(sequence: XNextSequence(content: self), until: condition)
+        }
+        
+    }
+    
+    func adjacent(towards direction: XSequentialDirection, untilAndIncluding condition: @escaping (XContent) -> Bool) -> XContentSequence {
+        switch direction {
+        case .previous: XContentSequenceIncludingCondition(sequence: XPreviousSequence(content: self), untilAndIncluding: condition)
+        case .next: XContentSequenceIncludingCondition(sequence: XNextSequence(content: self), untilAndIncluding: condition)
+        }
+    }
+    
+    func adjacentIncludingSelf(towards direction: XSequentialDirection) -> XContentSequence {
+        switch direction {
+        case .previous: XPreviousIncludingSelfSequence(content: self)
+        case .next: XNextIncludingSelfSequence(content: self)
+        }
+    }
+    
+    func adjacentIncludingSelf(towards direction: XSequentialDirection, _ condition: @escaping (XContent) -> Bool) -> XContentSequence {
+        switch direction {
+        case .previous: XContentSequenceWithCondition(sequence: XPreviousIncludingSelfSequence(content: self), condition: condition)
+        case .next: XContentSequenceWithCondition(sequence: XNextIncludingSelfSequence(content: self), condition: condition)
+        }
+    }
+    
+    func adjacentIncludingSelf(towards direction: XSequentialDirection, _ condition: @escaping (XContent) -> Bool, while whileCondition: @escaping (XContent) -> Bool) -> XContentSequence {
+        switch direction {
+        case .previous: XContentSequenceWithConditionAndWhileCondition(sequence: XPreviousIncludingSelfSequence(content: self), condition: condition, while: whileCondition)
+        case .next: XContentSequenceWithConditionAndWhileCondition(sequence: XNextIncludingSelfSequence(content: self), condition: condition, while: whileCondition)
+        }
+    }
+    
+    func adjacentIncludingSelf(towards direction: XSequentialDirection, _ condition: @escaping (XContent) -> Bool, until untilCondition: @escaping (XContent) -> Bool) -> XContentSequence {
+        switch direction {
+        case .previous: XContentSequenceWithConditionAndUntilCondition(sequence: XPreviousIncludingSelfSequence(content: self), condition: condition, until: untilCondition)
+        case .next: XContentSequenceWithConditionAndUntilCondition(sequence: XNextIncludingSelfSequence(content: self), condition: condition, until: untilCondition)
+        }
+    }
+    
+    func adjacentIncludingSelf(towards direction: XSequentialDirection, while condition: @escaping (XContent) -> Bool) -> XContentSequence {
+        switch direction {
+        case .previous: XContentSequenceWhileCondition(sequence: XPreviousIncludingSelfSequence(content: self), while: condition)
+        case .next: XContentSequenceWhileCondition(sequence: XNextIncludingSelfSequence(content: self), while: condition)
+        }
+    }
+    
+    func adjacentIncludingSelf(towards direction: XSequentialDirection, until condition: @escaping (XContent) -> Bool) -> XContentSequence {
+        switch direction {
+        case .previous: XContentSequenceUntilCondition(sequence: XPreviousIncludingSelfSequence(content: self), until: condition)
+        case .next: XContentSequenceUntilCondition(sequence: XNextIncludingSelfSequence(content: self), until: condition)
+        }
+    }
+    
+    func adjacentIncludingSelf(towards direction: XSequentialDirection, untilAndIncluding condition: @escaping (XContent) -> Bool) -> XContentSequence {
+        switch direction {
+        case .previous: XContentSequenceIncludingCondition(sequence: XPreviousIncludingSelfSequence(content: self), untilAndIncluding: condition)
+        case .next: XContentSequenceIncludingCondition(sequence: XNextIncludingSelfSequence(content: self), untilAndIncluding: condition)
+        }
+    }
+    
+    var allContentIncludingSelf: XContentSequence {
+        get { XAllContentIncludingSelfSequence(content: self) }
+    }
+    
+    func allContentIncludingSelf(_ condition: @escaping (XContent) -> Bool) -> XContentSequence {
+        return XContentSequenceWithCondition(sequence: XAllContentIncludingSelfSequence(content: self), condition: condition)
+    }
+    
+    func allContentIncludingSelf(_ condition: @escaping (XContent) -> Bool, while whileCondition: @escaping (XContent) -> Bool) -> XContentSequence {
+        return XContentSequenceWithConditionAndWhileCondition(sequence: XAllContentIncludingSelfSequence(content: self), condition: condition, while: whileCondition)
+    }
+    
+    func allContentIncludingSelf(_ condition: @escaping (XContent) -> Bool, until untilCondition: @escaping (XContent) -> Bool) -> XContentSequence {
+        return XContentSequenceWithConditionAndUntilCondition(sequence: XAllContentIncludingSelfSequence(content: self), condition: condition, until: untilCondition)
+    }
+    
+    func allContentIncludingSelf(while condition: @escaping (XContent) -> Bool) -> XContentSequence {
+        return XContentSequenceWhileCondition(sequence: XAllContentIncludingSelfSequence(content: self), while: condition)
+    }
+    
+    func allContentIncludingSelf(until condition: @escaping (XContent) -> Bool) -> XContentSequence {
+        return XContentSequenceUntilCondition(sequence: XAllContentIncludingSelfSequence(content: self), until: condition)
+    }
+    
+    func allContentIncludingSelf(untilAndIncluding condition: @escaping (XContent) -> Bool) -> XContentSequence {
+        return XContentSequenceIncludingCondition(sequence: XAllContentIncludingSelfSequence(content: self), untilAndIncluding: condition)
+    }
+    
+    var allContentReversedIncludingSelf: XContentSequence {
+        get { XAllContentIncludingSelfSequence(content: self) }
+    }
+    
+    func allContentReversedIncludingSelf(_ condition: @escaping (XContent) -> Bool) -> XContentSequence {
+        return XContentSequenceWithCondition(sequence: XReversedSequenceOfAllContentIncludingSelf(content: self), condition: condition)
+    }
+    
+    func allContentReversedIncludingSelf(_ condition: @escaping (XContent) -> Bool, while whileCondition: @escaping (XContent) -> Bool) -> XContentSequence {
+        return XContentSequenceWithConditionAndWhileCondition(sequence: XAllContentIncludingSelfSequence(content: self), condition: condition, while: whileCondition)
+    }
+    
+    func allContentReversedIncludingSelf(_ condition: @escaping (XContent) -> Bool, until untilCondition: @escaping (XContent) -> Bool) -> XContentSequence {
+        return XContentSequenceWithConditionAndUntilCondition(sequence: XAllContentIncludingSelfSequence(content: self), condition: condition, until: untilCondition)
+    }
+    
+    func allContentReversedIncludingSelf(while condition: @escaping (XContent) -> Bool) -> XContentSequence {
+        return XContentSequenceWhileCondition(sequence: XAllContentIncludingSelfSequence(content: self), while: condition)
+    }
+    
+    func allContentReversedIncludingSelf(until condition: @escaping (XContent) -> Bool) -> XContentSequence {
+        return XContentSequenceUntilCondition(sequence: XAllContentIncludingSelfSequence(content: self), until: condition)
+    }
+    
+    func allContentReversedIncludingSelf(untilAndIncluding condition: @escaping (XContent) -> Bool) -> XContentSequence {
+        return XContentSequenceIncludingCondition(sequence: XAllContentIncludingSelfSequence(content: self), untilAndIncluding: condition)
+    }
+    
+    func allContentIncludingSelf(towards direction: XSequentialDirection) -> XContentSequence {
+        switch direction {
+        case .previous: XReversedSequenceOfAllContentIncludingSelf(content: self)
+        case .next: XAllContentIncludingSelfSequence(content: self)
+        }
+    }
+    
+    func allContentIncludingSelf(towards direction: XSequentialDirection, _ condition: @escaping (XContent) -> Bool) -> XContentSequence {
+        switch direction {
+        case .previous: XContentSequenceWithCondition(sequence: XReversedSequenceOfAllContentIncludingSelf(content: self), condition: condition)
+        case .next: XContentSequenceWithCondition(sequence: XAllContentIncludingSelfSequence(content: self), condition: condition)
+        }
+    }
+    
+    func allContentIncludingSelf(towards direction: XSequentialDirection, _ condition: @escaping (XContent) -> Bool, while whileCondition: @escaping (XContent) -> Bool) -> XContentSequence {
+        switch direction {
+        case .previous: XContentSequenceWithConditionAndWhileCondition(sequence: XReversedSequenceOfAllContentIncludingSelf(content: self), condition: condition, while: whileCondition)
+        case .next: XContentSequenceWithConditionAndWhileCondition(sequence: XAllContentIncludingSelfSequence(content: self), condition: condition, while: whileCondition)
+        }
+    }
+    
+    func allContentIncludingSelf(towards direction: XSequentialDirection, _ condition: @escaping (XContent) -> Bool, until untilCondition: @escaping (XContent) -> Bool) -> XContentSequence {
+        switch direction {
+        case .previous: XContentSequenceWithConditionAndUntilCondition(sequence: XReversedSequenceOfAllContentIncludingSelf(content: self), condition: condition, until: untilCondition)
+        case .next: XContentSequenceWithConditionAndUntilCondition(sequence: XAllContentIncludingSelfSequence(content: self), condition: condition, until: untilCondition)
+        }
+    }
+    
+    func allContentIncludingSelf(towards direction: XSequentialDirection, while condition: @escaping (XContent) -> Bool) -> XContentSequence {
+        switch direction {
+        case .previous: XContentSequenceWhileCondition(sequence: XReversedSequenceOfAllContentIncludingSelf(content: self), while: condition)
+        case .next: XContentSequenceWhileCondition(sequence: XAllContentIncludingSelfSequence(content: self), while: condition)
+        }
+    }
+    
+    func allContentIncludingSelf(towards direction: XSequentialDirection, until condition: @escaping (XContent) -> Bool) -> XContentSequence {
+        switch direction {
+        case .previous: XContentSequenceUntilCondition(sequence: XReversedSequenceOfAllContentIncludingSelf(content: self), until: condition)
+        case .next: XContentSequenceUntilCondition(sequence: XAllContentIncludingSelfSequence(content: self), until: condition)
+        }
+    }
+    
+    func allContentIncludingSelf(towards direction: XSequentialDirection, untilAndIncluding condition: @escaping (XContent) -> Bool) -> XContentSequence {
+        switch direction {
+        case .previous: XContentSequenceIncludingCondition(sequence: XReversedSequenceOfAllContentIncludingSelf(content: self), untilAndIncluding: condition)
+        case .next: XContentSequenceIncludingCondition(sequence: XAllContentIncludingSelfSequence(content: self), untilAndIncluding: condition)
+        }
+    }
+    
     var nextTexts: XTextSequence {
         get { XNextTextsSequence(content: self) }
     }
@@ -758,6 +1242,55 @@ public extension XContent {
     
     func previousTexts(untilAndIncluding condition: @escaping (XText) -> Bool) -> XTextSequence {
         return XTextSequenceIncludingCondition(sequence: XPreviousTextsSequence(content: self), untilAndIncluding: condition)
+    }
+    
+    func adjacentTexts(towards direction: XSequentialDirection) -> XTextSequence {
+        switch direction {
+        case .previous: XPreviousTextsSequence(content: self)
+        case .next: XNextTextsSequence(content: self)
+        }
+    }
+    
+    func adjacentTexts(towards direction: XSequentialDirection, _ condition: @escaping (XText) -> Bool) -> XTextSequence {
+        switch direction {
+        case .previous: XTextSequenceWithCondition(sequence: XPreviousTextsSequence(content: self), condition: condition)
+        case .next: XTextSequenceWithCondition(sequence: XNextTextsSequence(content: self), condition: condition)
+        }
+    }
+    
+    func adjacentTexts(towards direction: XSequentialDirection, _ condition: @escaping (XText) -> Bool, while whileCondition: @escaping (XText) -> Bool) -> XTextSequence {
+        switch direction {
+        case .previous: XTextSequenceWithConditionAndWhileCondition(sequence: XPreviousTextsSequence(content: self), condition: condition, while: whileCondition)
+        case .next: XTextSequenceWithConditionAndWhileCondition(sequence: XNextTextsSequence(content: self), condition: condition, while: whileCondition)
+        }
+    }
+    
+    func adjacentTexts(towards direction: XSequentialDirection, _ condition: @escaping (XText) -> Bool, until untilCondition: @escaping (XText) -> Bool) -> XTextSequence {
+        switch direction {
+        case .previous: XTextSequenceWithConditionAndUntilCondition(sequence: XPreviousTextsSequence(content: self), condition: condition, until: untilCondition)
+        case .next: XTextSequenceWithConditionAndUntilCondition(sequence: XNextTextsSequence(content: self), condition: condition, until: untilCondition)
+        }
+    }
+    
+    func adjacentTexts(towards direction: XSequentialDirection, while condition: @escaping (XText) -> Bool) -> XTextSequence {
+        switch direction {
+        case .previous: XTextSequenceWhileCondition(sequence: XPreviousTextsSequence(content: self), while: condition)
+        case .next: XTextSequenceWhileCondition(sequence: XNextTextsSequence(content: self), while: condition)
+        }
+    }
+    
+    func adjacentTexts(towards direction: XSequentialDirection, until condition: @escaping (XText) -> Bool) -> XTextSequence {
+        switch direction {
+        case .previous: XTextSequenceUntilCondition(sequence: XPreviousTextsSequence(content: self), until: condition)
+        case .next: XTextSequenceUntilCondition(sequence: XNextTextsSequence(content: self), until: condition)
+        }
+    }
+    
+    func adjacentTexts(towards direction: XSequentialDirection, untilAndIncluding condition: @escaping (XText) -> Bool) -> XTextSequence {
+        switch direction {
+        case .previous: XTextSequenceIncludingCondition(sequence: XPreviousTextsSequence(content: self), untilAndIncluding: condition)
+        case .next: XTextSequenceIncludingCondition(sequence: XNextTextsSequence(content: self), untilAndIncluding: condition)
+        }
     }
     
     var nextElements: XElementSequence {
@@ -888,6 +1421,118 @@ public extension XContent {
         return XElementSequenceIncludingCondition(sequence: XPreviousElementsSequence(content: self), untilAndIncluding: condition)
     }
     
+    func siblings(towards direction: XSequentialDirection) -> XElementSequence {
+        switch direction {
+        case .previous: XPreviousElementsSequence(content: self)
+        case .next: XNextElementsSequence(content: self)
+        }
+    }
+    
+    func siblings(towards direction: XSequentialDirection, _ condition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithCondition(sequence: XPreviousElementsSequence(content: self), condition: condition)
+        case .next: XElementSequenceWithCondition(sequence: XNextElementsSequence(content: self), condition: condition)
+        }
+    }
+    
+    func siblings(towards direction: XSequentialDirection, _ condition: @escaping (XElement) -> Bool, while whileCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndWhileCondition(sequence: XPreviousElementsSequence(content: self), condition: condition, while: whileCondition)
+        case .next: XElementSequenceWithConditionAndWhileCondition(sequence: XNextElementsSequence(content: self), condition: condition, while: whileCondition)
+        }
+    }
+    
+    func siblings(towards direction: XSequentialDirection, _ condition: @escaping (XElement) -> Bool, until untilCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndUntilCondition(sequence: XPreviousElementsSequence(content: self), condition: condition, until: untilCondition)
+        case .next: XElementSequenceWithConditionAndUntilCondition(sequence: XNextElementsSequence(content: self), condition: condition, until: untilCondition)
+        }
+    }
+    
+    func siblings(towards direction: XSequentialDirection, prefix: String? = nil, _ name: String) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithCondition(sequence: XPreviousElementsSequence(content: self), prefix: prefix, elementName: name)
+        case .next: XElementSequenceWithCondition(sequence: XNextElementsSequence(content: self), prefix: prefix, elementName: name)
+        }
+    }
+    
+    func siblings(towards direction: XSequentialDirection, prefix: String? = nil, _ name: String, while whileCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndWhileCondition(sequence: XPreviousElementsSequence(content: self), prefix: prefix, elementName: name, while: whileCondition)
+        case .next: XElementSequenceWithConditionAndWhileCondition(sequence: XNextElementsSequence(content: self), prefix: prefix, elementName: name, while: whileCondition)
+        }
+    }
+    
+    func siblings(towards direction: XSequentialDirection, prefix: String? = nil, _ name: String, until untilCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndUntilCondition(sequence: XPreviousElementsSequence(content: self), prefix: prefix, elementName: name, until: untilCondition)
+        case .next: XElementSequenceWithConditionAndUntilCondition(sequence: XNextElementsSequence(content: self), prefix: prefix, elementName: name, until: untilCondition)
+        }
+    }
+    
+    func siblings(towards direction: XSequentialDirection, prefix: String? = nil, _ names: [String]) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithCondition(sequence: XPreviousElementsSequence(content: self), condition: { $0.prefix == prefix && names.contains($0.name) })
+        case .next: XElementSequenceWithCondition(sequence: XNextElementsSequence(content: self), condition: { $0.prefix == prefix && names.contains($0.name) })
+        }
+    }
+    
+    func siblings(towards direction: XSequentialDirection, prefix: String? = nil, _ names: [String], while whileCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndWhileCondition(sequence: XPreviousElementsSequence(content: self), condition: { $0.prefix == prefix && names.contains($0.name) }, while: whileCondition)
+        case .next: XElementSequenceWithConditionAndWhileCondition(sequence: XNextElementsSequence(content: self), condition: { $0.prefix == prefix && names.contains($0.name) }, while: whileCondition)
+        }
+    }
+    
+    func siblings(towards direction: XSequentialDirection, prefix: String? = nil, _ names: [String], until untilCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndUntilCondition(sequence: XPreviousElementsSequence(content: self), condition: { $0.prefix == prefix && names.contains($0.name) }, until: untilCondition)
+        case .next: XElementSequenceWithConditionAndUntilCondition(sequence: XNextElementsSequence(content: self), condition: { $0.prefix == prefix && names.contains($0.name) }, until: untilCondition)
+        }
+    }
+    
+    func siblings(towards direction: XSequentialDirection, prefix: String? = nil, _ names: String...) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithCondition(sequence: XPreviousElementsSequence(content: self), condition: { $0.prefix == prefix && (names.isEmpty || names.contains($0.name)) })
+        case .next: XElementSequenceWithCondition(sequence: XNextElementsSequence(content: self), condition: { $0.prefix == prefix && (names.isEmpty || names.contains($0.name)) })
+        }
+    }
+    
+    func siblings(towards direction: XSequentialDirection, prefix: String? = nil, _ names: String..., while whileCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndWhileCondition(sequence: XPreviousElementsSequence(content: self), condition: { $0.prefix == prefix && (names.isEmpty || names.contains($0.name)) }, while: whileCondition)
+        case .next: XElementSequenceWithConditionAndWhileCondition(sequence: XNextElementsSequence(content: self), condition: { $0.prefix == prefix && (names.isEmpty || names.contains($0.name)) }, while: whileCondition)
+        }
+    }
+    
+    func siblings(towards direction: XSequentialDirection, prefix: String? = nil, _ names: String..., until untilCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndUntilCondition(sequence: XPreviousElementsSequence(content: self), condition: { $0.prefix == prefix && (names.isEmpty || names.contains($0.name)) }, until: untilCondition)
+        case .next: XElementSequenceWithConditionAndUntilCondition(sequence: XNextElementsSequence(content: self), condition: { $0.prefix == prefix && (names.isEmpty || names.contains($0.name)) }, until: untilCondition)
+        }
+    }
+    
+    func siblings(towards direction: XSequentialDirection, while condition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWhileCondition(sequence: XPreviousElementsSequence(content: self), while: condition)
+        case .next: XElementSequenceWhileCondition(sequence: XNextElementsSequence(content: self), while: condition)
+        }
+    }
+    
+    func siblings(towards direction: XSequentialDirection, until condition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceUntilCondition(sequence: XPreviousElementsSequence(content: self), until: condition)
+        case .next: XElementSequenceUntilCondition(sequence: XNextElementsSequence(content: self), until: condition)
+        }
+    }
+    
+    func siblings(towards direction: XSequentialDirection, untilAndIncluding condition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceIncludingCondition(sequence: XPreviousElementsSequence(content: self), untilAndIncluding: condition)
+        case .next: XElementSequenceIncludingCondition(sequence: XNextElementsSequence(content: self), untilAndIncluding: condition)
+        }
+    }
+    
     var nextCloseElements: XElementSequence {
         get { XNextCloseElementsSequence(content: self) }
     }
@@ -1015,6 +1660,120 @@ public extension XContent {
     func previousCloseElements(untilAndIncluding condition: @escaping (XElement) -> Bool) -> XElementSequence {
         return XElementSequenceIncludingCondition(sequence: XPreviousCloseElementsSequence(content: self), untilAndIncluding: condition)
     }
+    
+    // +++
+    
+    func closeSiblings(towards direction: XSequentialDirection) -> XElementSequence {
+        switch direction {
+        case .previous: XPreviousCloseElementsSequence(content: self)
+        case .next: XNextCloseElementsSequence(content: self)
+        }
+    }
+    
+    func closeSiblings(towards direction: XSequentialDirection, _ condition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithCondition(sequence: XPreviousCloseElementsSequence(content: self), condition: condition)
+        case .next: XElementSequenceWithCondition(sequence: XNextCloseElementsSequence(content: self), condition: condition)
+        }
+    }
+    
+    func closeSiblings(towards direction: XSequentialDirection, _ condition: @escaping (XElement) -> Bool, while whileCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndWhileCondition(sequence: XPreviousCloseElementsSequence(content: self), condition: condition, while: whileCondition)
+        case .next: XElementSequenceWithConditionAndWhileCondition(sequence: XNextCloseElementsSequence(content: self), condition: condition, while: whileCondition)
+        }
+    }
+    
+    func closeSiblings(towards direction: XSequentialDirection, _ condition: @escaping (XElement) -> Bool, until untilCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndUntilCondition(sequence: XPreviousCloseElementsSequence(content: self), condition: condition, until: untilCondition)
+        case .next: XElementSequenceWithConditionAndUntilCondition(sequence: XNextCloseElementsSequence(content: self), condition: condition, until: untilCondition)
+        }
+    }
+    
+    func closeSiblings(towards direction: XSequentialDirection, prefix: String? = nil, _ name: String) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithCondition(sequence: XPreviousCloseElementsSequence(content: self), prefix: prefix, elementName: name)
+        case .next: XElementSequenceWithCondition(sequence: XNextCloseElementsSequence(content: self), prefix: prefix, elementName: name)
+        }
+    }
+    
+    func closeSiblings(towards direction: XSequentialDirection, prefix: String? = nil, _ name: String, while whileCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndWhileCondition(sequence: XPreviousCloseElementsSequence(content: self), prefix: prefix, elementName: name, while: whileCondition)
+        case .next: XElementSequenceWithConditionAndWhileCondition(sequence: XNextCloseElementsSequence(content: self), prefix: prefix, elementName: name, while: whileCondition)
+        }
+    }
+    
+    func closeSiblings(towards direction: XSequentialDirection, prefix: String? = nil, _ name: String, until untilCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndUntilCondition(sequence: XPreviousCloseElementsSequence(content: self), prefix: prefix, elementName: name, until: untilCondition)
+        case .next: XElementSequenceWithConditionAndUntilCondition(sequence: XNextCloseElementsSequence(content: self), prefix: prefix, elementName: name, until: untilCondition)
+        }
+    }
+    
+    func closeSiblings(towards direction: XSequentialDirection, prefix: String? = nil, _ names: [String]) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithCondition(sequence: XPreviousCloseElementsSequence(content: self), condition: { $0.prefix == prefix && names.contains($0.name) })
+        case .next: XElementSequenceWithCondition(sequence: XNextCloseElementsSequence(content: self), condition: { $0.prefix == prefix && names.contains($0.name) })
+        }
+    }
+    
+    func closeSiblings(towards direction: XSequentialDirection, prefix: String? = nil, _ names: [String], while whileCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndWhileCondition(sequence: XPreviousCloseElementsSequence(content: self), condition: { $0.prefix == prefix && names.contains($0.name) }, while: whileCondition)
+        case .next: XElementSequenceWithConditionAndWhileCondition(sequence: XNextCloseElementsSequence(content: self), condition: { $0.prefix == prefix && names.contains($0.name) }, while: whileCondition)
+        }
+    }
+    
+    func closeSiblings(towards direction: XSequentialDirection, prefix: String? = nil, _ names: [String], until untilCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndUntilCondition(sequence: XPreviousCloseElementsSequence(content: self), condition: { $0.prefix == prefix && names.contains($0.name) }, until: untilCondition)
+        case .next: XElementSequenceWithConditionAndUntilCondition(sequence: XNextCloseElementsSequence(content: self), condition: { $0.prefix == prefix && names.contains($0.name) }, until: untilCondition)
+        }
+    }
+    
+    func closeSiblings(towards direction: XSequentialDirection, prefix: String? = nil, _ names: String...) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithCondition(sequence: XPreviousCloseElementsSequence(content: self), condition: { $0.prefix == prefix && (names.isEmpty || names.contains($0.name)) })
+        case .next: XElementSequenceWithCondition(sequence: XNextCloseElementsSequence(content: self), condition: { $0.prefix == prefix && (names.isEmpty || names.contains($0.name)) })
+        }
+    }
+    
+    func closeSiblings(towards direction: XSequentialDirection, prefix: String? = nil, _ names: String..., while whileCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndWhileCondition(sequence: XPreviousCloseElementsSequence(content: self), condition: { $0.prefix == prefix && (names.isEmpty || names.contains($0.name)) }, while: whileCondition)
+        case .next: XElementSequenceWithConditionAndWhileCondition(sequence: XNextCloseElementsSequence(content: self), condition: { $0.prefix == prefix && (names.isEmpty || names.contains($0.name)) }, while: whileCondition)
+        }
+    }
+    
+    func closeSiblings(towards direction: XSequentialDirection, prefix: String? = nil, _ names: String..., until untilCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndUntilCondition(sequence: XPreviousCloseElementsSequence(content: self), condition: { $0.prefix == prefix && (names.isEmpty || names.contains($0.name)) }, until: untilCondition)
+        case .next: XElementSequenceWithConditionAndUntilCondition(sequence: XNextCloseElementsSequence(content: self), condition: { $0.prefix == prefix && (names.isEmpty || names.contains($0.name)) }, until: untilCondition)
+        }
+    }
+    
+    func closeSiblings(towards direction: XSequentialDirection, while condition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWhileCondition(sequence: XPreviousCloseElementsSequence(content: self), while: condition)
+        case .next: XElementSequenceWhileCondition(sequence: XNextCloseElementsSequence(content: self), while: condition)
+        }
+    }
+    
+    func closeSiblings(towards direction: XSequentialDirection, until condition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceUntilCondition(sequence: XPreviousCloseElementsSequence(content: self), until: condition)
+        case .next: XElementSequenceUntilCondition(sequence: XNextCloseElementsSequence(content: self), until: condition)
+        }
+    }
+    
+    func closeSiblings(towards direction: XSequentialDirection, untilAndIncluding condition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceIncludingCondition(sequence: XPreviousCloseElementsSequence(content: self), untilAndIncluding: condition)
+        case .next: XElementSequenceIncludingCondition(sequence: XNextCloseElementsSequence(content: self), untilAndIncluding: condition)
+        }
+    }
 }
 
 public extension XText {
@@ -1075,6 +1834,56 @@ public extension XText {
         return XTextSequenceIncludingCondition(sequence: XPreviousTextsIncludingSelfSequence(text: self), untilAndIncluding: condition)
     }
     
+    //+++
+    
+    func adjacentTextsIncludingSelf(towards direction: XSequentialDirection) -> XTextSequence {
+        switch direction {
+        case .previous: XPreviousTextsIncludingSelfSequence(text: self)
+        case .next: XNextTextsIncludingSelfSequence(text: self)
+        }
+    }
+    
+    func adjacentTextsIncludingSelf(towards direction: XSequentialDirection, _ condition: @escaping (XText) -> Bool) -> XTextSequence {
+        switch direction {
+        case .previous: XTextSequenceWithCondition(sequence: XPreviousTextsIncludingSelfSequence(text: self), condition: condition)
+        case .next: XTextSequenceWithCondition(sequence: XNextTextsIncludingSelfSequence(text: self), condition: condition)
+        }
+    }
+    
+    func adjacentTextsIncludingSelf(towards direction: XSequentialDirection, _ condition: @escaping (XText) -> Bool, while whileCondition: @escaping (XText) -> Bool) -> XTextSequence {
+        switch direction {
+        case .previous: XTextSequenceWithConditionAndWhileCondition(sequence: XPreviousTextsIncludingSelfSequence(text: self), condition: condition, while: whileCondition)
+        case .next: XTextSequenceWithConditionAndWhileCondition(sequence: XNextTextsIncludingSelfSequence(text: self), condition: condition, while: whileCondition)
+        }
+    }
+    
+    func adjacentTextsIncludingSelf(towards direction: XSequentialDirection, _ condition: @escaping (XText) -> Bool, until untilCondition: @escaping (XText) -> Bool) -> XTextSequence {
+        switch direction {
+        case .previous: XTextSequenceWithConditionAndUntilCondition(sequence: XPreviousTextsIncludingSelfSequence(text: self), condition: condition, until: untilCondition)
+        case .next: XTextSequenceWithConditionAndUntilCondition(sequence: XNextTextsIncludingSelfSequence(text: self), condition: condition, until: untilCondition)
+        }
+    }
+    
+    func adjacentTextsIncludingSelf(towards direction: XSequentialDirection, while condition: @escaping (XText) -> Bool) -> XTextSequence {
+        switch direction {
+        case .previous: XTextSequenceWhileCondition(sequence: XPreviousTextsIncludingSelfSequence(text: self), while: condition)
+        case .next: XTextSequenceWhileCondition(sequence: XNextTextsIncludingSelfSequence(text: self), while: condition)
+        }
+    }
+    
+    func adjacentTextsIncludingSelf(towards direction: XSequentialDirection, until condition: @escaping (XText) -> Bool) -> XTextSequence {
+        switch direction {
+        case .previous: XTextSequenceUntilCondition(sequence: XPreviousTextsIncludingSelfSequence(text: self), until: condition)
+        case .next: XTextSequenceUntilCondition(sequence: XNextTextsIncludingSelfSequence(text: self), until: condition)
+        }
+    }
+    
+    func adjacentTextsIncludingSelf(towards direction: XSequentialDirection, untilAndIncluding condition: @escaping (XText) -> Bool) -> XTextSequence {
+        switch direction {
+        case .previous: XTextSequenceIncludingCondition(sequence: XPreviousTextsIncludingSelfSequence(text: self), untilAndIncluding: condition)
+        case .next: XTextSequenceIncludingCondition(sequence: XNextTextsIncludingSelfSequence(text: self), untilAndIncluding: condition)
+        }
+    }
 }
 
 public extension XElement {
@@ -1207,6 +2016,118 @@ public extension XElement {
         return XElementSequenceIncludingCondition(sequence: XPreviousElementsIncludingSelfSequence(element: self), untilAndIncluding: condition)
     }
     
+    func siblingsIncludingSelf(towards direction: XSequentialDirection) -> XElementSequence {
+        switch direction {
+        case .previous: XPreviousElementsIncludingSelfSequence(element: self)
+        case .next: XNextElementsIncludingSelfSequence(element: self)
+        }
+    }
+    
+    func siblingsIncludingSelf(towards direction: XSequentialDirection, _ condition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithCondition(sequence: XPreviousElementsIncludingSelfSequence(element: self), condition: condition)
+        case .next: XElementSequenceWithCondition(sequence: XNextElementsIncludingSelfSequence(element: self), condition: condition)
+        }
+    }
+    
+    func siblingsIncludingSelf(towards direction: XSequentialDirection, _ condition: @escaping (XElement) -> Bool, while whileCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndWhileCondition(sequence: XPreviousElementsIncludingSelfSequence(element: self), condition: condition, while: whileCondition)
+        case .next: XElementSequenceWithConditionAndWhileCondition(sequence: XNextElementsIncludingSelfSequence(element: self), condition: condition, while: whileCondition)
+        }
+    }
+    
+    func siblingsIncludingSelf(towards direction: XSequentialDirection, _ condition: @escaping (XElement) -> Bool, until untilCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndUntilCondition(sequence: XPreviousElementsIncludingSelfSequence(element: self), condition: condition, until: untilCondition)
+        case .next: XElementSequenceWithConditionAndUntilCondition(sequence: XNextElementsIncludingSelfSequence(element: self), condition: condition, until: untilCondition)
+        }
+    }
+    
+    func siblingsIncludingSelf(towards direction: XSequentialDirection, prefix: String? = nil, _ name: String) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithCondition(sequence: XPreviousElementsIncludingSelfSequence(element: self), prefix: prefix, elementName: name)
+        case .next: XElementSequenceWithCondition(sequence: XNextElementsIncludingSelfSequence(element: self), prefix: prefix, elementName: name)
+        }
+    }
+    
+    func siblingsIncludingSelf(towards direction: XSequentialDirection, prefix: String? = nil, _ name: String, while whileCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndWhileCondition(sequence: XPreviousElementsIncludingSelfSequence(element: self), prefix: prefix, elementName: name, while: whileCondition)
+        case .next: XElementSequenceWithConditionAndWhileCondition(sequence: XNextElementsIncludingSelfSequence(element: self), prefix: prefix, elementName: name, while: whileCondition)
+        }
+    }
+    
+    func siblingsIncludingSelf(towards direction: XSequentialDirection, prefix: String? = nil, _ name: String, until untilCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndUntilCondition(sequence: XPreviousElementsIncludingSelfSequence(element: self), prefix: prefix, elementName: name, until: untilCondition)
+        case .next: XElementSequenceWithConditionAndUntilCondition(sequence: XNextElementsIncludingSelfSequence(element: self), prefix: prefix, elementName: name, until: untilCondition)
+        }
+    }
+    
+    func siblingsIncludingSelf(towards direction: XSequentialDirection, prefix: String? = nil, _ names: [String]) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithCondition(sequence: XPreviousElementsIncludingSelfSequence(element: self), condition: { $0.prefix == prefix && names.contains($0.name) })
+        case .next: XElementSequenceWithCondition(sequence: XNextElementsIncludingSelfSequence(element: self), condition: { $0.prefix == prefix && names.contains($0.name) })
+        }
+    }
+    
+    func siblingsIncludingSelf(towards direction: XSequentialDirection, prefix: String? = nil, _ names: [String], while whileCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndWhileCondition(sequence: XPreviousElementsIncludingSelfSequence(element: self), condition: { $0.prefix == prefix && names.contains($0.name) }, while: whileCondition)
+        case .next: XElementSequenceWithConditionAndWhileCondition(sequence: XNextElementsIncludingSelfSequence(element: self), condition: { $0.prefix == prefix && names.contains($0.name) }, while: whileCondition)
+        }
+    }
+    
+    func siblingsIncludingSelf(towards direction: XSequentialDirection, prefix: String? = nil, _ names: [String], until untilCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndUntilCondition(sequence: XPreviousElementsIncludingSelfSequence(element: self), condition: { $0.prefix == prefix && names.contains($0.name) }, until: untilCondition)
+        case .next: XElementSequenceWithConditionAndUntilCondition(sequence: XNextElementsIncludingSelfSequence(element: self), condition: { $0.prefix == prefix && names.contains($0.name) }, until: untilCondition)
+        }
+    }
+    
+    func siblingsIncludingSelf(towards direction: XSequentialDirection, prefix: String? = nil, _ names: String...) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithCondition(sequence: XPreviousElementsIncludingSelfSequence(element: self), condition: { $0.prefix == prefix && (names.isEmpty || names.contains($0.name)) })
+        case .next: XElementSequenceWithCondition(sequence: XNextElementsIncludingSelfSequence(element: self), condition: { $0.prefix == prefix && (names.isEmpty || names.contains($0.name)) })
+        }
+    }
+    
+    func siblingsIncludingSelf(towards direction: XSequentialDirection, prefix: String? = nil, _ names: String..., while whileCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndWhileCondition(sequence: XPreviousElementsIncludingSelfSequence(element: self), condition: { $0.prefix == prefix && (names.isEmpty || names.contains($0.name)) }, while: whileCondition)
+        case .next: XElementSequenceWithConditionAndWhileCondition(sequence: XNextElementsIncludingSelfSequence(element: self), condition: { $0.prefix == prefix && (names.isEmpty || names.contains($0.name)) }, while: whileCondition)
+        }
+    }
+    
+    func siblingsIncludingSelf(towards direction: XSequentialDirection, prefix: String? = nil, _ names: String..., until untilCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndUntilCondition(sequence: XPreviousElementsIncludingSelfSequence(element: self), condition: { $0.prefix == prefix && (names.isEmpty || names.contains($0.name)) }, until: untilCondition)
+        case .next: XElementSequenceWithConditionAndUntilCondition(sequence: XNextElementsIncludingSelfSequence(element: self), condition: { $0.prefix == prefix && (names.isEmpty || names.contains($0.name)) }, until: untilCondition)
+        }
+    }
+    
+    func siblingsIncludingSelf(towards direction: XSequentialDirection, while condition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWhileCondition(sequence: XPreviousElementsIncludingSelfSequence(element: self), while: condition)
+        case .next: XElementSequenceWhileCondition(sequence: XNextElementsIncludingSelfSequence(element: self), while: condition)
+        }
+    }
+    
+    func siblingsIncludingSelf(towards direction: XSequentialDirection, until condition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceUntilCondition(sequence: XPreviousElementsIncludingSelfSequence(element: self), until: condition)
+        case .next: XElementSequenceUntilCondition(sequence: XNextElementsIncludingSelfSequence(element: self), until: condition)
+        }
+    }
+    
+    func siblingsIncludingSelf(towards direction: XSequentialDirection, untilAndIncluding condition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceIncludingCondition(sequence: XPreviousElementsIncludingSelfSequence(element: self), untilAndIncluding: condition)
+        case .next: XElementSequenceIncludingCondition(sequence: XNextElementsIncludingSelfSequence(element: self), untilAndIncluding: condition)
+        }
+    }
+    
     var nextCloseElementsIncludingSelf: XElementSequence {
         get { XNextCloseElementsIncludingSelfSequence(element: self) }
     }
@@ -1325,6 +2246,118 @@ public extension XElement {
     
     func previousCloseElementsIncludingSelf(untilAndIncluding condition: @escaping (XElement) -> Bool) -> XElementSequence {
         return XElementSequenceIncludingCondition(sequence: XPreviousCloseElementsIncludingSelfSequence(element: self), untilAndIncluding: condition)
+    }
+    
+    func closeSiblingsIncludingSelf(towards direction: XSequentialDirection) -> XElementSequence {
+        switch direction {
+        case .previous: XPreviousCloseElementsIncludingSelfSequence(element: self)
+        case .next: XNextCloseElementsIncludingSelfSequence(element: self)
+        }
+    }
+    
+    func closeSiblingsIncludingSelf(towards direction: XSequentialDirection, _ condition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithCondition(sequence: XPreviousCloseElementsIncludingSelfSequence(element: self), condition: condition)
+        case .next: XElementSequenceWithCondition(sequence: XNextCloseElementsIncludingSelfSequence(element: self), condition: condition)
+        }
+    }
+    
+    func closeSiblingsIncludingSelf(towards direction: XSequentialDirection, _ condition: @escaping (XElement) -> Bool, while whileCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndWhileCondition(sequence: XPreviousCloseElementsIncludingSelfSequence(element: self), condition: condition, while: whileCondition)
+        case .next: XElementSequenceWithConditionAndWhileCondition(sequence: XNextCloseElementsIncludingSelfSequence(element: self), condition: condition, while: whileCondition)
+        }
+    }
+    
+    func closeSiblingsIncludingSelf(towards direction: XSequentialDirection, _ condition: @escaping (XElement) -> Bool, until untilCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndUntilCondition(sequence: XPreviousCloseElementsIncludingSelfSequence(element: self), condition: condition, until: untilCondition)
+        case .next: XElementSequenceWithConditionAndUntilCondition(sequence: XNextCloseElementsIncludingSelfSequence(element: self), condition: condition, until: untilCondition)
+        }
+    }
+    
+    func closeSiblingsIncludingSelf(towards direction: XSequentialDirection, prefix: String? = nil, _ name: String) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithCondition(sequence: XPreviousCloseElementsIncludingSelfSequence(element: self), prefix: prefix, elementName: name)
+        case .next: XElementSequenceWithCondition(sequence: XNextCloseElementsIncludingSelfSequence(element: self), prefix: prefix, elementName: name)
+        }
+    }
+    
+    func closeSiblingsIncludingSelf(towards direction: XSequentialDirection, prefix: String? = nil, _ name: String, while whileCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndWhileCondition(sequence: XPreviousCloseElementsIncludingSelfSequence(element: self), prefix: prefix, elementName: name, while: whileCondition)
+        case .next: XElementSequenceWithConditionAndWhileCondition(sequence: XNextCloseElementsIncludingSelfSequence(element: self), prefix: prefix, elementName: name, while: whileCondition)
+        }
+    }
+    
+    func closeSiblingsIncludingSelf(towards direction: XSequentialDirection, prefix: String? = nil, _ name: String, until untilCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndUntilCondition(sequence: XPreviousCloseElementsIncludingSelfSequence(element: self), prefix: prefix, elementName: name, until: untilCondition)
+        case .next: XElementSequenceWithConditionAndUntilCondition(sequence: XNextCloseElementsIncludingSelfSequence(element: self), prefix: prefix, elementName: name, until: untilCondition)
+        }
+    }
+    
+    func closeSiblingsIncludingSelf(towards direction: XSequentialDirection, prefix: String? = nil, _ names: [String]) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithCondition(sequence: XPreviousCloseElementsIncludingSelfSequence(element: self), condition: { $0.prefix == prefix && names.contains($0.name) })
+        case .next: XElementSequenceWithCondition(sequence: XNextCloseElementsIncludingSelfSequence(element: self), condition: { $0.prefix == prefix && names.contains($0.name) })
+        }
+    }
+    
+    func closeSiblingsIncludingSelf(towards direction: XSequentialDirection, prefix: String? = nil, _ names: [String], while whileCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndWhileCondition(sequence: XPreviousCloseElementsIncludingSelfSequence(element: self), condition: { $0.prefix == prefix && names.contains($0.name) }, while: whileCondition)
+        case .next: XElementSequenceWithConditionAndWhileCondition(sequence: XNextCloseElementsIncludingSelfSequence(element: self), condition: { $0.prefix == prefix && names.contains($0.name) }, while: whileCondition)
+        }
+    }
+    
+    func closeSiblingsIncludingSelf(towards direction: XSequentialDirection, prefix: String? = nil, _ names: [String], until untilCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndUntilCondition(sequence: XPreviousCloseElementsIncludingSelfSequence(element: self), condition: { $0.prefix == prefix && names.contains($0.name) }, until: untilCondition)
+        case .next: XElementSequenceWithConditionAndUntilCondition(sequence: XNextCloseElementsIncludingSelfSequence(element: self), condition: { $0.prefix == prefix && names.contains($0.name) }, until: untilCondition)
+        }
+    }
+    
+    func closeSiblingsIncludingSelf(towards direction: XSequentialDirection, prefix: String? = nil, _ names: String...) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithCondition(sequence: XPreviousCloseElementsIncludingSelfSequence(element: self), condition: { $0.prefix == prefix && (names.isEmpty || names.contains($0.name)) })
+        case .next: XElementSequenceWithCondition(sequence: XNextCloseElementsIncludingSelfSequence(element: self), condition: { $0.prefix == prefix && (names.isEmpty || names.contains($0.name)) })
+        }
+    }
+    
+    func closeSiblingsIncludingSelf(towards direction: XSequentialDirection, prefix: String? = nil, _ names: String..., while whileCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndWhileCondition(sequence: XPreviousCloseElementsIncludingSelfSequence(element: self), condition: { $0.prefix == prefix && (names.isEmpty || names.contains($0.name)) }, while: whileCondition)
+        case .next: XElementSequenceWithConditionAndWhileCondition(sequence: XNextCloseElementsIncludingSelfSequence(element: self), condition: { $0.prefix == prefix && (names.isEmpty || names.contains($0.name)) }, while: whileCondition)
+        }
+    }
+    
+    func closeSiblingsIncludingSelf(towards direction: XSequentialDirection, prefix: String? = nil, _ names: String..., until untilCondition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWithConditionAndUntilCondition(sequence: XPreviousCloseElementsIncludingSelfSequence(element: self), condition: { $0.prefix == prefix && (names.isEmpty || names.contains($0.name)) }, until: untilCondition)
+        case .next: XElementSequenceWithConditionAndUntilCondition(sequence: XNextCloseElementsIncludingSelfSequence(element: self), condition: { $0.prefix == prefix && (names.isEmpty || names.contains($0.name)) }, until: untilCondition)
+        }
+    }
+    
+    func closeSiblingsIncludingSelf(towards direction: XSequentialDirection, while condition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceWhileCondition(sequence: XPreviousCloseElementsIncludingSelfSequence(element: self), while: condition)
+        case .next: XElementSequenceWhileCondition(sequence: XNextCloseElementsIncludingSelfSequence(element: self), while: condition)
+        }
+    }
+    
+    func closeSiblingsIncludingSelf(towards direction: XSequentialDirection, until condition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceUntilCondition(sequence: XPreviousCloseElementsIncludingSelfSequence(element: self), until: condition)
+        case .next: XElementSequenceUntilCondition(sequence: XNextCloseElementsIncludingSelfSequence(element: self), until: condition)
+        }
+    }
+    
+    func closeSiblingsIncludingSelf(towards direction: XSequentialDirection, untilAndIncluding condition: @escaping (XElement) -> Bool) -> XElementSequence {
+        switch direction {
+        case .previous: XElementSequenceIncludingCondition(sequence: XPreviousCloseElementsIncludingSelfSequence(element: self), untilAndIncluding: condition)
+        case .next: XElementSequenceIncludingCondition(sequence: XNextCloseElementsIncludingSelfSequence(element: self), untilAndIncluding: condition)
+        }
     }
     
     var descendantsIncludingSelf: XElementSequence { get { XDescendantsIncludingSelfSequence(element: self) } }

@@ -766,6 +766,19 @@ public final class XReversedSequenceOfAllContent: XContentSequence {
     }
 }
 
+public final class XReversedSequenceOfAllContentIncludingSelf: XContentSequence {
+    
+    let content: XContent
+    
+    public init(content: XContent) {
+        self.content = content
+    }
+    
+    public override func makeIterator() -> XContentIterator {
+        return XBidirectionalContentIterator(contentIterator: XReversedAllContentIncludingSelfIterator(content: content))
+    }
+}
+
 public final class XReversedSequenceOfAllTexts: XTextSequence {
     
     let node: XNode
@@ -859,14 +872,14 @@ public final class XAllContentSequence: XContentSequence {
 
 public final class XAllContentIncludingSelfSequence: XContentSequence {
     
-    let node: XNode
+    let content: XContent
     
-    public init(node: XNode) {
-        self.node = node
+    public init(content: XContent) {
+        self.content = content
     }
     
     public override func makeIterator() -> XBidirectionalContentIterator {
-        return XBidirectionalContentIterator(contentIterator: XAllContentsIncludingSelfIterator(node: node))
+        return XBidirectionalContentIterator(contentIterator: XAllContentsIncludingSelfIterator(content: content))
     }
 }
 
