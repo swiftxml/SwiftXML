@@ -46,7 +46,7 @@ public enum XSequentialDirection {
 public extension XElement {
     
     /// Get the touching content in the specified direction.
-    func touching(proceeding direction: XSequentialDirection) -> XContent? {
+    func touching(towards direction: XSequentialDirection) -> XContent? {
         switch direction {
         case .previous:
             self.previousTouching
@@ -56,13 +56,13 @@ public extension XElement {
     }
     
     /// Has the element touching content in the specified direction?
-    func hasTouching(proceeding direction: XSequentialDirection) -> Bool {
-        touching(proceeding: direction) != nil
+    func hasTouching(towards direction: XSequentialDirection) -> Bool {
+        touching(towards: direction) != nil
     }
     
     /// Get the neighbouring element in the specified direction.
     /// (Other content in between does not matter.)
-    func neighbour(proceeding direction: XSequentialDirection) -> XElement? {
+    func neighbour(towards direction: XSequentialDirection) -> XElement? {
         switch direction {
         case .previous:
             self.previousElement
@@ -73,12 +73,12 @@ public extension XElement {
     
     /// Has the element a neighbouring element in the specified direction?
     /// (Other content in between will be skipped.)
-    func hasNeighbour(proceeding direction: XSequentialDirection) -> Bool {
-        neighbour(proceeding: direction) != nil
+    func hasNeighbour(towards direction: XSequentialDirection) -> Bool {
+        neighbour(towards: direction) != nil
     }
     
     /// Get the edging content (the first or last) in the specified direction.
-    func edgeContent(proceeding direction: XSequentialDirection) -> XContent? {
+    func edgeContent(towards direction: XSequentialDirection) -> XContent? {
         switch direction {
         case .previous:
             self.firstContent
@@ -89,7 +89,7 @@ public extension XElement {
     
     /// Get the edging child (the first or last) in the specified direction.
     /// (Other content at the edge will be skipped.)
-    func edgeChild(proceeding direction: XSequentialDirection) -> XElement? {
+    func edgeChild(towards direction: XSequentialDirection) -> XElement? {
         switch direction {
         case .previous:
             self.firstChild
