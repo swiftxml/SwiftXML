@@ -385,11 +385,17 @@ public class XNode: CustomStringConvertible {
         nextInTreeTouching(condition) != nil
     }
     
-    func getLastInTree() -> XNode {
+    func _getLastInTree() -> XNode {
         return self
     }
     
-    public var lastInTree: XNode { get { getLastInTree() } }
+    public var lastInTree: XNode {
+        var node = _getLastInTree()
+        if node is _Isolator_ {
+            node = node.previousInTree ?? self
+        }
+        return node
+    }
     
     public func traverse(down: (XNode) throws -> (), up: ((XNode) throws -> ())? = nil) rethrows {
         let hierarchicalDirectionIndicator = XHierarchicalDirectionIndicator()
@@ -849,10 +855,10 @@ public class XContent: XNode {
      */
     func setTreeOrderWhenInserting() {
         
-        let lastInMyTree = getLastInTree()
+        let lastInMyTree = _getLastInTree()
         
         // set _previousInTree & _nextInTree for "self" tree:
-        self._previousInTree = _previous?.getLastInTree() ?? _parent
+        self._previousInTree = _previous?._getLastInTree() ?? _parent
         lastInMyTree._nextInTree = self._previousInTree?._nextInTree // let it be nil for the last node in the document!
         
         // set _previousInTree or _nextInTree for them:
@@ -870,13 +876,13 @@ public class XContent: XNode {
                     document._lastInTree = lastInMyTree
                 }
                 ancestor = ancestor?._parent
-            } while ancestor?.getLastInTree() === oldParentLastInTree
+            } while ancestor?._getLastInTree() === oldParentLastInTree
         }
     }
     
     func setTreeOrderWhenRemoving() {
         
-        let theLastInTree = getLastInTree()
+        let theLastInTree = _getLastInTree()
         
         // correct _previousInTree and _nextInTree for remaining tree:
         _previousInTree?._nextInTree = theLastInTree._nextInTree
@@ -884,7 +890,7 @@ public class XContent: XNode {
         
         // set _lastInTree for remaining tree:
         var ancestor = _parent
-        while let theAncestor = ancestor, theAncestor.getLastInTree() === theLastInTree {
+        while let theAncestor = ancestor, theAncestor._getLastInTree() === theLastInTree {
             if let element = theAncestor as? XElement {
                 element._lastInTree = _previousInTree ?? theAncestor
             }
@@ -966,10 +972,14 @@ public class XContent: XNode {
         }
     }
     
-    public override var previousInTree: XContent? { get { _previousInTree as? XContent } }
-    public override var nextInTree: XContent? { get { _nextInTree as? XContent } }
-    
-    public override var lastInTree: XContent { get { getLastInTree() as! XContent } }
+    public override var lastInTree: XContent {
+        let node = _getLastInTree()
+        if node !== self, node is _Isolator_ {
+            return node.previousInTree ?? self
+        } else {
+            return node as? XContent ?? self
+        }
+    }
     
     func _insertPrevious(_ node: XContent) {
         
@@ -1231,6 +1241,10 @@ public extension String {
 final class _Isolator_: XContent {
     
     private let _document: XDocument?
+    
+    public override var description: String {
+        "(Isolator)"
+    }
     
     public override var document: XDocument? {
         _document
@@ -2097,7 +2111,7 @@ public final class XElement: XContent, XBranchInternal {
     
     weak var _lastInTree: XNode!
     
-    override func getLastInTree() -> XNode {
+    override func _getLastInTree() -> XNode {
         return _lastInTree
     }
     

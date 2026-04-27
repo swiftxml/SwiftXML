@@ -2029,7 +2029,7 @@ public final class XAllContentsIterator: XContentIteratorProtocol {
     
     public func next() -> XContent? {
         repeat {
-            if startNode?.getLastInTree() === currentNode {
+            if startNode?._getLastInTree() === currentNode {
                 currentNode = nil
             }
             else {
@@ -2069,7 +2069,7 @@ public final class XAllContentsIncludingSelfIterator: XContentIteratorProtocol {
     }
     
     public func next() -> XContent? {
-        if currentContent === startContent?.getLastInTree() {
+        if currentContent === startContent?._getLastInTree() {
             currentContent = startContent
             return nil
         }
@@ -2112,7 +2112,7 @@ public final class XDescendantsIterator: XElementIteratorProtocol {
     
     public func next() -> XElement? {
         repeat {
-            if startNode?.getLastInTree() === currentNode {
+            if startNode?._getLastInTree() === currentNode {
                 currentNode = nil
             }
             else {
@@ -2159,7 +2159,7 @@ public final class XAllTextsIterator: XTextIteratorProtocol {
     
     public func next() -> XText? {
         repeat {
-            if startNode?.getLastInTree() === currentNode {
+            if startNode?._getLastInTree() === currentNode {
                 currentNode = nil
             }
             else {
@@ -2206,7 +2206,7 @@ public final class XDescendantsIncludingSelfIterator: XElementIteratorProtocol {
     
     public func next() -> XElement? {
         repeat {
-            if startNode?.getLastInTree() === currentNode {
+            if startNode?._getLastInTree() === currentNode {
                 currentNode = startNode
                 return nil
             }

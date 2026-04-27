@@ -1452,6 +1452,24 @@ final class SwiftXMLTests: XCTestCase {
         
     }
     
+    func testIsoltators() throws {
+        
+        let element = XElement("a") {
+            "blabla"
+        }
+        
+        let document = XDocument {
+            XElement("root") {
+                element
+            }
+        }
+        
+        element._add(_Isolator_(inDocument: document))
+        
+        XCTAssertEqual(element._lastInTree.description, "(Isolator)")
+        XCTAssertEqual(element.lastInTree.description, "\"blabla\"")
+    }
+    
     func testAllContentReversedIncludingSelf() throws {
         
         let element = XElement("a") {
@@ -1463,11 +1481,15 @@ final class SwiftXMLTests: XCTestCase {
             }
         }
         
-        let _ = XDocument {
+        let document = XDocument {
             XElement("root") {
                 element
             }
         }
+        
+        // try to disturb the iterators with isolaters:
+        element.firstChild?._add(_Isolator_(inDocument: document))
+        element._add(_Isolator_(inDocument: document))
         
         XCTAssertEqual(element.allContentIncludingSelf.map{ $0.description }.joined(separator: ", "), #"<a>, <b>, "bla", <c>, "blabla""#)
         XCTAssertEqual(element.allContentReversedIncludingSelf.map{ $0.description }.joined(separator: ", "), #""blabla", <c>, "bla", <b>, <a>"#)

@@ -130,7 +130,7 @@ public final class XDocument: XNode, XBranchInternal {
         self.children.first
     }
     
-    override func getLastInTree() -> XNode {
+    override func _getLastInTree() -> XNode {
         return _lastInTree
     }
     

@@ -78,7 +78,7 @@ final class UtilitiesTest: XCTestCase {
         )
         
         let allSorted = dictionary.all.sorted(by: { $0.0 < $1.0 || ($0.0 == $1.0 && $0.1 < $1.1) || ($0.0 == $1.0 && $0.1 == $1.1 && $0.2 < $1.2) })
-        print(allSorted)
+        //print(allSorted)
         XCTAssertTrue(
             areEqual(
                 allSorted,
@@ -94,7 +94,7 @@ final class UtilitiesTest: XCTestCase {
             )
         )
         let sorted = dictionary.sorted
-        print(sorted)
+        //print(sorted)
         XCTAssertTrue(
             areEqual(
                 sorted,
@@ -156,7 +156,7 @@ final class UtilitiesTest: XCTestCase {
         )
         
         let allSorted = dictionary.all.sorted(by: { $0.0 < $1.0 || ($0.0 == $1.0 && $0.1 < $1.1) || ($0.0 == $1.0 && $0.1 == $1.1 && $0.2 < $1.2) || ($0.0 == $1.0 && $0.1 == $1.1 && $0.2 == $1.2 && $0.3 < $1.3) })
-        print(allSorted)
+        //print(allSorted)
         XCTAssertTrue(
             areEqual(
                 allSorted,
@@ -176,7 +176,7 @@ final class UtilitiesTest: XCTestCase {
         )
         
         let sorted = dictionary.sorted
-        print(sorted)
+        //print(sorted)
         XCTAssertTrue(
             areEqual(
                 sorted,
