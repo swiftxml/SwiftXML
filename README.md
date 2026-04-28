@@ -1,13 +1,15 @@
 # SwiftXML
 
 ---
-**NOTE:**
+**NOTES:**
 
-In **SwiftXML 2.0,** `textAllowedInElementWithName` cannot be used any more during parsing. This is in preparation for a future implementation of validation based on an XML schema. `textAllowedInElementWithName` also did not recognize prefixes.
+1) ⚠️ **New major versions might only have a stable API starting with the first minor version.** E.g., you might want to wait until SwiftXML 3.1.0 is published before using SwiftXML 3.
+
+2) In **SwiftXML 2.0,** `textAllowedInElementWithName` cannot be used any more during parsing. This is in preparation for a future implementation of validation based on an XML schema. `textAllowedInElementWithName` also did not recognize prefixes.
 
 Until then, the new `removeFormatting(...)` methods of `XDocument` can be used to remove unnecessary whitespace after parsing.
 
-In **SwiftXML 3,** the following _breaking changes_ have been made:
+2) In **SwiftXML 3,** the following _breaking changes_ have been made:
 
 - `parseXML` is renamed  to `readXML`.
 - In `serialized(...)`: `suppressDeclarationForNamespaceURIs` is renamed to `suppressingDeclarationForNamespaceURIs`.
@@ -15,7 +17,7 @@ In **SwiftXML 3,** the following _breaking changes_ have been made:
 - The new enum `XTextEscapeMode` replaces the old arguments `escapeGreaterThan`, `escapeAllInText`, and `escapeAll` for serialization.
 - `XDirection` is renamed to `XSequentialDirection`.
 
-Some new methods have been introduced in SwiftXML 3 to help formulate algorithms that work in both forward and backward direction, cf. the section “Finding related content with parameterized direction”.
+3) Some new methods have been introduced in SwiftXML 3 to help formulate algorithms that work in both forward and backward direction, cf. the section “Finding related content with parameterized direction”.
 
 ---
 
@@ -1134,7 +1136,29 @@ var asElementSequence: XElementSequence
 
 ## Finding related content with parameterized direction
 
-To be able to formulate algorithms that work in both forward and backward direction, use the methods `touching(towards:)`, `hasTouching(towards:)`, `sibling(towards:)`, `hasSibling(towards:)`, `edgeContent(towards:)`, `edgeChild(towards:)` of `XElement`  which get a direction in form of `XSequenceDirection` as argument, and also the variants with first argument `towards:` of the sequence getters `next(...)` etc. Use the property `opposite` of `XSequenceDirection` to reverse a direction.
+To formulate algorithms that work in both forward and backward direction, the following methods can help. The argument `proceeding:` with a value of type `XSequenceDirection` determines in which diretion the methods “look” or proceed. Use the property `opposite` of such a value to reverse the direction.
+
+- touching(proceeding:)
+- hasTouching(proceeding:)
+- sibling(proceeding:)
+- hasSibling(proceeding:)
+- edgeContent(proceeding:)
+- edgeChild(proceeding:)
+- content(proceeding:…)
+- immediateTexts(proceeding:…)
+- allTexts(proceeding:…)
+- children(proceeding:…)
+- allContent(proceeding:…)
+- adjacent(proceeding:…)
+- adjacentIncludingSelf(proceeding:…)
+- adjacentTexts(proceeding:…)
+- siblings(proceeding:…)
+- closeSiblings(proceeding :…)
+- adjacentTextsIncludingSelf(proceeding:…)
+
+(The items with `…` in the above list represent multiple methods with the same name.)
+
+E.g. `children(proceeding: .next)` does the same as `children`, and `children(proceeding: .previous)` does the same as `childrenReversed`. You would then formulate your algorithm using a variable of type `XSequenceDirection`. If `direction` is this variable, you then write e.g. `content(proceeding: direction)` or `content(proceeding: direction.opposite)`.
 
 ## Finding related nodes with filters
 
