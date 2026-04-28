@@ -1,24 +1,5 @@
 # SwiftXML
 
----
-**NOTES:**
-
-1) ⚠️ **New major versions might only have a stable API starting with the first minor version.** E.g., you might want to wait until SwiftXML 3.1.0 is published before using SwiftXML 3.
-
-2) In **SwiftXML 2.0,** `textAllowedInElementWithName` cannot be used any more during parsing. This is in preparation for a future implementation of validation based on an XML schema. `textAllowedInElementWithName` also did not recognize prefixes. Until then, the new `removeFormatting(...)` methods of `XDocument` can be used to remove unnecessary whitespace after parsing.
-
-3) In **SwiftXML 3,** the following _breaking changes_ have been made:
-
-   - `parseXML` is renamed  to `readXML`.
-   - In `serialized(...)`: `suppressDeclarationForNamespaceURIs` is renamed to `suppressingDeclarationForNamespaceURIs`.
-   - In protocol `XProductionTemplate`: `suppressingNamespaceDeclarations` is added to `activeProduction(...)` (which then should suppress all namespace declarations when serializing).
-   - The new enum `XTextEscapeMode` replaces the old arguments `escapeGreaterThan`, `escapeAllInText`, and `escapeAll` for serialization.
-   - `XDirection` is renamed to `XSequentialDirection`.
-
-4) Some new methods have been introduced in SwiftXML 3 to help formulate **algorithms that work in both forward and backward direction,** cf. the section “Finding related content with parameterized direction”.
-
----
-
 A library written in Swift to process XML.
 
 This library is published under the Apache License v2.0 with Runtime Library Exception.
@@ -53,6 +34,25 @@ let transformation = XTransformation {
     
 }
 ```
+
+---
+**NOTES:**
+
+1) ⚠️ **New major versions might only have a stable API starting with the first minor version.** E.g., you might want to wait until SwiftXML 3.1.0 is published before using SwiftXML 3.
+
+2) In **SwiftXML 2.0,** `textAllowedInElementWithName` cannot be used any more during parsing. This is in preparation for a future implementation of validation based on an XML schema. `textAllowedInElementWithName` also did not recognize prefixes. Until then, the new `removeFormatting(...)` methods of `XDocument` can be used to remove unnecessary whitespace after parsing.
+
+3) In **SwiftXML 3,** the following _breaking changes_ have been made:
+
+   - `parseXML` is renamed  to `readXML`.
+   - In `serialized(...)`: `suppressDeclarationForNamespaceURIs` is renamed to `suppressingDeclarationForNamespaceURIs`.
+   - In protocol `XProductionTemplate`: `suppressingNamespaceDeclarations` is added to `activeProduction(...)` (which then should suppress all namespace declarations when serializing).
+   - The new enum `XTextEscapeMode` replaces the old arguments `escapeGreaterThan`, `escapeAllInText`, and `escapeAll` for serialization.
+   - `XDirection` is renamed to `XSequentialDirection`.
+
+4) Some new methods have been introduced in SwiftXML 3 to help formulate **algorithms that work in both forward and backward direction,** cf. the section “Finding related content with parameterized direction”.
+
+---
 
 ## Getting started
 
