@@ -15,7 +15,7 @@
    - The new enum `XTextEscapeMode` replaces the old arguments `escapeGreaterThan`, `escapeAllInText`, and `escapeAll` for serialization.
    - `XDirection` is renamed to `XSequentialDirection`.
 
-4) Some new methods have been introduced in SwiftXML 3 to help formulate algorithms that work in both forward and backward direction, cf. the section “Finding related content with parameterized direction”.
+4) Some new methods have been introduced in SwiftXML 3 to help formulate **algorithms that work in both forward and backward direction,** cf. the section “Finding related content with parameterized direction”.
 
 ---
 
