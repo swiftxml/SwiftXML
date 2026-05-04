@@ -32,7 +32,7 @@ public enum XHierarchicalDirection {
 
 /// The sequential direction.
 /// Use the `reversed` property to get the reversed direction.
-public enum XSequentialDirection {
+public enum XSequentialDirection: CaseIterable {
     case previous; case next
     
     public var opposite: Self {
