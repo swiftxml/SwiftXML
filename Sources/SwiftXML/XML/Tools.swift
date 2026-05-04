@@ -43,7 +43,7 @@ public enum XSequentialDirection: CaseIterable {
     }
 }
 
-public extension XElement {
+public extension XContent {
     
     /// Get the touching content in the specified direction.
     func touching(proceeding direction: XSequentialDirection) -> XContent? {
@@ -76,6 +76,10 @@ public extension XElement {
     func hasSibling(proceeding direction: XSequentialDirection) -> Bool {
         sibling(proceeding: direction) != nil
     }
+    
+}
+
+public extension XElement {
     
     /// Get the edging content (the first or last) in the specified direction.
     func edgeContent(proceeding direction: XSequentialDirection) -> XContent? {
