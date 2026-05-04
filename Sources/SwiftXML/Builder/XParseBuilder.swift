@@ -29,15 +29,20 @@ fileprivate func makePrefix(forName name: String, andURI uri: String) -> String 
     }
 }
 
+public protocol XTextProcessor {
+    func process(text: String) -> String?
+}
+
 public final class XParseBuilder: XEventHandler {
     
     public func parsingTime(seconds: Double) {
         // -
     }
-
+    
     let document: XDocument
     let namespaceAware: Bool
     let silentEmptyRootPrefix: Bool
+    let textProcessor: XTextProcessor?
     let keepComments: Bool
     let keepCDATASections: Bool
     let externalWrapperElement: String?
@@ -60,6 +65,7 @@ public final class XParseBuilder: XEventHandler {
         document: XDocument,
         namespaceAware: Bool = false,
         silentEmptyRootPrefix: Bool = false,
+        textProcessor: XTextProcessor? = nil,
         keepComments: Bool = false,
         keepCDATASections: Bool = false,
         externalWrapperElement: String? = nil,
@@ -68,10 +74,10 @@ public final class XParseBuilder: XEventHandler {
         registeringAttributesForNamespaces: AttributeWithNamespaceURIRegisterMode = .none,
         registeringAttributeValuesForForNamespaces: AttributeWithNamespaceURIRegisterMode = .none
     ) {
-        
         self.document = document
         self.namespaceAware = namespaceAware
         self.silentEmptyRootPrefix = silentEmptyRootPrefix
+        self.textProcessor = textProcessor
         self.keepComments = keepComments
         self.keepCDATASections = keepCDATASections
         self.externalWrapperElement = externalWrapperElement
@@ -363,7 +369,14 @@ public final class XParseBuilder: XEventHandler {
     }
     
     public func text(text: String, whitespace: WhitespaceIndicator, textRange: XTextRange?, dataRange _: XDataRange?) -> Bool {
-        let node = XText(text, whitespace: whitespace)
+        let actualText: String
+        if let textProcessor {
+            guard let processedText = textProcessor.process(text: text) else { return true }
+            actualText = processedText
+        } else {
+            actualText = text.replacing("\r\n", with: "\n")
+        }
+        let node = XText(actualText, whitespace: whitespace)
         node._sourceRange = textRange
         currentBranch._add(node)
         return true

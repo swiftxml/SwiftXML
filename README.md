@@ -329,6 +329,7 @@ public func readXML(
     from documentSource: XDocumentSource,
     namespaceAware: Bool = false,
     silentEmptyRootPrefix: Bool = false,
+    textProcessor: XTextProcessor? = nil,
     registeringAttributes: AttributeRegisterMode = .none,
     registeringAttributeValuesFor: AttributeRegisterMode = .none,
     registeringAttributesForNamespaces: AttributeWithNamespaceURIRegisterMode = .none,
@@ -403,6 +404,12 @@ When the content of an external parsed entitiy is inserted, you can declare an e
 One a more event handlers can be given a `readXML` call, which implement `XEventHandler` from [XMLInterfaces](https://github.com/swiftxml/SwiftXMLInterfaces). This allows for the user of the library to catch any event during parsing like entering or leaving an element. E.g., the resolving of an internal entity reference could depend on the location inside the document (and not only on the name of the element or attribute), so this information can be collected by such an event handler.
 
 `keepComments` (default: `false`) decides if a comment should be preserved (as `XComment`), else they will be discarded without notice. `keepCDATASections` (default: `false`) decides if a CDATA section should be preserved (as `XCDATASection`), else all CDATA sections get resolved as text.
+
+Newlines are getting normalized, i.e. `"\r\n"` is replaced by `"\n"` in text.
+
+You can add an `XTextProcessor` via the argument `textProcessor:`, which changes text.
+
+Note that the same instance of a suitable class could be used as arguments of type `XDefaultEventHandler`, `InternalEntityResolver`, and `XTextProcessor`, so e.g. both internal entities and texts are resolved respectively processed according to the elements where they occur.
 
 ## Content of a document
 

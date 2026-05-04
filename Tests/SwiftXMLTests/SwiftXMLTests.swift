@@ -1510,4 +1510,38 @@ final class SwiftXMLTests: XCTestCase {
         XCTAssertEqual(result.joined(separator: ", "), #"#1, "blabla", <c>, "blabla", #2, <c>, "bla", <c>, #3, "bla", <b>, "bla", #4, <b>, <a>, <b>, #5, <a>, –, –, #6, –, –, –"#)
         
     }
+    
+    func testTextProcessor() throws {
+        
+        let source = """
+            <a>Hello\r
+            World!</a>
+            """
+        
+        XCTAssertEqual(
+            try readXML(fromText: source).serialized,
+            // normalized newlines:
+            """
+            <a>Hello
+            World!</a>
+            """
+        )
+        
+        struct MyTextProcessor: XTextProcessor {
+            func process(text: String) -> String? {
+                text.replacing("!", with: "?")
+            }
+        }
+        
+        XCTAssertEqual(
+            try readXML(fromText: source, textProcessor: MyTextProcessor()).serialized,
+            // normalized newlines + chnaged text:
+            """
+            <a>Hello
+            World?</a>
+            """
+        )
+        
+    }
+    
 }
