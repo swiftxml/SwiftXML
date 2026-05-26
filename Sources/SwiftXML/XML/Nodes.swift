@@ -1865,7 +1865,7 @@ extension LazyDropWhileSequence: XContentConvertible where Base.Element == XElem
     }
 }
 
-extension Array: XContentConvertible where Element == XContent {
+extension Array: XContentConvertible where Element: XContentConvertible {
     public func collectXML(by xmlCollector: inout XMLCollector) {
         for content in self {
             content.collectXML(by: &xmlCollector)
