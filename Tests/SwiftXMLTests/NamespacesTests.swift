@@ -50,8 +50,6 @@ final class NamespacesTests: XCTestCase {
         XCTAssertEqual(Array(document.descendants(prefix: nil, "mi", "mo").map{ $0.immediateTextsCombined }), [])
         XCTAssertEqual(Array(document.elements(prefix: nil, "mi", "mo").map{ $0.immediateTextsCombined }), [])
         
-        
-        
         // remove the prefixes:
         XTransformation {
             
