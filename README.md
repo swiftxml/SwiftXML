@@ -40,7 +40,7 @@ let transformation = XTransformation {
 
 - ⚠️ **New major versions might only have a stable API starting with the first minor version.** E.g., you might want to wait until SwiftXML 3.1.0 is published before using SwiftXML 3.
 
-- ⚠️ Starting with SwiftXML 5, a missing `prefix:` argument in methods like `children(prefix:_:)` means that any elements of certain names should be found, regardless of their namespace. Use `children(prefix: nil, ...)` to explicitly find elements of certains names which do _not_ have a namespace. The argument `prefix:` is now mandatory in the method `element(prefix:_:)`. Note that regarding attributes, the `prefix:` argument still defaults to `nil` in methods and subscripts, as (other than for elements) attributes with a namespace are a special case.
+- ⚠️ Starting with SwiftXML 5, a missing `prefix:` argument in methods like `children(prefix:_:)` means that any elements of certain names should be found, regardless of their namespace. Use `children(prefix: nil, ...)` to explicitly find elements of certains names which do _not_ have a namespace. The argument `prefix:` is now mandatory in the method `elements(prefix:_:)`. Note that regarding attributes, the `prefix:` argument still defaults to `nil` in methods and subscripts, as (other than for elements) attributes with a namespace are a special case.
 
 - In SwiftXML 4, the following extensions to a sequence of `XElement` have been removed: `add`, `addFirst`, `setContent`, `insertPrevious`, `insertNext`, and `replace`.
 
