@@ -611,15 +611,15 @@ public final class XDocument: XNode, XBranchInternal {
         element._registered = false // but keep element._document for namespaces
     }
     
-    public func elements(prefix: String? = nil, _ name: String) -> XElementSequence {
+    public func elements(prefix: String?, _ name: String) -> XElementSequence {
         return XElementsOfSameNameSequence(document: self, prefix: prefix, name: name)
     }
     
-    public func elements(prefix: String? = nil, _ names: String...) -> XElementSequence {
+    public func elements(prefix: String?, _ names: String...) -> XElementSequence {
         return elements(prefix: prefix, names)
     }
     
-    public func elements(prefix: String? = nil, _ names: [String]) -> XElementSequence {
+    public func elements(prefix: String?, _ names: [String]) -> XElementSequence {
         return XElementsOfNamesSequence(forPrefix: prefix, forNames: names, forDocument: self)
     }
     

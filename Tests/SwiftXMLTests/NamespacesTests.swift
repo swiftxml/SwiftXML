@@ -34,13 +34,23 @@ final class NamespacesTests: XCTestCase {
             </math:math>
             """)
         
-        // must not be reached via name alone:
-        XCTAssertEqual(Array(document.descendants("mi", "mo").map{ $0.immediateTextsCombined }), [])
-        XCTAssertEqual(Array(document.elements("mi", "mo").map{ $0.immediateTextsCombined }), [])
-        
-        // must be reached via prefix and name:
+        // can be reached via name and the correct prefix:
         XCTAssertEqual(Array(document.descendants(prefix: "math", "mi", "mo").map{ $0.immediateTextsCombined }), ["a", "+", "b"])
         XCTAssertEqual(Array(document.elements(prefix: "math", "mi", "mo").map{ $0.immediateTextsCombined }), ["a", "b", "+"])
+        
+        // can be reached via name alone:
+        XCTAssertEqual(Array(document.descendants("mi", "mo").map{ $0.immediateTextsCombined }), ["a", "+", "b"])
+        // the call `document.elements("mi", "mo")` is not (!) allowed
+        
+        // cannot be reached via name and a false prefix:
+        XCTAssertEqual(Array(document.descendants(prefix: "nonono", "mi", "mo").map{ $0.immediateTextsCombined }), [])
+        XCTAssertEqual(Array(document.elements(prefix: "nonono", "mi", "mo").map{ $0.immediateTextsCombined }), [])
+        
+        // cannot be reached via `prefix: nil`:
+        XCTAssertEqual(Array(document.descendants(prefix: nil, "mi", "mo").map{ $0.immediateTextsCombined }), [])
+        XCTAssertEqual(Array(document.elements(prefix: nil, "mi", "mo").map{ $0.immediateTextsCombined }), [])
+        
+        
         
         // remove the prefixes:
         XTransformation {
@@ -62,7 +72,7 @@ final class NamespacesTests: XCTestCase {
         
         // now the queries above have their results interchanged:
         XCTAssertEqual(Array(document.descendants("mi", "mo").map{ $0.immediateTextsCombined }), ["a", "+", "b"])
-        XCTAssertEqual(Array(document.elements("mi", "mo").map{ $0.immediateTextsCombined }), ["a", "b", "+"])
+        XCTAssertEqual(Array(document.elements(prefix: nil, "mi", "mo").map{ $0.immediateTextsCombined }), ["a", "b", "+"])
         XCTAssertEqual(Array(document.descendants(prefix: "math", "mi", "mo").map{ $0.immediateTextsCombined }), [])
         XCTAssertEqual(Array(document.elements(prefix: "math", "mi", "mo").map{ $0.immediateTextsCombined }), [])
         
@@ -265,9 +275,9 @@ final class NamespacesTests: XCTestCase {
         XCTAssertEqual(Array(document.descendants(prefix: "math", []).map{ $0.name }), [])
         
         XCTAssertEqual(Array(document.descendants.map{ $0.name }), ["a", "math", "mi"])
-        // but:
-        XCTAssertEqual(Array(document.descendants().map{ $0.name }), ["a"])
-        // ...which is the same as:
+        // and the same:
+        XCTAssertEqual(Array(document.descendants().map{ $0.name }), ["a", "math", "mi"])
+        // ...which is not (!) the same as:
         XCTAssertEqual(Array(document.descendants(prefix: nil).map{ $0.name }), ["a"])
         
     }
@@ -519,7 +529,7 @@ final class NamespacesTests: XCTestCase {
         )
         
         XCTAssertEqual(
-            document.elements("math:math").first?.serialized(),
+            document.elements(prefix: nil, "math:math").first?.serialized(),
             """
             <math:math xmlns:math2="http://www.w3.org/1998/Math/MathML">
                 <math2:math><math2:mi>x</math2:mi></math2:math>
@@ -559,7 +569,7 @@ final class NamespacesTests: XCTestCase {
         )
         
         XCTAssertEqual(
-            document.elements("math:math").first?.serialized(),
+            document.elements(prefix: nil, "math:math").first?.serialized(),
             """
             <math:math xmlns:math2="http://www.w3.org/1998/Math/MathML"/>
             """

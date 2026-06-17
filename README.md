@@ -38,11 +38,13 @@ let transformation = XTransformation {
 ---
 **NOTES:**
 
-1) ⚠️ **New major versions might only have a stable API starting with the first minor version.** E.g., you might want to wait until SwiftXML 3.1.0 is published before using SwiftXML 3.
+- ⚠️ **New major versions might only have a stable API starting with the first minor version.** E.g., you might want to wait until SwiftXML 3.1.0 is published before using SwiftXML 3.
 
-2) In **SwiftXML 2.0,** `textAllowedInElementWithName` cannot be used any more during parsing. This is in preparation for a future implementation of validation based on an XML schema. `textAllowedInElementWithName` also did not recognize prefixes. Until then, the new `removeFormatting(...)` methods of `XDocument` can be used to remove unnecessary whitespace after parsing.
+- ⚠️ Starting with SwiftXML 5, a missing `prefix:` argument in methods like `children(prefix:_:)` means that any elements of certains names should be found, regardless of their namespace. Use `children(prefix: nil, ...)` to explicitly find elements of certains names which do _not_ have a namespace. The argument `prefix:` is now mandatory in the method `element(prefix:_:)`. Note that regarding attributes, the `prefix:` argument still defaults to `nil` in methods and subscripts, as (other than for elements) attributes with a namespace are a special case.
 
-3) In **SwiftXML 3,** the following _breaking changes_ have been made:
+- In SwiftXML 4, the following extensions to a sequence of `XElement` have been removed: `add`, `addFirst`, `setContent`, `insertPrevious`, `insertNext`, and `replace`.
+
+- In **SwiftXML 3,** the following _breaking changes_ have been made:
 
    - `parseXML` is renamed  to `readXML`.
    - In `serialized(...)`: `suppressDeclarationForNamespaceURIs` is renamed to `suppressingDeclarationForNamespaceURIs`.
@@ -50,9 +52,9 @@ let transformation = XTransformation {
    - The new enum `XTextEscapeMode` replaces the old arguments `escapeGreaterThan`, `escapeAllInText`, and `escapeAll` for serialization.
    - `XDirection` is renamed to `XSequentialDirection`.
 
-4) Some new methods have been introduced in SwiftXML 3 to help formulate **algorithms that work in both forward and backward direction,** cf. the section “Finding related content with parameterized direction”.
+- Some new methods have been introduced in SwiftXML 3 to help formulate **algorithms that work in both forward and backward direction,** cf. the section “Finding related content with parameterized direction”.
 
-5) In SwiftXML 4, the following extensions to a sequence of `XElement` have been removed: `add`, `addFirst`, `setContent`, `insertPrevious`, `insertNext`, and `replace`.
+- In **SwiftXML 2.0,** `textAllowedInElementWithName` cannot be used any more during parsing. This is in preparation for a future implementation of validation based on an XML schema. `textAllowedInElementWithName` also did not recognize prefixes. Until then, the new `removeFormatting(...)` methods of `XDocument` can be used to remove unnecessary whitespace after parsing.
 
 ---
 
@@ -126,12 +128,12 @@ The `removeFormatting(allowingTextInElementsWithoutPrefix:)` method is there to 
 Your can easily access and change elements in your document:
 
 ```swift
-for table in document.elements("table") {
+for table in document.elements(prefix: nil, "table") {
     // ... do something with the table ...
 }
 ```
 
-`document.elements("table")` returns a lazy sequence over all `<table>` elements anywhere in your document. This iteration over the elements of a document by name does not have to search for those elements, elements in a document (and attributes as far as they are registered) can be directly accessed by their names. The order of such an iteration is the order by which the item has been added to the document for a specfic name, so according items that are added during the iteration will be part of the iteration.
+`document.elements(prefix: nil, "table")` returns a lazy sequence over all `<table>` elements anywhere in your document. This iteration over the elements of a document by name does not have to search for those elements, elements in a document (and attributes as far as they are registered) can be directly accessed by their names. The order of such an iteration is the order by which the item has been added to the document for a specfic name, so according items that are added during the iteration will be part of the iteration.
 
 To then iterate through the rows of a table:
 
@@ -247,7 +249,7 @@ let document = try readXML(fromText: """
 <a><item multiply="3"/></a>
 """)
 
-for item in document.elements("item") { in
+for item in document.elements(prefix: nil, "item") { in
     if let multiply = item["multiply"], let n = Int(multiply), n > 1 {
         item.insertPrevious {
             XElement("item", ["multiply": n > 2 ? String(n-1) : nil])
@@ -732,7 +734,7 @@ func elements(prefix:_: String...) -> XElementsOfSameNameSequence
 Example:
 
 ```swift
-for paragraph in myDocument.elements("paragraph") {
+for paragraph in myDocument.elements(prefix: nil, "paragraph") {
     if let id = paragraph["id"] {
         print("found paragraph with ID \"\(ID)\"")
     }
@@ -741,7 +743,7 @@ for paragraph in myDocument.elements("paragraph") {
 
 Find the elements of several name alternatives by using several names in the according argument. Note that just like the methods for single names, what you add during the iteration will then also be considered.
 
-You can also use a prefix in the first (optional) argument for direct access to elements having a certain prefix (if you use `nil` as the value of this argument, the according elements that do not have a prefix are found). See more about prefixes in the section “Prefixes and namespaces” below.
+The prefix argument is always to be set. The value `nil` finds the according elements which do not have a prefix. See more about prefixes in the section “Prefixes and namespaces” below.
 
 ## Direct access to attributes
 
@@ -762,11 +764,18 @@ let document = try readXML(fromText: """
 let registeredAttributesInfo = document.registeredAttributes("a", "b", "c", "d").map{ "\($0.name)=\"\($0.value)\" in \($0.element)" }.joined(separator: ", ")
 print(registeredAttributesInfo) // "a="1" in <x a="1">, c="3" in <x c="3">"
 
-let allValuesInfo = document.elements("x").compactMap{
+let allValuesInfo = document.elements(prefix: nil, "x").compactMap{
     if let name = $0.attributeNames.first, let value = $0[name] { "\(name)=\"\(value)\" in \($0)" } else { nil }
 }.joined(separator: ", ")
 print(allValuesInfo) // "a="1" in <x a="1">, b="2" in <x b="2">, c="3" in <x c="3">, d="4" in <x d="4">"
 ```
+
+---
+**NOTE**
+
+Other than the `elements(prefix:_:)` method, the `prefix:` argument in `registeredAttributes(prefix:_:)` is not (!) mandatory. The reason is that attributes with namespaces are a lot less common than elements with a namespace and attributes also do not have methods like `children(_:)` where a missing `prefix:` attribute has a different meaning (searching without looking at the prefix). So in the case of attributes, the `prefix:` argument defaults to `nil`, which is the same behaviour as for the subscript notation `myElement["myAttributeName"]`. _You have to be explicit to find attributes with a prefix._
+
+---
 
 You can register attributes _values_ by using the argument `registeringValuesForAttributes:` when parsing or creating a document:
 
@@ -1219,7 +1228,7 @@ If you do not list any element names in methods like `descendants()` or `childre
 ---
 **NOTE**
 
-Note that `nextElements("paragraph")` (filtering the next elements by name) is different from `nextElements(while: { $0.name == "paragraph" })`.
+Note that `nextelements(prefix: nil, "paragraph")` (filtering the next elements by name) is different from `nextElements(while: { $0.name == "paragraph" })`.
 
 ---
 
@@ -1496,7 +1505,7 @@ let document = try readXML(fromText: """
 <a><b id="1"/><b id="2"/></a>
 """)
 
-for element in document.elements("b") {
+for element in document.elements(prefix: nil, "b") {
     print("applying the rule to \(element)")
     if element["id"] == "2" {
         element.insertNext {
@@ -1618,7 +1627,7 @@ func setContent(builder: () -> [XContent])
 Example:
 
 ```swift
-for table in myDocument.elements("table") {
+for table in myDocument.elements(prefix: nil, "table") {
     table.insertNext {
         XElement("legend") {
             "this is the table legend"
@@ -2198,7 +2207,7 @@ As the XML tree can be changed during a traversal, you can traverse an XML tree 
 If you then formulate manipulations during the down direction of the traversal, you know that parents or other ancestors of the current node have already been transformed. Conversely, if you formulate manipulations only inside the `up:` traversal part and never manipulate any ancestors of the current element, you know that the parent and other ancestors are still the original ones (the input document is the same as in the section “Transformations with inverse order” above):
 
 ```swift
-for section in document.elements("section") {
+for section in document.elements(prefix: nil, "section") {
     section.traverse { node in
         // -
     } up: { node in

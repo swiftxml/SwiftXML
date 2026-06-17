@@ -475,7 +475,7 @@ final class SwiftXMLTests: XCTestCase {
         let registeredAttributesInfo = document.registeredAttributes("a", "b", "c", "d").map{ "\($0.name)=\"\($0.value)\" in \($0.element)" }.joined(separator: ", ")
         XCTAssertEqual(registeredAttributesInfo, #"a="1" in <x a="1">, c="3" in <x c="3">"#)
         
-        let allValuesInfo = document.elements("x").compactMap{
+        let allValuesInfo = document.elements(prefix: nil, "x").compactMap{
             if let name = $0.attributeNames.first, let value = $0[name] { "\(name)=\"\(value)\" in \($0)" } else { nil }
         }.joined(separator: ", ")
         XCTAssertEqual(allValuesInfo, #"a="1" in <x a="1">, b="2" in <x b="2">, c="3" in <x c="3">, d="4" in <x d="4">"#)
@@ -498,7 +498,7 @@ final class SwiftXMLTests: XCTestCase {
         let registeredAttributesInfo = document.registeredAttributes("a", "b", "c", "d").map{ "\($0.name)=\"\($0.value)\" in \($0.element)" }.joined(separator: ", ")
         XCTAssertEqual(registeredAttributesInfo, #"a="1" in <x a="1">, c="3" in <x c="3">"#)
         
-        let allValuesInfo = document.elements("x").compactMap{
+        let allValuesInfo = document.elements(prefix: nil, "x").compactMap{
             if let name = $0.attributeNames.first, let value = $0[name] { "\(name)=\"\(value)\" in \($0)" } else { nil }
         }.joined(separator: ", ")
         XCTAssertEqual(allValuesInfo, #"a="1" in <x a="1">, b="2" in <x b="2">, c="3" in <x c="3">, d="4" in <x d="4">"#)
@@ -670,7 +670,7 @@ final class SwiftXMLTests: XCTestCase {
         
         var collectedIDs = [String]()
         
-        for element in document.elements("b", "c", "d") {
+        for element in document.elements(prefix: nil, "b", "c", "d") {
             if let id = element["id"] {
                 collectedIDs.append(id)
                 if id == "c1" {
@@ -796,7 +796,7 @@ final class SwiftXMLTests: XCTestCase {
             """)
         
         var elementFoundInfos = [String]()
-        for element in document.elements("b") {
+        for element in document.elements(prefix: nil, "b") {
             elementFoundInfos.append(element.description)
             element.remove()
         }
@@ -850,7 +850,7 @@ final class SwiftXMLTests: XCTestCase {
             """)
         
         var elementFoundInfos = [String]()
-        for element in document.elements("a", "b") {
+        for element in document.elements(prefix: nil, "a", "b") {
             elementFoundInfos.append(element.description)
             if element.name == "b" {
                 element.remove()
@@ -1096,7 +1096,7 @@ final class SwiftXMLTests: XCTestCase {
         </sentences>
         """)
         
-        XCTAssertEqual(document.elements("sentence").map{ "\"\($0.allTextsCombined)\"" }.joined(separator: ", "), #""Hello world", "Feel good""#)
+        XCTAssertEqual(document.elements(prefix: nil, "sentence").map{ "\"\($0.allTextsCombined)\"" }.joined(separator: ", "), #""Hello world", "Feel good""#)
     }
     
     func testReversedAllContent() throws {
@@ -1195,7 +1195,7 @@ final class SwiftXMLTests: XCTestCase {
         <document><index.item>z</index.item><index.item>x</index.item><index.item>a</index.item><index.item>m</index.item></document>
         """)
         
-        for indexItem in document.elements("index.item").filter({ ($0.nextTouching as? XElement)?.name != "index.item" }) {
+        for indexItem in document.elements(prefix: nil, "index.item").filter({ ($0.nextTouching as? XElement)?.name != "index.item" }) {
             indexItem.replace {
                 indexItem.previousCloseElementsIncludingSelf(while: { $0.name == "index.item" })
                   .sorted(by: { (first,second) in first.allTextsCombined < second.allTextsCombined })

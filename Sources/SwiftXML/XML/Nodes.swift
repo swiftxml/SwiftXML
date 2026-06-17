@@ -214,7 +214,17 @@ public class XNode: CustomStringConvertible {
         }
     }
     
-    public func parent(prefix: String? = nil, _ name: String) -> XElement? {
+    public func parent(_ name: String) -> XElement? {
+        let element = parent
+        if let element, element.name == name {
+            return element
+        }
+        else {
+            return nil
+        }
+    }
+    
+    public func parent(prefix: String?, _ name: String) -> XElement? {
         let element = parent
         if let element, element.prefix == prefix, element.name == name {
             return element
@@ -224,7 +234,17 @@ public class XNode: CustomStringConvertible {
         }
     }
     
-    public func parent(prefix: String? = nil, _ names: [String]) -> XElement? {
+    public func parent(_ names: [String]) -> XElement? {
+        let element = parent
+        if let element, names.contains(element.name) {
+            return element
+        }
+        else {
+            return nil
+        }
+    }
+    
+    public func parent(prefix: String?, _ names: [String]) -> XElement? {
         let element = parent
         if let element, element.prefix == prefix, names.contains(element.name) {
             return element
@@ -234,7 +254,17 @@ public class XNode: CustomStringConvertible {
         }
     }
     
-    public func parent(prefix: String? = nil, _ names: String...) -> XElement? {
+    public func parent(_ names: String...) -> XElement? {
+        let element = parent
+        if let element, names.isEmpty || names.contains(element.name) {
+            return element
+        }
+        else {
+            return nil
+        }
+    }
+    
+    public func parent(prefix: String?, _ names: String...) -> XElement? {
         let element = parent
         if let element, element.prefix == prefix, names.isEmpty || names.contains(element.name) {
             return element
@@ -1307,7 +1337,18 @@ extension XBranchInternal {
         return nil
     }
     
-    public func _firstChild(prefix: String? = nil, _ name: String) -> XElement? {
+    public func _firstChild(_ name: String) -> XElement? {
+        var node = __firstContent
+        while let theNode = node {
+            if let child = theNode as? XElement, child.name == name {
+                return child
+            }
+            node = theNode._next
+        }
+        return nil
+    }
+    
+    public func _firstChild(prefix: String?, _ name: String) -> XElement? {
         var node = __firstContent
         while let theNode = node {
             if let child = theNode as? XElement, child.prefix == prefix, child.name == name {
@@ -1318,7 +1359,18 @@ extension XBranchInternal {
         return nil
     }
     
-    public func _firstChild(prefix: String? = nil, _ names: [String]) -> XElement? {
+    public func _firstChild(_ names: [String]) -> XElement? {
+        var node = __firstContent
+        while let theNode = node {
+            if let child = theNode as? XElement, names.contains(child.name) {
+                return child
+            }
+            node = theNode._next
+        }
+        return nil
+    }
+    
+    public func _firstChild(prefix: String?, _ names: [String]) -> XElement? {
         var node = __firstContent
         while let theNode = node {
             if let child = theNode as? XElement, child.prefix == prefix, names.contains(child.name) {
@@ -1329,7 +1381,11 @@ extension XBranchInternal {
         return nil
     }
     
-    public func _firstChild(prefix: String? = nil, _ names: String...) -> XElement? {
+    public func _firstChild(_ names: String...) -> XElement? {
+        _firstChild(names)
+    }
+    
+    public func _firstChild(prefix: String?, _ names: String...) -> XElement? {
         _firstChild(prefix: prefix, names)
     }
     
@@ -1355,7 +1411,18 @@ extension XBranchInternal {
         return nil
     }
     
-    public func _lastChild(prefix: String? = nil, _ name: String) -> XElement? {
+    public func _lastChild(_ name: String) -> XElement? {
+        var node = __lastContent
+        while let theNode = node {
+            if let child = theNode as? XElement, child.name == name {
+                return child
+            }
+            node = theNode._previous
+        }
+        return nil
+    }
+    
+    public func _lastChild(prefix: String?, _ name: String) -> XElement? {
         var node = __lastContent
         while let theNode = node {
             if let child = theNode as? XElement, child.prefix == prefix, child.name == name {
@@ -1366,7 +1433,18 @@ extension XBranchInternal {
         return nil
     }
     
-    public func _lastChild(prefix: String? = nil, _ names: [String]) -> XElement? {
+    public func _lastChild(_ names: [String]) -> XElement? {
+        var node = __lastContent
+        while let theNode = node {
+            if let child = theNode as? XElement, names.contains(child.name) {
+                return child
+            }
+            node = theNode._previous
+        }
+        return nil
+    }
+    
+    public func _lastChild(prefix: String?, _ names: [String]) -> XElement? {
         var node = __lastContent
         while let theNode = node {
             if let child = theNode as? XElement, child.prefix == prefix, names.contains(child.name) {
@@ -1377,7 +1455,11 @@ extension XBranchInternal {
         return nil
     }
     
-    public func _lastChild(prefix: String? = nil, _ names: String...) -> XElement? {
+    public func _lastChild(_ names: String...) -> XElement? {
+        _lastChild(names)
+    }
+    
+    public func _lastChild(prefix: String?, _ names: String...) -> XElement? {
         _lastChild(prefix: prefix, names)
     }
     

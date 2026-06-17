@@ -780,15 +780,31 @@ extension Sequence<XContent> {
         XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.ancestors(untilAndIncluding: condition) })
     }
     
-    public func ancestors(prefix: String? = nil, _ name: String) -> XElementSequence {
+    public func ancestors(_ name: String) -> XElementSequence {
+        XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.ancestors(name) })
+    }
+    
+    public func ancestors(prefix: String?, _ name: String) -> XElementSequence {
         XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.ancestors(prefix: prefix, name) })
     }
     
-    public func ancestors(prefix: String? = nil, _ names: [String]) -> XElementSequence {
+    public func ancestors(_ names: [String]) -> XElementSequence {
+        XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.ancestors(names) })
+    }
+    
+    public func ancestors(prefix: String?, _ names: [String]) -> XElementSequence {
         XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.ancestors(prefix: prefix, names) })
     }
     
-    public func ancestors(prefix: String? = nil, _ names: String...) -> XElementSequence {
+    public func ancestors(_ names: String...) -> XElementSequence {
+        if names.isEmpty {
+            XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.ancestors })
+        } else {
+            XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.ancestors(names) })
+        }
+    }
+    
+    public func ancestors(prefix: String?, _ names: String...) -> XElementSequence {
         if names.isEmpty {
             XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.ancestors(prefix: prefix) })
         } else {
@@ -804,15 +820,31 @@ extension Sequence<XContent> {
         XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.ancestorsIncludingSelf(condition) })
     }
     
-    public func ancestorsIncludingSelf(prefix: String? = nil, _ name: String) -> XElementSequence {
+    public func ancestorsIncludingSelf(_ name: String) -> XElementSequence {
+        XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.ancestorsIncludingSelf(name) })
+    }
+    
+    public func ancestorsIncludingSelf(prefix: String?, _ name: String) -> XElementSequence {
         XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.ancestorsIncludingSelf(prefix: prefix, name) })
     }
     
-    public func ancestorsIncludingSelf(prefix: String? = nil, _ names: [String]) -> XElementSequence {
+    public func ancestorsIncludingSelf(_ names: [String]) -> XElementSequence {
+        XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.ancestorsIncludingSelf(names) })
+    }
+    
+    public func ancestorsIncludingSelf(prefix: String?, _ names: [String]) -> XElementSequence {
         XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.ancestorsIncludingSelf(prefix: prefix, names) })
     }
     
-    public func ancestorsIncludingSelf(prefix: String? = nil, _ names: String...) -> XElementSequence {
+    public func ancestorsIncludingSelf(_ names: String...) -> XElementSequence {
+        if names.isEmpty {
+            XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.ancestorsIncludingSelf })
+        } else {
+            XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.ancestorsIncludingSelf(names) })
+        }
+    }
+    
+    public func ancestorsIncludingSelf(prefix: String?, _ names: String...) -> XElementSequence {
         if names.isEmpty {
             XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.ancestorsIncludingSelf(prefix: prefix) })
         } else {
@@ -940,15 +972,31 @@ extension Sequence<XContent> {
         XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.children(condition) })
     }
     
-    public func children(prefix: String? = nil, _ name: String) -> XElementSequence {
+    public func children(_ name: String) -> XElementSequence {
+        XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.children(name) })
+    }
+    
+    public func children(prefix: String?, _ name: String) -> XElementSequence {
         XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.children(prefix: prefix, name) })
     }
     
-    public func children(prefix: String? = nil, _ names: [String]) -> XElementSequence {
+    public func children(_ names: [String]) -> XElementSequence {
+        XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.children(names) })
+    }
+    
+    public func children(prefix: String?, _ names: [String]) -> XElementSequence {
         XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.children(prefix: prefix, names) })
     }
     
-    public func children(prefix: String? = nil, _ names: String...) -> XElementSequence {
+    public func children(_ names: String...) -> XElementSequence {
+        if names.isEmpty {
+            XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.children })
+        } else {
+            XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.children(names) })
+        }
+    }
+    
+    public func children(prefix: String?, _ names: String...) -> XElementSequence {
         if names.isEmpty {
             XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.children(prefix: prefix) })
         } else {
@@ -976,15 +1024,31 @@ extension Sequence<XContent> {
         XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.childrenReversed(condition) })
     }
     
-    public func childrenReversed(prefix: String? = nil, _ name: String) -> XElementSequence {
+    public func childrenReversed(_ name: String) -> XElementSequence {
+        XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.childrenReversed(name) })
+    }
+    
+    public func childrenReversed(prefix: String?, _ name: String) -> XElementSequence {
         XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.childrenReversed(prefix: prefix, name) })
     }
     
-    public func childrenReversed(prefix: String? = nil, _ names: [String]) -> XElementSequence {
+    public func childrenReversed(_ names: [String]) -> XElementSequence {
+        XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.childrenReversed(names) })
+    }
+    
+    public func childrenReversed(prefix: String?, _ names: [String]) -> XElementSequence {
         XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.childrenReversed(prefix: prefix, names) })
     }
     
-    public func childrenReversed(prefix: String? = nil, _ names: String...) -> XElementSequence {
+    public func childrenReversed(_ names: String...) -> XElementSequence {
+        if names.isEmpty {
+            XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.childrenReversed })
+        } else {
+            XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.childrenReversed(names) })
+        }
+    }
+    
+    public func childrenReversed(prefix: String?, _ names: String...) -> XElementSequence {
         if names.isEmpty {
             XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.childrenReversed(prefix: prefix) })
         } else {
@@ -1092,15 +1156,31 @@ extension Sequence<XContent> {
         XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.nextElements(condition) })
     }
     
-    public func nextElements(prefix: String? = nil, _ name: String) -> XElementSequence {
+    public func nextElements(_ name: String) -> XElementSequence {
+        XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.nextElements(name) })
+    }
+    
+    public func nextElements(prefix: String?, _ name: String) -> XElementSequence {
         XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.nextElements(prefix: prefix, name) })
     }
     
-    public func nextElements(prefix: String? = nil, _ names: [String]) -> XElementSequence {
+    public func nextElements(_ names: [String]) -> XElementSequence {
+        XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.nextElements(names) })
+    }
+    
+    public func nextElements(prefix: String?, _ names: [String]) -> XElementSequence {
         XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.nextElements(prefix: prefix, names) })
     }
     
-    public func nextElements(prefix: String? = nil, _ names: String...) -> XElementSequence {
+    public func nextElements(_ names: String...) -> XElementSequence {
+        if names.isEmpty {
+            XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.nextElements })
+        } else {
+            XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.nextElements(names) })
+        }
+    }
+    
+    public func nextElements(prefix: String?, _ names: String...) -> XElementSequence {
         if names.isEmpty {
             XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.nextElements(prefix: prefix) })
         } else {
@@ -1128,15 +1208,31 @@ extension Sequence<XContent> {
         XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.previousElements(condition) })
     }
     
-    public func previousElements(prefix: String? = nil, _ name: String) -> XElementSequence {
+    public func previousElements(_ name: String) -> XElementSequence {
+        XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.previousElements(name) })
+    }
+    
+    public func previousElements(prefix: String?, _ name: String) -> XElementSequence {
         XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.previousElements(prefix: prefix, name) })
     }
     
-    public func previousElements(prefix: String? = nil, _ names: [String]) -> XElementSequence {
+    public func previousElements(_ names: [String]) -> XElementSequence {
+        XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.previousElements(names) })
+    }
+    
+    public func previousElements(prefix: String?, _ names: [String]) -> XElementSequence {
         XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.previousElements(prefix: prefix, names) })
     }
     
-    public func previousElements(prefix: String? = nil, _ names: String...) -> XElementSequence {
+    public func previousElements(_ names: String...) -> XElementSequence {
+        if names.isEmpty {
+            XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.previousElements })
+        } else {
+            XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.previousElements(names) })
+        }
+    }
+    
+    public func previousElements(prefix: String?, _ names: String...) -> XElementSequence {
         if names.isEmpty {
             XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.previousElements(prefix: prefix) })
         } else {
@@ -1196,11 +1292,23 @@ extension Sequence<XContent> {
         XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.descendants(condition) })
     }
     
-    public func descendants(prefix: String? = nil, _ names: [String]) -> XElementSequence {
+    public func descendants(_ names: [String]) -> XElementSequence {
+        XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.descendants(names) })
+    }
+    
+    public func descendants(prefix: String?, _ names: [String]) -> XElementSequence {
         XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.descendants(prefix: prefix, names) })
     }
     
-    public func descendants(prefix: String? = nil, _ names: String...) -> XElementSequence {
+    public func descendants(_ names: String...) -> XElementSequence {
+        if names.isEmpty {
+            XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.descendants })
+        } else {
+            XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.descendants(names) })
+        }
+    }
+    
+    public func descendants(prefix: String?, _ names: String...) -> XElementSequence {
         if names.isEmpty {
             XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.descendants(prefix: prefix) })
         } else {
@@ -1208,7 +1316,11 @@ extension Sequence<XContent> {
         }
     }
     
-    public func descendants(prefix: String? = nil, _ name: String) -> XElementSequence {
+    public func descendants(_ name: String) -> XElementSequence {
+        XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.descendants(name) })
+    }
+    
+    public func descendants(prefix: String?, _ name: String) -> XElementSequence {
         XElementSequenceDependingOnContentSequence(sequence: self, nextSequenceGetter: { content in content.descendants(prefix: prefix, name) })
     }
     
@@ -1264,15 +1376,31 @@ extension Sequence<XContent> {
         XElementDependingOnContentSequence(sequence: self, elementGetter: { content in content.parent(condition) })
     }
     
-    public func parent(prefix: String? = nil, _ name: String) -> XElementSequence {
+    public func parent(_ name: String) -> XElementSequence {
+        XElementDependingOnContentSequence(sequence: self, elementGetter: { content in content.parent(name) })
+    }
+    
+    public func parent(prefix: String?, _ name: String) -> XElementSequence {
         XElementDependingOnContentSequence(sequence: self, elementGetter: { content in content.parent(prefix: prefix, name) })
     }
     
-    public func parent(prefix: String? = nil, _ names: [String]) -> XElementSequence {
+    public func parent(_ names: [String]) -> XElementSequence {
+        XElementDependingOnContentSequence(sequence: self, elementGetter: { content in content.parent(names) })
+    }
+    
+    public func parent(prefix: String?, _ names: [String]) -> XElementSequence {
         XElementDependingOnContentSequence(sequence: self, elementGetter: { content in content.parent(prefix: prefix, names) })
     }
     
-    public func parent(prefix: String? = nil, _ names: String...) -> XElementSequence {
+    public func parent(_ names: String...) -> XElementSequence {
+        if names.isEmpty {
+            XElementDependingOnContentSequence(sequence: self, elementGetter: { content in content.parent })
+        } else {
+            XElementDependingOnContentSequence(sequence: self, elementGetter: { content in content.parent(names) })
+        }
+    }
+    
+    public func parent(prefix: String?, _ names: String...) -> XElementSequence {
         if names.isEmpty {
             XElementDependingOnContentSequence(sequence: self, elementGetter: { content in content.parent(prefix: prefix) })
         } else {
@@ -1382,15 +1510,31 @@ extension Sequence<XElement> {
         XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.ancestors(condition) })
     }
     
-    public func ancestors(prefix: String? = nil, _ name: String) -> XElementSequence {
+    public func ancestors(_ name: String) -> XElementSequence {
+        XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.ancestors(name) })
+    }
+    
+    public func ancestors(prefix: String?, _ name: String) -> XElementSequence {
         XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.ancestors(prefix: prefix, name) })
     }
     
-    public func ancestors(prefix: String? = nil, _ names: [String]) -> XElementSequence {
+    public func ancestors(_ names: [String]) -> XElementSequence {
+        XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.ancestors(names) })
+    }
+    
+    public func ancestors(prefix: String?, _ names: [String]) -> XElementSequence {
         XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.ancestors(prefix: prefix, names) })
     }
     
-    public func ancestors(prefix: String? = nil, _ names: String...) -> XElementSequence {
+    public func ancestors(_ names: String...) -> XElementSequence {
+        if names.isEmpty {
+            XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.ancestors })
+        } else {
+            XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.ancestors(names) })
+        }
+    }
+    
+    public func ancestors(prefix: String?, _ names: String...) -> XElementSequence {
         if names.isEmpty {
             XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.ancestors(prefix: prefix) })
         } else {
@@ -1418,15 +1562,31 @@ extension Sequence<XElement> {
         XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.ancestorsIncludingSelf(condition) })
     }
     
-    public func ancestorsIncludingSelf(prefix: String? = nil, _ name: String) -> XElementSequence {
+    public func ancestorsIncludingSelf(_ name: String) -> XElementSequence {
+        XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.ancestorsIncludingSelf(name) })
+    }
+    
+    public func ancestorsIncludingSelf(prefix: String?, _ name: String) -> XElementSequence {
         XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.ancestorsIncludingSelf(prefix: prefix, name) })
     }
     
-    public func ancestorsIncludingSelf(prefix: String? = nil, _ names: [String]) -> XElementSequence {
+    public func ancestorsIncludingSelf(_ names: [String]) -> XElementSequence {
+        XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.ancestorsIncludingSelf(names) })
+    }
+    
+    public func ancestorsIncludingSelf(prefix: String?, _ names: [String]) -> XElementSequence {
         XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.ancestorsIncludingSelf(prefix: prefix, names) })
     }
     
-    public func ancestorsIncludingSelf(prefix: String? = nil, _ names: String...) -> XElementSequence {
+    public func ancestorsIncludingSelf(_ names: String...) -> XElementSequence {
+        if names.isEmpty {
+            XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.ancestorsIncludingSelf })
+        } else {
+            XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.ancestorsIncludingSelf(names) })
+        }
+    }
+    
+    public func ancestorsIncludingSelf(prefix: String?, _ names: String...) -> XElementSequence {
         if names.isEmpty {
             XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.ancestorsIncludingSelf(prefix: prefix) })
         } else {
@@ -1554,15 +1714,31 @@ extension Sequence<XElement> {
         XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.children(condition) })
     }
     
-    public func children(prefix: String? = nil, _ name: String) -> XElementSequence {
+    public func children(_ name: String) -> XElementSequence {
+        XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.children(name) })
+    }
+    
+    public func children(prefix: String?, _ name: String) -> XElementSequence {
         XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.children(prefix: prefix, name) })
     }
     
-    public func children(prefix: String? = nil, _ names: [String]) -> XElementSequence {
+    public func children(_ names: [String]) -> XElementSequence {
+        XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.children(names) })
+    }
+    
+    public func children(prefix: String?, _ names: [String]) -> XElementSequence {
         XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.children(prefix: prefix, names) })
     }
     
-    public func children(prefix: String? = nil, _ names: String...) -> XElementSequence {
+    public func children(_ names: String...) -> XElementSequence {
+        if names.isEmpty {
+            XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.children })
+        } else {
+            XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.children(names) })
+        }
+    }
+    
+    public func children(prefix: String?, _ names: String...) -> XElementSequence {
         if names.isEmpty {
             XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.children(prefix: prefix) })
         } else {
@@ -1590,15 +1766,31 @@ extension Sequence<XElement> {
         XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.childrenReversed(condition) })
     }
     
-    public func childrenReversed(prefix: String? = nil, _ name: String) -> XElementSequence {
+    public func childrenReversed(_ name: String) -> XElementSequence {
+        XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.childrenReversed(name) })
+    }
+    
+    public func childrenReversed(prefix: String?, _ name: String) -> XElementSequence {
         XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.childrenReversed(prefix: prefix, name) })
     }
     
-    public func childrenReversed(prefix: String? = nil, _ names: [String]) -> XElementSequence {
+    public func childrenReversed(_ names: [String]) -> XElementSequence {
+        XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.childrenReversed(names) })
+    }
+    
+    public func childrenReversed(prefix: String?, _ names: [String]) -> XElementSequence {
         XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.childrenReversed(prefix: prefix, names) })
     }
     
-    public func childrenReversed(prefix: String? = nil, _ names: String...) -> XElementSequence {
+    public func childrenReversed(_ names: String...) -> XElementSequence {
+        if names.isEmpty {
+            XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.childrenReversed })
+        } else {
+            XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.childrenReversed(names) })
+        }
+    }
+    
+    public func childrenReversed(prefix: String?, _ names: String...) -> XElementSequence {
         if names.isEmpty {
             XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.childrenReversed(prefix: prefix) })
         } else {
@@ -1666,15 +1858,31 @@ extension Sequence<XElement> {
         XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.nextElements(condition) })
     }
     
-    public func nextElements(prefix: String? = nil, _ name: String) -> XElementSequence {
+    public func nextElements(_ name: String) -> XElementSequence {
+        XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.nextElements(name) })
+    }
+    
+    public func nextElements(prefix: String?, _ name: String) -> XElementSequence {
         XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.nextElements(prefix: prefix, name) })
     }
     
-    public func nextElements(prefix: String? = nil, _ names: [String]) -> XElementSequence {
+    public func nextElements(_ names: [String]) -> XElementSequence {
+        XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.nextElements(names) })
+    }
+    
+    public func nextElements(prefix: String?, _ names: [String]) -> XElementSequence {
         XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.nextElements(prefix: prefix, names) })
     }
     
-    public func nextElements(prefix: String? = nil, _ names: String...) -> XElementSequence {
+    public func nextElements(_ names: String...) -> XElementSequence {
+        if names.isEmpty {
+            XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.nextElements })
+        } else {
+            XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.nextElements(names) })
+        }
+    }
+    
+    public func nextElements(prefix: String?, _ names: String...) -> XElementSequence {
         if names.isEmpty {
             XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.nextElements(prefix: prefix) })
         } else {
@@ -1702,15 +1910,31 @@ extension Sequence<XElement> {
         XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.previousElements(condition) })
     }
     
-    public func previousElements(prefix: String? = nil, _ name: String) -> XElementSequence {
+    public func previousElements(_ name: String) -> XElementSequence {
+        XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.previousElements(name) })
+    }
+    
+    public func previousElements(prefix: String?, _ name: String) -> XElementSequence {
         XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.previousElements(prefix: prefix, name) })
     }
     
-    public func previousElements(prefix: String? = nil, _ names: [String]) -> XElementSequence {
+    public func previousElements(_ names: [String]) -> XElementSequence {
+        XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.previousElements(names) })
+    }
+    
+    public func previousElements(prefix: String?, _ names: [String]) -> XElementSequence {
         XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.previousElements(prefix: prefix, names) })
     }
     
-    public func previousElements(prefix: String? = nil, _ names: String...) -> XElementSequence {
+    public func previousElements(_ names: String...) -> XElementSequence {
+        if names.isEmpty {
+            XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.previousElements })
+        } else {
+            XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.previousElements(names) })
+        }
+    }
+    
+    public func previousElements(prefix: String?, _ names: String...) -> XElementSequence {
         if names.isEmpty {
             XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.previousElements(prefix: prefix) })
         } else {
@@ -1778,15 +2002,31 @@ extension Sequence<XElement> {
         XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.descendants(condition) })
     }
     
-    public func descendants(prefix: String? = nil, _ name: String) -> XElementSequence {
+    public func descendants(_ name: String) -> XElementSequence {
+        XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.descendants(name) })
+    }
+    
+    public func descendants(prefix: String?, _ name: String) -> XElementSequence {
         XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.descendants(prefix: prefix, name) })
     }
     
-    public func descendants(prefix: String? = nil, _ names: [String]) -> XElementSequence {
+    public func descendants(_ names: [String]) -> XElementSequence {
+        XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.descendants(names) })
+    }
+    
+    public func descendants(prefix: String?, _ names: [String]) -> XElementSequence {
         XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.descendants(prefix: prefix, names) })
     }
     
-    public func descendants(prefix: String? = nil, _ names: String...) -> XElementSequence {
+    public func descendants(_ names: String...) -> XElementSequence {
+        if names.isEmpty {
+            XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.descendants })
+        } else {
+            XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.descendants(names) })
+        }
+    }
+    
+    public func descendants(prefix: String?, _ names: String...) -> XElementSequence {
         if names.isEmpty {
             XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { content in content.descendants(prefix: prefix) })
         } else {
@@ -1814,15 +2054,31 @@ extension Sequence<XElement> {
         XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { element in element.descendantsIncludingSelf(condition) })
     }
     
-    public func descendantsIncludingSelf(prefix: String? = nil, _ name: String) -> XElementSequence {
+    public func descendantsIncludingSelf(_ name: String) -> XElementSequence {
+        XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { element in element.descendantsIncludingSelf(name) })
+    }
+    
+    public func descendantsIncludingSelf(prefix: String?, _ name: String) -> XElementSequence {
         XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { element in element.descendantsIncludingSelf(prefix: prefix, name) })
     }
     
-    public func descendantsIncludingSelf(prefix: String? = nil, _ names: [String]) -> XElementSequence {
+    public func descendantsIncludingSelf(_ names: [String]) -> XElementSequence {
+        XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { element in element.descendantsIncludingSelf(names) })
+    }
+    
+    public func descendantsIncludingSelf(prefix: String?, _ names: [String]) -> XElementSequence {
         XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { element in element.descendantsIncludingSelf(prefix: prefix, names) })
     }
     
-    public func descendantsIncludingSelf(prefix: String? = nil, _ names: String...) -> XElementSequence {
+    public func descendantsIncludingSelf(_ names: String...) -> XElementSequence {
+        if names.isEmpty {
+            XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { element in element.descendantsIncludingSelf })
+        } else {
+            XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { element in element.descendantsIncludingSelf(names) })
+        }
+    }
+    
+    public func descendantsIncludingSelf(prefix: String?, _ names: String...) -> XElementSequence {
         if names.isEmpty {
             XElementSequenceDependingOnElementSequence(sequence: self, nextSequenceGetter: { element in element.descendantsIncludingSelf(prefix: prefix) })
         } else {
@@ -1882,15 +2138,31 @@ extension Sequence<XElement> {
         XElementDependingOnElementSequence(sequence: self, elementGetter: { content in content.parent(condition) })
     }
     
-    public func parent(prefix: String? = nil, _ name: String) -> XElementSequence {
+    public func parent(_ name: String) -> XElementSequence {
+        XElementDependingOnElementSequence(sequence: self, elementGetter: { content in content.parent(name) })
+    }
+    
+    public func parent(prefix: String?, _ name: String) -> XElementSequence {
         XElementDependingOnElementSequence(sequence: self, elementGetter: { content in content.parent(prefix: prefix, name) })
     }
     
-    public func parent(prefix: String? = nil, _ names: [String]) -> XElementSequence {
+    public func parent(_ names: [String]) -> XElementSequence {
+        XElementDependingOnElementSequence(sequence: self, elementGetter: { content in content.parent(names) })
+    }
+    
+    public func parent(prefix: String?, _ names: [String]) -> XElementSequence {
         XElementDependingOnElementSequence(sequence: self, elementGetter: { content in content.parent(prefix: prefix, names) })
     }
     
-    public func parent(prefix: String? = nil, _ names: String...) -> XElementSequence {
+    public func parent(_ names: String...) -> XElementSequence {
+        if names.isEmpty {
+            XElementDependingOnElementSequence(sequence: self, elementGetter: { content in content.parent })
+        } else {
+            XElementDependingOnElementSequence(sequence: self, elementGetter: { content in content.parent(names) })
+        }
+    }
+    
+    public func parent(prefix: String?, _ names: String...) -> XElementSequence {
         if names.isEmpty {
             XElementDependingOnElementSequence(sequence: self, elementGetter: { content in content.parent(prefix: prefix) })
         } else {

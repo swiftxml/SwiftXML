@@ -184,6 +184,11 @@ public final class XElementSequenceWithCondition: XElementSequence {
         self.condition = condition
     }
     
+    public init(sequence: XElementSequence, elementName: String) {
+        self.sequence = sequence
+        self.condition = { $0.name == elementName }
+    }
+    
     public init(sequence: XElementSequence, prefix: String?, elementName: String) {
         self.sequence = sequence
         self.condition = { $0.prefix == prefix && $0.name == elementName }
@@ -207,6 +212,11 @@ public final class XElementSequenceWhileCondition: XElementSequence {
         self.condition = condition
     }
     
+    public init(sequence: XElementSequence, elementName: String) {
+        self.sequence = sequence
+        self.condition = { $0.name == elementName }
+    }
+    
     public init(sequence: XElementSequence, prefix: String?, elementName: String) {
         self.sequence = sequence
         self.condition = { $0.prefix == prefix && $0.name == elementName }
@@ -228,6 +238,11 @@ public final class XElementSequenceUntilCondition: XElementSequence {
     public init(sequence: XElementSequence, until condition: @escaping (XElement) -> Bool) {
         self.sequence = sequence
         self.condition = condition
+    }
+    
+    public init(sequence: XElementSequence, elementName: String) {
+        self.sequence = sequence
+        self.condition = { $0.name == elementName }
     }
     
     public init(sequence: XElementSequence, prefix: String?, elementName: String) {
@@ -255,6 +270,12 @@ public final class XElementSequenceWithConditionAndUntilCondition: XElementSeque
         self.untilCondition = untilCondition
     }
     
+    public init(sequence: XElementSequence, elementName: String, until untilCondition: @escaping (XElement) -> Bool) {
+        self.sequence = sequence
+        self.condition = { $0.name == elementName }
+        self.untilCondition = untilCondition
+    }
+    
     public init(sequence: XElementSequence, prefix: String?, elementName: String, until untilCondition: @escaping (XElement) -> Bool) {
         self.sequence = sequence
         self.condition = { $0.prefix == prefix && $0.name == elementName }
@@ -279,6 +300,12 @@ public final class XElementSequenceWithConditionAndWhileCondition: XElementSeque
     public init(sequence: XElementSequence, condition: @escaping (XElement) -> Bool, while whileCondition: @escaping (XElement) -> Bool) {
         self.sequence = sequence
         self.condition = condition
+        self.whileCondition = whileCondition
+    }
+    
+    public init(sequence: XElementSequence, elementName: String, while whileCondition: @escaping (XElement) -> Bool) {
+        self.sequence = sequence
+        self.condition = { $0.name == elementName }
         self.whileCondition = whileCondition
     }
     
@@ -389,6 +416,11 @@ public final class XElementSequenceIncludingCondition: XElementSequence {
     public init(sequence: XElementSequence, untilAndIncluding condition: @escaping (XElement) -> Bool) {
         self.sequence = sequence
         self.condition = condition
+    }
+    
+    public init(sequence: XElementSequence, elementName: String) {
+        self.sequence = sequence
+        self.condition = { $0.name == elementName }
     }
     
     public init(sequence: XElementSequence, prefix: String?, elementName: String) {

@@ -77,8 +77,8 @@ final class AttributeNamespacesTests: XCTestCase {
         
         let document = try readXML(fromText: source, namespaceAware: true)
         
-        let b = document.elements("b").first
-        let c = document.elements("c").first
+        let b = document.elements(prefix: nil, "b").first
+        let c = document.elements(prefix: nil, "c").first
         
         XCTAssertNotNil(b)
         XCTAssertNotNil(c)
@@ -147,7 +147,7 @@ final class AttributeNamespacesTests: XCTestCase {
         let documentWithSameNamespaceButDifferentPrefix = try readXML(fromText: sourceWithSameNamespaceButDifferentPrefix, namespaceAware: true)
         let documentWithDifferentNamespaceForSamePrefix = try readXML(fromText: sourceWithDifferentNamespaceForSamePrefix, namespaceAware: true)
         
-        let b = document1.elements("b").first
+        let b = document1.elements(prefix: nil, "b").first
         XCTAssertNotNil(b)
         
         b?.remove() // be sure it is also correctly done when first removing

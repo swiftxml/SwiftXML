@@ -307,7 +307,7 @@ final class FromReadmeTests: XCTestCase {
         <a><b id="1"/><b id="2"/></a>
         """)
 
-        for  element in document.elements("b") {
+        for  element in document.elements(prefix: nil, "b") {
             if element["id"] == "2" {
                 element.insertNext {
                     XElement("c") {
@@ -724,7 +724,7 @@ final class FromReadmeTests: XCTestCase {
             """)
         try document.removeFormatting(allowingTextInElementsWithoutPrefix: ["paragraph"])
         
-        for section in document.elements("section") {
+        for section in document.elements(prefix: nil, "section") {
             section.traverse { node in
                 // -
             } up: { node in
