@@ -411,9 +411,12 @@ public final class XDocument: XNode, XBranchInternal {
     /// Checks if the namespace URI is registered fro the document.
     public func isRegistered(namespaceURI: String) -> Bool { _namespaceURIToPrefix[namespaceURI] != nil }
     
-    /// Get the prefix for a namespecae URI. In case of a silent namespace, `nil` is returned.
+    /// Get the prefix for a namespace URI. In case of a silent namespace, `nil` is returned.
     /// You then might want to check is the URI belongs to the silent namespace by calling `isRegistered(namespaceURI:)`.
     public func prefix(forNamespaceURI namespaceURI: String) -> String? { _namespaceURIToPrefix[namespaceURI]?.nonEmpty }
+    
+    /// Get the prefix for an optional namespace URI. If the optional namespace URI is `nil`, then `nil`is returned. Else, it returns the value of `prefix(forNamespaceURI:)`.
+    public func prefix(forOptionalNamespaceURI namespaceURI: String?) -> String? { if let namespaceURI { prefix(forNamespaceURI: namespaceURI) } else { nil } }
     
     /// Get the URI for a prefix. Get the URI if the silent namespace by using the prefix value `""`.
     public func namespaceURI(forPrefix prefix: String) -> String? { _prefixToNamespaceURI[prefix] }
