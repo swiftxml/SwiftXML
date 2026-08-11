@@ -418,6 +418,9 @@ public final class XDocument: XNode, XBranchInternal {
     /// Get the URI for a prefix. Get the URI if the silent namespace by using the prefix value `""`.
     public func namespaceURI(forPrefix prefix: String) -> String? { _prefixToNamespaceURI[prefix] }
     
+    /// Get the URI for an optional prefix. If the optional prefix is `nil`, then `nil`is returned. Else, it returns the value of `namespaceURI(forPrefix:)`.
+    public func namespaceURI(forOptionalPrefix prefix: String?) -> String? { if let prefix { namespaceURI(forPrefix: prefix) } else { nil } }
+    
     /// Get a list of tuples of the form `(prefix, namespace URI)` including the prefix value `""` for the silent namespace.
     public var namespacePrefixesAndURIs: [(String,String)] { _prefixToNamespaceURI.sorted{ $0.0.lowercased() < $1.0.lowercased() } }
     
