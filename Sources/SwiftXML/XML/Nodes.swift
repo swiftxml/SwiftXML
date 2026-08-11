@@ -2404,6 +2404,10 @@ public final class XElement: XContent, XBranchInternal {
         _prefix == prefix && _name == name
     }
     
+    public func hasPrefixAndName(as other: XElement) -> Bool {
+        _prefix == other.prefix && _name == other.name
+    }
+    
     public func has(prefix: String?, name names: [String]) -> Bool {
         _prefix == prefix && names.contains(_name)
     }
