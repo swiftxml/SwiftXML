@@ -2088,6 +2088,37 @@ func enclosing(isolator1: _Isolator_, isolator2: _Isolator_) -> [XContent] {
     return result
 }
 
+public struct XNamespacedName {
+    
+    public let namespaceURI: String?
+    public let name: String
+    
+    public init(namespaceURI: String? = nil, name: String) {
+        self.namespaceURI = namespaceURI
+        self.name = name
+    }
+    
+    public func prefixedName(inDocument document: XDocument) -> XPrefixedName {
+        XPrefixedName(prefix: document.prefix(forOptionalNamespaceURI: namespaceURI), name: name)
+        
+    }
+}
+
+public struct XPrefixedName {
+    
+    public let prefix: String?
+    public let name: String
+    
+    public init(prefix: String? = nil, name: String) {
+        self.prefix = prefix
+        self.name = name
+    }
+    
+    public func namespacedName(inDocument document: XDocument) -> XNamespacedName {
+        XNamespacedName(namespaceURI: document.namespaceURI(forOptionalPrefix: prefix), name: name)
+    }
+}
+
 public final class XElement: XContent, XBranchInternal {
 
     /// This methods replaces the subject and returns the replacements.
@@ -2406,6 +2437,15 @@ public final class XElement: XContent, XBranchInternal {
     
     public func hasSamePrefixAndName(as other: XElement) -> Bool {
         _prefix == other.prefix && _name == other.name
+    }
+    
+    public func has(prefixedName: XPrefixedName) -> Bool {
+        _prefix == prefixedName.prefix && _name == prefixedName.name
+    }
+    
+    public func has(namespacedName: XNamespacedName) -> Bool? {
+        guard let document = _document else { return nil }
+        return document.namespaceURI(forOptionalPrefix: _prefix) == namespacedName.namespaceURI && _name == namespacedName.name
     }
     
     public func has(prefix: String?, name names: [String]) -> Bool {
