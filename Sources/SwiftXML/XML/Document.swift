@@ -621,6 +621,14 @@ public final class XDocument: XNode, XBranchInternal {
         return XElementsOfSameNameSequence(document: self, prefix: prefix, name: name)
     }
     
+    public func elements(ofPrefixedName prefixedName: XPrefixedName) -> XElementSequence {
+        return XElementsOfSameNameSequence(document: self, prefix: prefixedName.prefix, name: prefixedName.name)
+    }
+    
+    public func elements(ofNamespacedName namespacedName: XNamespacedName) -> XElementSequence {
+        return XElementsOfSameNameSequence(document: self, prefix: self.prefix(forOptionalNamespaceURI: namespacedName.namespaceURI), name: namespacedName.name)
+    }
+    
     public func elements(prefix: String?, _ names: String...) -> XElementSequence {
         return elements(prefix: prefix, names)
     }
