@@ -310,6 +310,58 @@ public class XNode: CustomStringConvertible {
         }
     }
     
+    public func previousElement(prefix: String?, _ name: String) -> XElement? {
+        var content = _previous
+        while let theContent = content {
+            if let element = theContent as? XElement, element.has(prefix: prefix, name: name) {
+                return element
+            }
+            content = theContent._previous
+        }
+        return nil
+    }
+    
+    public func previousElement(prefix: String?, _ names: [String]) -> XElement? {
+        var content = _previous
+        while let theContent = content {
+            if let element = theContent as? XElement, element.has(prefix: prefix, name: names) {
+                return element
+            }
+            content = theContent._previous
+        }
+        return nil
+    }
+    
+    public func previousElement(prefix: String?, _ names: String...) -> XElement? {
+        previousElement(prefix: prefix, names)
+    }
+    
+    public func previousElement(_ name: String) -> XElement? {
+        var content = _previous
+        while let theContent = content {
+            if let element = theContent as? XElement, element.name == name {
+                return element
+            }
+            content = theContent._previous
+        }
+        return nil
+    }
+    
+    public func previousElement(_ names: [String]) -> XElement? {
+        var content = _previous
+        while let theContent = content {
+            if let element = theContent as? XElement, names.contains(element.name) {
+                return element
+            }
+            content = theContent._previous
+        }
+        return nil
+    }
+    
+    public func previousElement(_ names: String...) -> XElement? {
+        previousElement(names)
+    }
+    
     public var hasPreviousElement: Bool {
         previousElement != nil
     }
@@ -322,6 +374,58 @@ public class XNode: CustomStringConvertible {
             }
             return content as? XElement
         }
+    }
+    
+    public func nextElement(prefix: String?, _ name: String) -> XElement? {
+        var content = _next
+        while let theContent = content {
+            if let element = theContent as? XElement, element.has(prefix: prefix, name: name) {
+                return element
+            }
+            content = theContent._next
+        }
+        return nil
+    }
+    
+    public func nextElement(prefix: String?, _ names: [String]) -> XElement? {
+        var content = _next
+        while let theContent = content {
+            if let element = theContent as? XElement, element.has(prefix: prefix, name: names) {
+                return element
+            }
+            content = theContent._next
+        }
+        return nil
+    }
+    
+    public func nextElement(prefix: String?, _ names: String...) -> XElement? {
+        nextElement(prefix: prefix, names)
+    }
+    
+    public func nextElement(_ name: String) -> XElement? {
+        var content = _next
+        while let theContent = content {
+            if let element = theContent as? XElement, element.name == name {
+                return element
+            }
+            content = theContent._next
+        }
+        return nil
+    }
+    
+    public func nextElement(_ names: [String]) -> XElement? {
+        var content = _next
+        while let theContent = content {
+            if let element = theContent as? XElement, names.contains(element.name) {
+                return element
+            }
+            content = theContent._next
+        }
+        return nil
+    }
+    
+    public func nextElement(_ names: String...) -> XElement? {
+        nextElement(names)
     }
     
     public var hasNextElement: Bool {
@@ -2431,7 +2535,7 @@ public final class XElement: XContent, XBranchInternal {
         self.setPrefixedAttributes(prefixedAttributes: prefixedAttributes)
     }
     
-    public func has(prefix: String?, name: String) -> Bool {
+    public func has(prefix: String?, name: String) -> Bool {//
         _prefix == prefix && _name == name
     }
     
@@ -2448,11 +2552,11 @@ public final class XElement: XContent, XBranchInternal {
         return document.namespaceURI(forOptionalPrefix: _prefix) == namespacedName.namespaceURI && _name == namespacedName.name
     }
     
-    public func has(prefix: String?, name names: [String]) -> Bool {
+    public func has(prefix: String?, name names: [String]) -> Bool {//
         _prefix == prefix && names.contains(_name)
     }
     
-    public func has(prefix: String?, name names: String...) -> Bool {
+    public func has(prefix: String?, name names: String...) -> Bool {//
         has(prefix: prefix, name: names)
     }
     
