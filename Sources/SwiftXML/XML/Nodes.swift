@@ -2093,7 +2093,7 @@ public struct XNamespacedName: Sendable {
     public let namespaceURI: String?
     public let name: String
     
-    public init(namespaceURI: String? = nil, name: String) {
+    public init(namespaceURI: String?, name: String) {
         self.namespaceURI = namespaceURI
         self.name = name
     }
@@ -2109,7 +2109,7 @@ public struct XPrefixedName: Sendable {
     public let prefix: String?
     public let name: String
     
-    public init(prefix: String? = nil, name: String) {
+    public init(prefix: String?, name: String) {
         self.prefix = prefix
         self.name = name
     }
