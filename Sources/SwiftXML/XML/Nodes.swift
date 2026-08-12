@@ -2088,7 +2088,7 @@ func enclosing(isolator1: _Isolator_, isolator2: _Isolator_) -> [XContent] {
     return result
 }
 
-public struct XNamespacedName {
+public struct XNamespacedName: Sendable {
     
     public let namespaceURI: String?
     public let name: String
@@ -2104,7 +2104,7 @@ public struct XNamespacedName {
     }
 }
 
-public struct XPrefixedName {
+public struct XPrefixedName: Sendable {
     
     public let prefix: String?
     public let name: String
