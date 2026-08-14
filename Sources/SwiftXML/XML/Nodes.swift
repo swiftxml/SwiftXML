@@ -2192,10 +2192,12 @@ func enclosing(isolator1: _Isolator_, isolator2: _Isolator_) -> [XContent] {
     return result
 }
 
-public struct XNamespacedName: Sendable {
+public struct XNamespacedName: Sendable, CustomStringConvertible {
     
     public let namespaceURI: String?
     public let name: String
+    
+    public var description: String { if let namespaceURI { "[\(namespaceURI)]:\(name)" } else { name } }
     
     public init(namespaceURI: String?, name: String) {
         self.namespaceURI = namespaceURI
@@ -2208,10 +2210,12 @@ public struct XNamespacedName: Sendable {
     }
 }
 
-public struct XPrefixedName: Sendable {
+public struct XPrefixedName: Sendable, CustomStringConvertible {
     
     public let prefix: String?
     public let name: String
+    
+    public var description: String { if let prefix { "\(prefix):\(name)" } else { name } }
     
     public init(prefix: String?, name: String) {
         self.prefix = prefix
