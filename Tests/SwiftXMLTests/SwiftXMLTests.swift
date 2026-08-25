@@ -1101,20 +1101,24 @@ final class SwiftXMLTests: XCTestCase {
     
     func testReversedAllContent() throws {
         let document = try readXML(fromText: """
-        <sentences>
-            <sentence><word>Hello</word>, <word>world</word></sentence>
-            <sentence><word>Feel</word> <word>good</word></sentence>
-        </sentences>
+        <document>
+            <sentences>
+                <sentence><word>Hello</word>, <word>world</word></sentence>
+                <sentence><word>Feel</word> <word>good</word></sentence>
+            </sentences>
+        </document>
         """)
         
-        let start = document.firstChild!.firstChild!
+        let start = document.firstChild!.firstChild!.firstChild!
         
         let allContent = ["<word>", "\"Hello\"", "\", \"", "<word>", "\"world\""]
         
         XCTAssertEqual(Array(start.allContent.map{ $0.description }), allContent)
         XCTAssertEqual(Array(start.allContentReversed.map{ $0.description }), allContent.reversed())
         
-        XCTAssertEqual(document.firstChild!.lastChild!.xPath, "/sentences[1]/sentence[2]")
+        XCTAssertEqual(document.firstChild!.firstChild!.lastChild!.xPath, "/document[1]/sentences[1]/sentence[2]")
+        XCTAssertEqual(document.firstChild!.firstChild!.lastChild!.xPath(relativeTo: document.firstChild!), "sentences[1]/sentence[2]")
+        XCTAssertEqual(document.firstChild!.firstChild!.lastChild!.xPath(relativeTo: XElement("no-ancestor")), nil)
     }
     
     func testReversedAllTexts() throws {

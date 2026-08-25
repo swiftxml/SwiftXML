@@ -55,7 +55,7 @@ public enum AttributeWithPrefixRegisterMode: Sendable {
 }
 
 public final class XDocument: XNode, XBranchInternal {
-
+    
     public var firstChild: XElement? { _firstChild }
     
     public func firstChild(_ name: String) -> XElement? {
