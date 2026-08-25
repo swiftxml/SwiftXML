@@ -1117,8 +1117,25 @@ final class SwiftXMLTests: XCTestCase {
         XCTAssertEqual(Array(start.allContentReversed.map{ $0.description }), allContent.reversed())
         
         XCTAssertEqual(document.firstChild!.firstChild!.lastChild!.xPath, "/document[1]/sentences[1]/sentence[2]")
+        XCTAssertEqual(document.firstChild!.xPath(relativeTo: document.firstChild!), ".")
+        XCTAssertEqual(document.firstChild!.firstChild!.xPath(relativeTo: document.firstChild!), "sentences[1]")
         XCTAssertEqual(document.firstChild!.firstChild!.lastChild!.xPath(relativeTo: document.firstChild!), "sentences[1]/sentence[2]")
         XCTAssertEqual(document.firstChild!.firstChild!.lastChild!.xPath(relativeTo: XElement("no-ancestor")), nil)
+        
+        // not in document:
+        
+        let elementWithoutDocument = XElement("a") {
+            XElement("b") {
+                XElement("c")
+            }
+        }
+        
+        XCTAssertEqual(elementWithoutDocument.xPath, ".")
+        XCTAssertEqual(elementWithoutDocument.firstChild!.xPath, "./b[1]")
+        XCTAssertEqual(elementWithoutDocument.firstChild!.firstChild!.xPath, "./b[1]/c[1]")
+        XCTAssertEqual(elementWithoutDocument.xPath(relativeTo: elementWithoutDocument), ".")
+        XCTAssertEqual(elementWithoutDocument.firstChild!.xPath(relativeTo: elementWithoutDocument), "b[1]")
+        XCTAssertEqual(elementWithoutDocument.firstChild!.firstChild!.xPath(relativeTo: elementWithoutDocument), "b[1]/c[1]")
     }
     
     func testReversedAllTexts() throws {
