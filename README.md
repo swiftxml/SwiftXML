@@ -2461,6 +2461,57 @@ public func copyXStructure(from start: XContent, to end: XContent, upTo: XElemen
 
 Copies the structure from `start` to `end`, optionally up to the `upTo` value. `start` and `end` must have a common ancestor. Returns `nil` if there is no common ancestor. The returned element is a clone of the `upTo` value if a) it is not `nil` and b) `upTo` is an ancestor of the common ancestor or the ancestor itself. Else it is the clone of the common ancestor (but generally with a different content in both cases). The `correction` can do some corrections.
 
+## JSON
+
+You can read JSON data, a JSON file, or a JSON text as XML via `readJSONAsXML(fromData:usingJSONKeyOrder:)`, `readJSONAsXML(fromURL:usingJSONKeyOrder:)`, or `readJSONAsXML(fromText:usingJSONKeyOrder:)`. The XML uses certain elmements describing the JSON, e.g.:
+
+```xml
+<object>
+    <property key="id">
+        <text>emp-98765</text>
+    </property>
+    <property key="isActive">
+        <boolean>true</boolean>
+    </property>
+    <property key="personalInfo">
+        <object>
+            <property key="firstName">
+                <text>Maximilian</text>
+            </property>
+            <property key="lastName">
+                <text>Mustermann</text>
+            </property>
+            <property key="age">
+                <number>34</number>
+            </property>
+            <property key="contact">
+                <object>
+                    <property key="email">
+                        <text>m.mustermann@techcorp.de</text>
+                    </property>
+                    <property key="phone">
+                        <text>+49 170 1234567</text>
+                    </property>
+                </object>
+            </property>
+        </object>
+    </property>
+    <property key="roles">
+        <array>
+            <text>Senior Developer</text>
+            <text>Tech Lead</text>
+            <text>Scrum Master</text>
+        </array>
+    </property>
+</object>
+```
+
+By using the `usingJSONKeyOrder` argument with a list of property keys, you can give a certains order to the properties of an object. All other properties are sorted by the alphabetic order of their keys.
+
+Such an XML can be written as JSON by using one of the methods `writeAsJSON(to:indentationLevel:indendationStep:lineEnding:` and `writeAsJSON(toURL:indendationStep:lineEnding:)` of `XDocument` or `XContent`. In many cases, this results in a roundtrip between these two formats, and you can use the SwiftXML package to handle the XML instance.
+
+For the XML document constructed from the JSON, the values for the attributes with name `"key"` are registered. Be careful when moving the XML parts to other documents when using this feature.
+
 ## Debugging
 
 If one uses multiple instances of `XRule` bundled into a `XTRansformation` to transform a whole document, in can be useful to know which actions belonging to which rules "touched" an element. In debug builds all filenames and line numbers that are executed by a transformation during execution are recorded in the `encounteredActionsAt` property.
