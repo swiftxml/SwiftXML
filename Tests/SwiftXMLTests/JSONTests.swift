@@ -66,28 +66,34 @@ final class JSONTests: XCTestCase {
             }
             """
         
-        let xmlDocument = try readJSONAsXML(fromText: jsonSource, usingJSONKeyOrder: [
-            "id",
-            "isActive",
-            "personalInfo",
-            "firstName",
-            "lastName",
-            "age",
-            "contact",
-            "email",
-            "phone",
-            "roles",
-            "skills",
-            "projectId",
-            "name",
-            "level",
-            "yearsOfExperience",
-            "currentProject",
-            "budget",
-            "deadline",
-            "teamMembers",
-            "terminationDate",
-        ])
+        let xmlDocument = try readJSONAsXML(
+            fromText: jsonSource,
+            usingJSONKeyOrder: [
+                "id",
+                "isActive",
+                "personalInfo",
+                "firstName",
+                "lastName",
+                "age",
+                "contact",
+                "email",
+                "phone",
+                "roles",
+                "skills",
+                "projectId",
+                "name",
+                "level",
+                "yearsOfExperience",
+                "currentProject",
+                "budget",
+                "deadline",
+                "teamMembers",
+                "terminationDate",
+            ],
+            forceBoolean: [
+                "isActive"
+            ]
+        )
         
         XCTAssertEqual(xmlDocument.serialized(pretty: true), """
             <object>
@@ -198,4 +204,44 @@ final class JSONTests: XCTestCase {
         XCTAssertEqual(writer.description, jsonSource)
     }
     
+    func testBooleanVsInteger() throws {
+        
+        let jsonSource = """
+            {
+              "isRange": true,
+              "start": 0,
+              "end": 148
+            }
+            """
+        
+        let propertiesOrder = ["isRange", "start", "end"]
+        
+        XCTAssertEqual(try readJSONAsXML(fromText: jsonSource, usingJSONKeyOrder: propertiesOrder).serialized(pretty: true), """
+            <object>
+                <property key="isRange">
+                    <number>1</number>
+                </property>
+                <property key="start">
+                    <number>0</number>
+                </property>
+                <property key="end">
+                    <number>148</number>
+                </property>
+            </object>
+            """)
+        
+        XCTAssertEqual(try readJSONAsXML(fromText: jsonSource, usingJSONKeyOrder: propertiesOrder, forceBoolean: ["isRange"], forceInteger: ["start", "end"]).serialized(pretty: true), """
+            <object>
+                <property key="isRange">
+                    <boolean>true</boolean>
+                </property>
+                <property key="start">
+                    <number>0</number>
+                </property>
+                <property key="end">
+                    <number>148</number>
+                </property>
+            </object>
+            """)
+    }
 }
