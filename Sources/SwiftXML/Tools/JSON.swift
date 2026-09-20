@@ -31,17 +31,17 @@ fileprivate extension String {
     
 }
 
-func readJSONAsXML(fromData data: Data, usingJSONKeyOrder jsonKeyOrder: [String]? = nil) throws -> XDocument {
+public func readJSONAsXML(fromData data: Data, usingJSONKeyOrder jsonKeyOrder: [String]? = nil) throws -> XDocument {
     let json = try JSONSerialization.jsonObject(with: data, options: .mutableLeaves)
     let xmlContent = try toXML(json: json, usingJSONKeyOrder: jsonKeyOrder)
     return XDocument(registeringValuesForAttributes: .selected(["key"])) { xmlContent }
 }
 
-func readJSONAsXML(fromURL url: URL, usingJSONKeyOrder jsonKeyOrder: [String]? = nil) throws -> XDocument {
+public func readJSONAsXML(fromURL url: URL, usingJSONKeyOrder jsonKeyOrder: [String]? = nil) throws -> XDocument {
     try readJSONAsXML(fromData: try Data(contentsOf: url), usingJSONKeyOrder: jsonKeyOrder)
 }
 
-func readJSONAsXML(fromText text: String, usingJSONKeyOrder jsonKeyOrder: [String]? = nil) throws -> XDocument {
+public func readJSONAsXML(fromText text: String, usingJSONKeyOrder jsonKeyOrder: [String]? = nil) throws -> XDocument {
     guard let data = text.data(using: .utf8) else {
         throw JSONError("could not get UTF8 data from text")
     }
