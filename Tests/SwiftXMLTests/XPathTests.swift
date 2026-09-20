@@ -14,7 +14,7 @@ import class Foundation.Bundle
 
 final class XPathTests: XCTestCase {
     
-    func testXPath1() throws {
+    func testXPath() throws {
         
         let source = """
             <a>
