@@ -2412,6 +2412,35 @@ Result:
 
 ## Tools
 
+### XPath
+
+This package has a limited support of [XPath](https://www.w3.org/TR/xpath/). To find a specific location described by an XPath expression, the method `goTo(xPath:)` can be applied either to the document or to any node. When applying an XPath expression which starts with `/` to a node that is not a document, it is automatically applied to the document that contains the node.
+
+If an XPath expression cannot be interpreted (either because it has an invalid syntax or the syntax is not supported), an according error is thrown.
+
+Examples of supported XPath expressions:
+
+```text
+/
+/.
+/a/b[2]
+c[2]
+/a/./b[2]/.
+/a/b[2]/c[2]/text()[2]
+/a/b[2]/c[2]/text()
+/a/b[2]/*[2]
+/a/b[2]/*[@id='d2']
+/a/b[2]/d[@id='d2']
+//*[@id='b2']/d[1]
+```
+
+---
+**NOTES:**
+
+1. ⚠️ The `goTo(xPath:)` method _always returns one single node or `nil`,_ it never returns several nodes. If sevaral nodes are valid, the first of it is returned (in the case of an attribute value search in the whole document e.g. via `//*[@id='b2']`, this uses the temporal order in which the attribute values have been set). This is consistent with the interpretation of `goTo(xPath:)` to proceed to a specific location.
+2. ⚠️ For a search for an element with a certain attribute value in the whole document e.g. via `//*[@id='b2']` to be able to work, _the attribute values have to be registered for the according attribute name,_ e.g. as in `try readXML(fromText: source, registeringAttributeValuesFor: .selected(["id"]))`.
+---
+
 ### Reading the document properties without full parsing
 
 You can read the document properties (including an empty representation of the root element) without parsing the whole document as in the following example (you need to import `SwiftXMLInterfaces` in order to use `XDocumentSource`):

@@ -937,7 +937,7 @@ public class XNode: CustomStringConvertible {
         }
     }
     
-    public var description: String { String(describing: self) }
+    public var description: String { String(describing: type(of: self)) }
 
 }
 
