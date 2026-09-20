@@ -106,7 +106,6 @@ public extension XNode {
         
         let enumeratedParts = Array(xPath.split(separator: "/", omittingEmptySubsequences: false).enumerated())
         for enumeratedPart in enumeratedParts {
-            print("enumeratedPart: \(enumeratedPart)")
             let (designation: designation, number: number, attributeCondition: attributeCondition) = try decompose(stepExpression: enumeratedPart.element)
             if designation == "text()" {
                 if attributeCondition != nil {
