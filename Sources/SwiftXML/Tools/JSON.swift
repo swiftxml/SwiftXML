@@ -31,39 +31,35 @@ fileprivate extension String {
     
 }
 
-public func readJSONAsXML(fromData data: Data, usingJSONKeyOrder jsonKeyOrder: [String]? = nil, forceBoolean: [String]? = nil, forceInteger: [String]? = nil) throws -> XDocument {
+public func readJSONAsXML(fromData data: Data, usingJSONKeyOrder jsonKeyOrder: [String]? = nil, forcingBooleanFor: [String]? = nil) throws -> XDocument {
     let json = try JSONSerialization.jsonObject(with: data, options: .mutableLeaves)
-    let xmlContent = try toXML(json: json, usingJSONKeyOrder: jsonKeyOrder, forceBoolean: forceBoolean, forceInteger: forceInteger)
+    let xmlContent = try toXML(json: json, usingJSONKeyOrder: jsonKeyOrder, forcingBooleanFor: forcingBooleanFor)
     return XDocument(registeringValuesForAttributes: .selected(["key"])) { xmlContent }
 }
 
-public func readJSONAsXML(fromURL url: URL, usingJSONKeyOrder jsonKeyOrder: [String]? = nil, forceBoolean: [String]? = nil, forceInteger: [String]? = nil) throws -> XDocument {
-    try readJSONAsXML(fromData: try Data(contentsOf: url), usingJSONKeyOrder: jsonKeyOrder, forceBoolean: forceBoolean, forceInteger: forceInteger)
+public func readJSONAsXML(fromURL url: URL, usingJSONKeyOrder jsonKeyOrder: [String]? = nil, forcingBooleanFor: [String]? = nil) throws -> XDocument {
+    try readJSONAsXML(fromData: try Data(contentsOf: url), usingJSONKeyOrder: jsonKeyOrder, forcingBooleanFor: forcingBooleanFor)
 }
 
-public func readJSONAsXML(fromText text: String, usingJSONKeyOrder jsonKeyOrder: [String]? = nil, forceBoolean: [String]? = nil, forceInteger: [String]? = nil) throws -> XDocument {
+public func readJSONAsXML(fromText text: String, usingJSONKeyOrder jsonKeyOrder: [String]? = nil, forcingBooleanFor: [String]? = nil) throws -> XDocument {
     guard let data = text.data(using: .utf8) else {
         throw JSONError("could not get UTF8 data from text")
     }
-    return try readJSONAsXML(fromData: data, usingJSONKeyOrder: jsonKeyOrder, forceBoolean: forceBoolean, forceInteger: forceInteger)
+    return try readJSONAsXML(fromData: data, usingJSONKeyOrder: jsonKeyOrder, forcingBooleanFor: forcingBooleanFor)
 }
 
-public func toXML(json: Any, usingJSONKeyOrder jsonKeyOrder: [String]? = nil, contextKey: String? = nil, forceBoolean: [String]? = nil, forceInteger: [String]? = nil) throws -> XContent? {
+public func toXML(json: Any, usingJSONKeyOrder jsonKeyOrder: [String]? = nil, contextKey: String? = nil, forcingBooleanFor: [String]? = nil) throws -> XContent? {
     switch json {
     case let text as String:
         return XElement("text") { XText(text) }
     case let number as Int:
-        if let contextKey, forceBoolean?.contains(contextKey) == true, [0, 1].contains(number) {
+        if let contextKey, forcingBooleanFor?.contains(contextKey) == true, [0, 1].contains(number) {
             return XElement("boolean") { number == 1 ? "true" : "false"}
         } else {
             return XElement("number") { String(number) }
         }
     case let boolean as Bool:
-        if let contextKey, forceInteger?.contains(contextKey) == true {
-            return XElement("number") { boolean ? 1 : 0}
-        } else {
-            return XElement("boolean") { XText(boolean.description) }
-        }
+        return XElement("boolean") { XText(boolean.description) }
     case let number as Double:
         return XElement("number") { String(number) }
     case let object as [String : Any]:
@@ -75,14 +71,14 @@ public func toXML(json: Any, usingJSONKeyOrder jsonKeyOrder: [String]? = nil, co
                 $0.key < $1.key
             }
         } : { $0.key < $1.key }) {
-            let content = try toXML(json: value, usingJSONKeyOrder: jsonKeyOrder, contextKey: key, forceBoolean: forceBoolean, forceInteger: forceInteger)
+            let content = try toXML(json: value, usingJSONKeyOrder: jsonKeyOrder, contextKey: key, forcingBooleanFor: forcingBooleanFor)
             element.add { XElement("property", ["key": key]) { content } }
         }
         return element
     case let array as [Any]:
         let element = XElement("array")
         for item in array {
-            let content = try toXML(json: item, usingJSONKeyOrder: jsonKeyOrder, forceBoolean: forceBoolean, forceInteger: forceInteger)
+            let content = try toXML(json: item, usingJSONKeyOrder: jsonKeyOrder, forcingBooleanFor: forcingBooleanFor)
             element.add { content }
         }
         return element

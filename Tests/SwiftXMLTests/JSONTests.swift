@@ -90,7 +90,7 @@ final class JSONTests: XCTestCase {
                 "teamMembers",
                 "terminationDate",
             ],
-            forceBoolean: [
+            forcingBooleanFor: [
                 "isActive"
             ]
         )
@@ -230,7 +230,7 @@ final class JSONTests: XCTestCase {
             </object>
             """)
         
-        XCTAssertEqual(try readJSONAsXML(fromText: jsonSource, usingJSONKeyOrder: propertiesOrder, forceBoolean: ["isRange"], forceInteger: ["start", "end"]).serialized(pretty: true), """
+        XCTAssertEqual(try readJSONAsXML(fromText: jsonSource, usingJSONKeyOrder: propertiesOrder, forcingBooleanFor: ["isRange"]).serialized(pretty: true), """
             <object>
                 <property key="isRange">
                     <boolean>true</boolean>

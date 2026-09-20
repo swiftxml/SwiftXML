@@ -2463,7 +2463,7 @@ Copies the structure from `start` to `end`, optionally up to the `upTo` value. `
 
 ## JSON
 
-You can read JSON data, a JSON file, or a JSON text as XML via `readJSONAsXML(fromData:usingJSONKeyOrder:)`, `readJSONAsXML(fromURL:usingJSONKeyOrder:)`, or `readJSONAsXML(fromText:usingJSONKeyOrder:)`. The XML uses certain elmements describing the JSON, e.g.:
+You can read JSON data, a JSON file, or a JSON text as XML via `readJSONAsXML(fromData:usingJSONKeyOrder:forcingBooleanFor:)`, `readJSONAsXML(fromURL:usingJSONKeyOrder:forcingBooleanFor:)`, or `readJSONAsXML(fromText:usingJSONKeyOrder:forcingBooleanFor:)`. The XML uses certain elmements describing the JSON, e.g.:
 
 ```xml
 <object>
@@ -2507,6 +2507,8 @@ You can read JSON data, a JSON file, or a JSON text as XML via `readJSONAsXML(fr
 ```
 
 By using the `usingJSONKeyOrder` argument with a list of property keys, you can give a certains order to the properties of an object. All other properties are sorted by the alphabetic order of their keys.
+
+If you would like to read `true` and `false` as boolean values and not as integers `1` ans `0`, use the `forcingBooleanFor:` argument with a list of keys.
 
 Such an XML can be written as JSON by using one of the methods `writeAsJSON(to:indentationLevel:indendationStep:lineEnding:` and `writeAsJSON(toURL:indendationStep:lineEnding:)` of `XDocument` or `XContent`. In many cases, this results in a roundtrip between these two formats, and you can use the SwiftXML package to handle the XML instance.
 
