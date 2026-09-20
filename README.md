@@ -690,6 +690,8 @@ Get the XPath of a node via:
 var xPath: String
 ```
 
+In the Tools section, the `goTo(xPath:)` method is described which can find a location described by an XPath expression.
+
 ## Traversals
 
 Traversing a tree depth-first starting from a node (including a document) can be done by the following methods:
@@ -2412,7 +2414,7 @@ Result:
 
 ## Tools
 
-### XPath
+### Find a location described by an XPath
 
 This package has a limited support of [XPath](https://www.w3.org/TR/xpath/). To find a specific location described by an XPath expression, the method `goTo(xPath:)` can be applied either to the document or to any node. When applying an XPath expression which starts with `/` to a node that is not a document, it is automatically applied to the document that contains the node.
 
@@ -2439,6 +2441,7 @@ c[2]
 
 1. ⚠️ The `goTo(xPath:)` method _always returns one single node or `nil`,_ it never returns several nodes. If sevaral nodes are valid, the first of it is returned (in the case of an attribute value search in the whole document e.g. via `//*[@id='b2']`, this uses the temporal order in which the attribute values have been set). This is consistent with the interpretation of `goTo(xPath:)` to proceed to a specific location.
 2. ⚠️ For a search for an element with a certain attribute value in the whole document e.g. via `//*[@id='b2']` to be able to work, _the attribute values have to be registered for the according attribute name,_ e.g. as in `try readXML(fromText: source, registeringAttributeValuesFor: .selected(["id"]))`.
+2. ⚠️ Do not replace the other methods for finding related content in the document with `goTo(xPath:)`; the latter is inefficient by comparison and literal XPath expressions are not checked during compilation.
 ---
 
 ### Reading the document properties without full parsing
