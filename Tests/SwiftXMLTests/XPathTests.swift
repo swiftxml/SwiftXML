@@ -60,7 +60,16 @@ final class XPathTests: XCTestCase {
         
         // text:
         XCTAssertEqual(try document.goTo(xPath: "/a/b[2]/c[2]/text()[2]")?.description, "\" text.\"")
-        XCTAssertEqual(try b2?.goTo(xPath: "/a/b[2]/c[2]/text()")?.description, "\"This is an italic text.\"")
+        // ... but "text()" is not (!) supported:
+        do {
+            var errorText: String? = nil
+            do {
+                _ = try b2?.goTo(xPath: "/a/b[2]/c[2]/text()")
+            } catch {
+                errorText = String(describing: error)
+            }
+            XCTAssertEqual(errorText, #"cannot execute XPath "/a/b[2]/c[2]/text()": "text()" without an index is not suitable for determining a position within the document"#)
+        }
         
         // attribute condition:
         XCTAssertEqual(try document.goTo(xPath: "/a/b[2]/*[2]")?.description, #"<d id="d1">"#)

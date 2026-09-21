@@ -111,14 +111,13 @@ public extension XNode {
                 if attributeCondition != nil {
                     throw XPathError("\(generalErrorMessage) \"\(originalXPath)\": \"text()\" should not have an attribute condition")
                 }
+                guard let number else {
+                    throw XPathError("\(generalErrorMessage) \"\(originalXPath)\": \"text()\" without an index is not suitable for determining a position within the document")
+                }
                 if enumeratedPart.offset >= enumeratedParts.count {
-                    throw XPathError("\(generalErrorMessage) \"\(originalXPath)\": \"text()\" should be the last part expression")
+                    throw XPathError("\(generalErrorMessage) \"\(originalXPath)\": \"text()[...]\" should be the last part expression")
                 }
-                if let number {
-                    return currentNode.immediateTexts.dropFirst(number-1).first
-                } else {
-                    return XText(currentNode.allTextsCombined)
-                }
+                return currentNode.immediateTexts.dropFirst(number-1).first
             } else {
                 if designation == "." {
                     if let document = currentNode as? XDocument {
