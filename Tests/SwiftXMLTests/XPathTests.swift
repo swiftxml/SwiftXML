@@ -89,9 +89,19 @@ final class XPathTests: XCTestCase {
         XCTAssertEqual(try document.goTo(xPath: "/a/b[2]/d[@id='d2']")?.description, #"<d id="d2">"#)
         
         // search for an element with a certain attribute value in the whole document first:
-        // NOTE: The attribute values have to be registered for the according attribute name!
         XCTAssertEqual(try document.goTo(xPath: "//*[@id='b2']")?.description, #"<b id="b2">"#)
         XCTAssertEqual(try document.goTo(xPath: "//*[@id='b2']/d[1]")?.description, #"<d id="d1">"#)
+        // The attribute values have to be registered for the according attribute name:
+        do {
+            var errorText: String? = nil
+            do {
+                _ = try document.goTo(xPath: "//*[@x='b2']")
+            } catch {
+                errorText = String(describing: error)
+            }
+            XCTAssertEqual(errorText, #"cannot execute XPath "//*[@x='b2']": values for attribute "x" are not registered"#)
+        }
+        
     }
     
 }

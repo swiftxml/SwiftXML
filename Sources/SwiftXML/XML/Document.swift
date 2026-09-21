@@ -882,13 +882,35 @@ public final class XDocument: XNode, XBranchInternal {
         }
     }
     
+    public func isAttributeRegistered(withName name: String) -> Bool {
+        switch _attributeRegisterMode {
+        case .none:
+            false
+        case .selected(let names):
+            names.contains(name)
+        case .all:
+            true
+        }
+    }
+    
+    public func areAttributeValuesRegistered(forName name: String) -> Bool {
+        switch _attributeValueRegisterMode {
+        case .none:
+            false
+        case .selected(let names):
+            names.contains(name)
+        case .all:
+            true
+        }
+    }
+    
     public init(
         xmlVersion: String = "1.0",
         encoding: String? = nil,
         standalone: String? = nil,
         attached: [String:Any?]? = nil,
         registeringAttributes attributeRegisterMode: AttributeRegisterMode = .none,
-        registeringValuesForAttributes AttributeRegisterMode: AttributeRegisterMode = .none,
+        registeringValuesForAttributes attributeValueRegisterMode: AttributeRegisterMode = .none,
         registeringAttributesWithPrefix attributeWithPrefixRegisterMode: AttributeWithPrefixRegisterMode = .none,
         registeringValuesForAttributesWithPrefix AttributeWithPrefixRegisterMode: AttributeWithPrefixRegisterMode = .none,
     ) {
@@ -896,7 +918,7 @@ public final class XDocument: XNode, XBranchInternal {
         self.encoding = encoding
         self.standalone = standalone
         self._attributeRegisterMode = attributeRegisterMode
-        self._attributeValueRegisterMode = AttributeRegisterMode
+        self._attributeValueRegisterMode = attributeValueRegisterMode
         self._attributeWithPrefixRegisterMode = attributeWithPrefixRegisterMode
         self._attributeWithPrefixValueRegisterMode = AttributeWithPrefixRegisterMode
         super.init()
@@ -913,7 +935,7 @@ public final class XDocument: XNode, XBranchInternal {
     public convenience init(
         attached: [String:Any?]? = nil,
         registeringAttributes attributeRegisterMode: AttributeRegisterMode = .none,
-        registeringValuesForAttributes AttributeRegisterMode: AttributeRegisterMode = .none,
+        registeringValuesForAttributes attributeValueRegisterMode: AttributeRegisterMode = .none,
         registeringAttributesWithPrefix attributeWithPrefixRegisterMode: AttributeWithPrefixRegisterMode = .none,
         registeringValuesForAttributesWithPrefix AttributeWithPrefixRegisterMode: AttributeWithPrefixRegisterMode = .none,
         @XContentBuilder builder: () -> [XContent]
@@ -921,7 +943,7 @@ public final class XDocument: XNode, XBranchInternal {
         self.init(
             attached: attached,
             registeringAttributes: attributeRegisterMode,
-            registeringValuesForAttributes: AttributeRegisterMode,
+            registeringValuesForAttributes: attributeValueRegisterMode,
             registeringAttributesWithPrefix: attributeWithPrefixRegisterMode,
             registeringValuesForAttributesWithPrefix: AttributeWithPrefixRegisterMode
         )

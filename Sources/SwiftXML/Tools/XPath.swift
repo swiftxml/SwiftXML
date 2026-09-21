@@ -35,6 +35,9 @@ public extension XNode {
             throw XPathError("\(generalErrorMessage) \"\(originalXPath)\": XPath expression is empty")
         } else if let attributeValueInDocumentMatch = xPath.firstMatch(of: #/^\/\/\*\[@([^=]+)='([^']+)'\]/#) {
             let attributeName = String(attributeValueInDocumentMatch.output.1)
+            if document?.areAttributeValuesRegistered(forName: attributeName) != true {
+                throw XPathError("\(generalErrorMessage) \"\(originalXPath)\": values for attribute \"\(attributeName)\" are not registered")
+            }
             let attributeValue = String(attributeValueInDocumentMatch.output.2)
             if let element = document?.registeredValues(attributeValue, forAttribute: attributeName).first?.element {
                 currentNode = element
