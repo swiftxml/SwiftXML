@@ -2429,19 +2429,20 @@ Examples of supported XPath expressions:
 c[2]
 /a/./b[2]/.
 /a/b[2]/c[2]/text()[2]
-/a/b[2]/c[2]/text()
 /a/b[2]/*[2]
 /a/b[2]/*[@id='d2']
 /a/b[2]/d[@id='d2']
 //*[@id='b2']/d[1]
 ```
 
+`text()` without an index is intentionally not supported, as this is not suitable for determining a position within the document.
+
 ---
 **NOTES:**
 
 1. ⚠️ The `goTo(xPath:)` method _always returns one single node or `nil`,_ it never returns several nodes. If sevaral nodes are valid, the first of it is returned (in the case of an attribute value search in the whole document e.g. via `//*[@id='b2']`, this uses the temporal order in which the attribute values have been set). This is consistent with the interpretation of `goTo(xPath:)` to proceed to a specific location.
 2. ⚠️ For a search for an element with a certain attribute value in the whole document e.g. via `//*[@id='b2']` to be able to work, _the attribute values have to be registered for the according attribute name,_ e.g. as in `try readXML(fromText: source, registeringAttributeValuesFor: .selected(["id"]))`.
-2. ⚠️ Do not replace the other methods for finding related content in the document with `goTo(xPath:)`; the latter is inefficient by comparison and literal XPath expressions are not checked during compilation.
+3. ⚠️ Do not replace the other methods for finding related content in the document with `goTo(xPath:)`; the latter is inefficient by comparison and literal XPath expressions are not checked during compilation.
 ---
 
 ### Reading the document properties without full parsing
