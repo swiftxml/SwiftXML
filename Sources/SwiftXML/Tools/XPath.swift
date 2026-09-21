@@ -134,6 +134,9 @@ public extension XNode {
                         }
                     }
                 } else {
+                    if designation == nil && number == nil && attributeCondition == nil {
+                        throw XPathError("\(generalErrorMessage) \"\(originalXPath)\": \"*\" without index or attribute condition is not suitable for determining a position within the document")
+                    }
                     let nextNode: XNode?
                     let sequence = if let designation { currentNode.children(String(designation)) } else { currentNode.children }
                     if let attributeCondition {

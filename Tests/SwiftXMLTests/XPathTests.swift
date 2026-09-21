@@ -58,6 +58,18 @@ final class XPathTests: XCTestCase {
         XCTAssertEqual(try document.goTo(xPath: "/a/./b[2]/.")?.description, #"<b id="b2">"#)
         XCTAssertEqual(try document.goTo(xPath: "/.")?.description, #"<a>"#)
         
+        // using the star `*`:
+        XCTAssertEqual(try document.goTo(xPath: "/a/b[2]/*[2]")?.description, #"<d id="d1">"#)
+        do {
+            var errorText: String? = nil
+            do {
+                _ = try document.goTo(xPath: "/a/b[2]/*")
+            } catch {
+                errorText = String(describing: error)
+            }
+            XCTAssertEqual(errorText, #"cannot execute XPath "/a/b[2]/*": "*" without index or attribute condition is not suitable for determining a position within the document"#)
+        }
+        
         // text:
         XCTAssertEqual(try document.goTo(xPath: "/a/b[2]/c[2]/text()[2]")?.description, "\" text.\"")
         // ... but "text()" is not (!) supported:
@@ -72,7 +84,6 @@ final class XPathTests: XCTestCase {
         }
         
         // attribute condition:
-        XCTAssertEqual(try document.goTo(xPath: "/a/b[2]/*[2]")?.description, #"<d id="d1">"#)
         XCTAssertEqual(try document.goTo(xPath: "/a/b[2]/*[@id='d2']")?.description, #"<d id="d2">"#)
         XCTAssertEqual(try document.goTo(xPath: "/a/b[2]/c[@id='d2']")?.description, nil)
         XCTAssertEqual(try document.goTo(xPath: "/a/b[2]/d[@id='d2']")?.description, #"<d id="d2">"#)
