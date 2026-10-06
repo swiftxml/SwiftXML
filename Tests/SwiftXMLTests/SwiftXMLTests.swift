@@ -1116,7 +1116,7 @@ final class SwiftXMLTests: XCTestCase {
         XCTAssertEqual(Array(start.allContent.map{ $0.description }), allContent)
         XCTAssertEqual(Array(start.allContentReversed.map{ $0.description }), allContent.reversed())
         
-        XCTAssertEqual(document.firstChild!.firstChild!.lastChild!.xPath, "/document[1]/sentences[1]/sentence[2]")
+        XCTAssertEqual(document.firstChild!.firstChild!.lastChild!.xPath, "/document/sentences[1]/sentence[2]")
         XCTAssertEqual(document.firstChild!.xPath(relativeTo: document.firstChild!), ".")
         XCTAssertEqual(document.firstChild!.firstChild!.xPath(relativeTo: document.firstChild!), "sentences[1]")
         XCTAssertEqual(document.firstChild!.firstChild!.lastChild!.xPath(relativeTo: document.firstChild!), "sentences[1]/sentence[2]")

@@ -2590,7 +2590,11 @@ public final class XElement: XContent, XBranchInternal {
                 let itsPrefix = $0._prefix
                 let itsName = $0._name
                 let itsDisplayName = if let prefix = $0._prefix { "\(prefix):\(itsName)" } else { itsName }
-                return "\(itsDisplayName)[\($0.previousElements.filter { $0._prefix == itsPrefix && $0._name == itsName }.count+1)]"
+                if $0.parent == nil && $0.previousElements.absent && $0.nextElements.absent {
+                    return itsDisplayName
+                } else {
+                    return "\(itsDisplayName)[\($0.previousElements.filter { $0._prefix == itsPrefix && $0._name == itsName }.count+1)]"
+                }
             }.joined(separator: "/")
     }
     
