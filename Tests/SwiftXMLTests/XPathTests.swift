@@ -14,7 +14,35 @@ import class Foundation.Bundle
 
 final class XPathTests: XCTestCase {
     
-    func testXPath() throws {
+    func testXPathVariants() throws {
+        
+        let text1 = XText("Hello")
+        let space1 = XElement("space")
+        let text2 = XText("World")
+        let space2 = XElement("space")
+        let pi = XProcessingInstruction(target: "test")
+        
+        let root = XElement("book") {
+            text1
+            space1
+            text2
+            space2
+            pi
+        }
+        
+        let document = XDocument {
+            root
+        }
+        
+        XCTAssertEqual(space2.xPath, #"/book/space[2]"#)
+        XCTAssertEqual(text2.xPath, #"/book/text()[2]"#)
+        XCTAssertEqual(pi.xPath, #"/book/node()[5]"#)
+        
+        _ = document.firstChild // keep the document alive and use it to silence warning
+        
+    }
+    
+    func testGoToXPath() throws {
         
         let source = """
             <a>

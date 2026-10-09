@@ -116,8 +116,6 @@ public final class XDocument: XNode, XBranchInternal {
         _lastChild(condition)
     }
     
-    public var xPath: String { "/" }
-    
     var __firstContent: XContent? = nil
     
     var __lastContent: XContent? = nil

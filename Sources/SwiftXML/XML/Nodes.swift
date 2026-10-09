@@ -943,6 +943,16 @@ public class XNode: CustomStringConvertible {
 
 public class XContent: XNode {
     
+    /// Returns the XPath.
+    public var xPath: String {
+        if let parent = self.parent {
+            print("parent of \(self): \(parent) (\(parent.xPath))")
+            return "\(parent.xPath)/node()[\(Array(self.previous).count + 1)]"
+        } else {
+            return "."
+        }
+    }
+    
     /// After cloning, this is the reference to the original node or to the cloned node respectively,
     /// acoording to the parameter used when cloning.
     ///
@@ -1419,7 +1429,6 @@ public protocol XBranch: XNode {
     func setContent(@XContentBuilder builder: () -> [XContent])
     func clear()
     func trimWhiteSpace()
-    var xPath: String { get }
 }
 
 protocol XBranchInternal: XBranch {
@@ -2598,7 +2607,8 @@ public final class XElement: XContent, XBranchInternal {
             }.joined(separator: "/")
     }
     
-    public var xPath: String {
+    /// Returns the XPath.
+    public override var xPath: String {
         get {
             _xPath(usingAncestors: self.ancestors)
         }
@@ -2932,7 +2942,16 @@ protocol ToBePeparedForMoving {
 }
 
 public final class XText: XContent, XTextualContentRepresentation, ToBePeparedForMoving, ExpressibleByStringLiteral {
-
+    
+    /// Returns the XPath.
+    public override var xPath: String {
+        if let parent = self.parent {
+            return "\(parent.xPath)/text()[\(Array(self.previous({ $0 is XText })).count + 1)]"
+        } else {
+            return "."
+        }
+    }
+    
     /// This methods replaces the subject and returns the replacements.
     /// To facilitate the application in common use cases, the replacements are
     /// being isolated from its context in order to prevent the combination of

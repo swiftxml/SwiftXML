@@ -27,7 +27,7 @@ public extension XNode {
     
     /// Go to the XPath `xPath` starting with the current node.
     /// Note that the full XPath syntax is not supported yet.
-    func goTo(xPath originalXPath: String) throws -> XNode? {
+    func goTo(xPath originalXPath: String) throws -> XContent? {
         let generalErrorMessage = "cannot execute XPath"
         var xPath = Substring(originalXPath)
         var currentNode: XNode
@@ -62,7 +62,10 @@ public extension XNode {
             if currentNode === document {
                 return document?.firstChild
             } else {
-                return currentNode
+                guard let content = currentNode as? XContent else {
+                    throw XPathError("\(generalErrorMessage) \"\(originalXPath)\": found non-document node that is not a content node") // should not happen
+                }
+                return content
             }
         }
         
@@ -169,7 +172,10 @@ public extension XNode {
             }
         }
         
-        return currentNode
+        guard let content = currentNode as? XContent else {
+            throw XPathError("\(generalErrorMessage) \"\(originalXPath)\": target is not a document content") // should not happen
+        }
+        return content
     }
     
 }
