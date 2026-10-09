@@ -96,7 +96,7 @@ public extension XNode {
                 return (designation: nil, number: number, attributeCondition: attributeCondition)
             }
             
-            if designation == "." || designation == "text()" {
+            if designation == "." || designation == "text()" || designation == "node()" {
                 return (designation: designation, number: number, attributeCondition: attributeCondition)
             }
             
@@ -110,17 +110,21 @@ public extension XNode {
         let enumeratedParts = Array(xPath.split(separator: "/", omittingEmptySubsequences: false).enumerated())
         for enumeratedPart in enumeratedParts {
             let (designation: designation, number: number, attributeCondition: attributeCondition) = try decompose(stepExpression: enumeratedPart.element)
-            if designation == "text()" {
+            if let designation, designation == "node()" || designation == "text()" {
                 if attributeCondition != nil {
-                    throw XPathError("\(generalErrorMessage) \"\(originalXPath)\": \"text()\" should not have an attribute condition")
+                    throw XPathError("\(generalErrorMessage) \"\(originalXPath)\": \"\(designation)\" should not have an attribute condition")
                 }
                 guard let number else {
-                    throw XPathError("\(generalErrorMessage) \"\(originalXPath)\": \"text()\" without an index is not suitable for determining a position within the document")
+                    throw XPathError("\(generalErrorMessage) \"\(originalXPath)\": \"\(designation)\" without an index is not suitable for determining a position within the document")
                 }
                 if enumeratedPart.offset >= enumeratedParts.count {
-                    throw XPathError("\(generalErrorMessage) \"\(originalXPath)\": \"text()[...]\" should be the last part expression")
+                    throw XPathError("\(generalErrorMessage) \"\(originalXPath)\": \"\(designation)[...]\" should be the last part expression")
                 }
-                return currentNode.immediateTexts.dropFirst(number-1).first
+                if designation == "node()" {
+                    return currentNode.content.dropFirst(number-1).first
+                } else { // designation == "text()"
+                    return currentNode.immediateTexts.dropFirst(number-1).first
+                }
             } else {
                 if designation == "." {
                     if let document = currentNode as? XDocument {
