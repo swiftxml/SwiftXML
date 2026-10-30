@@ -181,3 +181,39 @@ public extension XDocument {
     }
     
 }
+
+// Property helpers for JSON:
+public extension XElement {
+    
+    /// Get a JSON property from an JSON object.
+    func jsonProperty(_ name: String) -> XElement? {
+        self.firstChild({ $0.name == "property" && $0["key"] == name})
+    }
+    
+    /// For a JSON object, get the text of a textual JSON property.
+    func textualJSONPropertyValue(_ name: String) -> String? {
+        self
+            .firstChild({ $0.name == "property" && $0["key"] == name})?
+            .firstChild("text")?
+            .allTextsCombined
+    }
+    
+    /// For a JSON object, get all texts of a JSON property with an array containing texts.
+    func textualJSONPropertyValues(_ name: String) -> [String]? {
+        if let property = self.firstChild({ $0.name == "property" && $0["key"] == name}) {
+            Array(property.children("array").children("text").map { $0.allTextsCombined })
+        } else {
+            nil
+        }
+    }
+    
+    /// For a JSON object, get the number of a numeric JSON property.
+    func jsonNumericPropertyValue(_ name: String) -> Int? {
+        Int(self
+            .firstChild({ $0.name == "property" && $0["key"] == name})?
+            .firstChild("number")?
+            .allTextsCombined ?? ""
+        )
+    }
+    
+}

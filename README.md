@@ -2515,6 +2515,8 @@ Such an XML can be written as JSON by using one of the methods `writeAsJSON(to:i
 
 For the XML document constructed from the JSON, the values for the attributes with name `"key"` are registered. Be careful when moving the XML parts to other documents when using this feature.
 
+To find parts of the document which represents the JSON, the methods `jsonProperty(_:)`, `textualJSONPropertyValue(_:)`, `textualJSONPropertyValues(_:)` of `XElement` can help.
+
 ## Debugging
 
 If one uses multiple instances of `XRule` bundled into a `XTRansformation` to transform a whole document, in can be useful to know which actions belonging to which rules "touched" an element. In debug builds all filenames and line numbers that are executed by a transformation during execution are recorded in the `encounteredActionsAt` property.

@@ -244,4 +244,25 @@ final class JSONTests: XCTestCase {
             </object>
             """)
     }
+    
+    func testPropertyHelpers() throws {
+        
+        let jsonSource = """
+            {
+              "id": "a1",
+              "start": 7,
+              "entries": ["a", "b", "c"]
+            }
+            """
+        
+        let jsonXML = try readJSONAsXML(fromText: jsonSource)
+        
+        jsonXML.echo(pretty: true)
+        let object = jsonXML.firstChild("object")
+        
+        XCTAssertEqual(object?.jsonProperty("id")?.description, "<property key=\"id\">")
+        XCTAssertEqual(object?.textualJSONPropertyValue("id"), "a1")
+        XCTAssertEqual(String(describing: object?.textualJSONPropertyValues("entries")), #"Optional(["a", "b", "c"])"#)
+        XCTAssertEqual(object?.jsonNumericPropertyValue("start"), 7)
+    }
 }
