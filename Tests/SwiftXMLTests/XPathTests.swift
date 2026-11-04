@@ -21,6 +21,7 @@ final class XPathTests: XCTestCase {
         let text2 = XText("World")
         let space2 = XElement("space")
         let pi = XProcessingInstruction(target: "test")
+        let x = XElement("x")
         
         let root = XElement("book") {
             text1
@@ -28,6 +29,7 @@ final class XPathTests: XCTestCase {
             text2
             space2
             pi
+            x
         }
         
         let document = XDocument {
@@ -37,6 +39,7 @@ final class XPathTests: XCTestCase {
         XCTAssertEqual(space2.xPath, #"/book/space[2]"#)
         XCTAssertEqual(text2.xPath, #"/book/text()[2]"#)
         XCTAssertEqual(pi.xPath, #"/book/node()[5]"#)
+        XCTAssertEqual(x.xPath, #"/book/x"#) // do not use unnecessary counter
         
         _ = document.firstChild // keep the document alive and use it to silence warning
         
@@ -54,6 +57,7 @@ final class XPathTests: XCTestCase {
                     <d id="d2"/>
                 </b>
                 <b id="b3"/>
+                <x/>
             </a>
             """
         
@@ -63,8 +67,26 @@ final class XPathTests: XCTestCase {
         let b2 = try document.goTo(xPath: "/a/b[2]")
         XCTAssertEqual(b2?.description, #"<b id="b2">"#)
         
-        // if sevaral nodes are valid result, only the first is returned:
-        XCTAssertEqual(try document.goTo(xPath: "/a/b")?.description, #"<b id="b1">"#)
+        // with or without counter if posssible:
+        do {
+            let x = try document.goTo(xPath: "/a/x[1]")
+            XCTAssertEqual(x?.description, #"<x>"#)
+        }
+        do {
+            let x = try document.goTo(xPath: "/a/x")
+            XCTAssertEqual(x?.description, #"<x>"#)
+        }
+        
+        // without counter where that is an error:
+        do {
+            var errorText: String? = nil
+            do {
+                let _ = try document.goTo(xPath: "/a/b")
+            } catch {
+                errorText = String(describing: error)
+            }
+            XCTAssertEqual(errorText, #"cannot execute XPath "/a/b": number is missing because multiple nodes meet the condition"#)
+        }
         
         // relative path:
         XCTAssertEqual(try b2?.goTo(xPath: "c[2]")?.description, #"<c id="c2">"#)
