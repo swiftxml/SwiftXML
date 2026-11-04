@@ -2599,10 +2599,11 @@ public final class XElement: XContent, XBranchInternal {
                 let itsPrefix = $0._prefix
                 let itsName = $0._name
                 let itsDisplayName = if let prefix = $0._prefix { "\(prefix):\(itsName)" } else { itsName }
-                if $0.parent == nil {
-                    return itsDisplayName
+                let position = $0.previousElements.filter { $0._prefix == itsPrefix && $0._name == itsName }.count + 1
+                if position > 1 || $0.nextElements.filter({ $0._prefix == itsPrefix && $0._name == itsName }).exist {
+                    return "\(itsDisplayName)[\(position)]"
                 } else {
-                    return "\(itsDisplayName)[\($0.previousElements.filter { $0._prefix == itsPrefix && $0._name == itsName }.count+1)]"
+                    return itsDisplayName
                 }
             }.joined(separator: "/")
     }
