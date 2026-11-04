@@ -111,7 +111,11 @@ public extension XNode {
         }
         
         let enumeratedParts = Array(xPath.split(separator: "/", omittingEmptySubsequences: false).enumerated())
+        var lastDesignation: Substring? = nil
         for enumeratedPart in enumeratedParts {
+            if lastDesignation == "text()" {
+                throw XPathError("\(generalErrorMessage) \"\(originalXPath)\": expression after \"text()[...]\"")
+            }
             let (designation: designation, number: number, attributeCondition: attributeCondition) = try decompose(stepExpression: enumeratedPart.element)
             if let designation, designation == "node()" || designation == "text()" {
                 if attributeCondition != nil {
@@ -124,9 +128,17 @@ public extension XNode {
                     throw XPathError("\(generalErrorMessage) \"\(originalXPath)\": \"\(designation)[...]\" should be the last part expression")
                 }
                 if designation == "node()" {
-                    return currentNode.content.dropFirst(number-1).first
+                    if let node = currentNode.content.dropFirst(number-1).first {
+                        currentNode = node
+                    } else {
+                        return nil
+                    }
                 } else { // designation == "text()"
-                    return currentNode.immediateTexts.dropFirst(number-1).first
+                    if let node = currentNode.immediateTexts.dropFirst(number-1).first {
+                        currentNode = node
+                    } else {
+                        return nil
+                    }
                 }
             } else {
                 if designation == "." {
@@ -174,6 +186,7 @@ public extension XNode {
                     }
                 }
             }
+            lastDesignation = designation
         }
         
         guard let content = currentNode as? XContent else {

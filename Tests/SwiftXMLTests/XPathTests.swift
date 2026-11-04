@@ -133,6 +133,13 @@ final class XPathTests: XCTestCase {
             }
             XCTAssertEqual(errorText, #"cannot execute XPath "c[2]/node()": "node()" without an index is not suitable for determining a position within the document"#)
         }
+        // subsequent node()[...] expressions:
+        do {
+            let c2 = try document.goTo(xPath: "/a/b[2]/node()[6]")
+            XCTAssertEqual(c2?.description, #"<c id="c2">"#)
+            let text = try document.goTo(xPath: "/a/b[2]/node()[6]/node()[1]")
+            XCTAssertEqual(text?.description, #""This is an ""#)
+        }
         
         // "text()":
         XCTAssertEqual(try document.goTo(xPath: "/a/b[2]/c[2]/text()[2]")?.description, "\" text.\"")
@@ -145,6 +152,16 @@ final class XPathTests: XCTestCase {
                 errorText = String(describing: error)
             }
             XCTAssertEqual(errorText, #"cannot execute XPath "/a/b[2]/c[2]/text()": "text()" without an index is not suitable for determining a position within the document"#)
+        }
+        // node after text:
+        do {
+            var errorText: String? = nil
+            do {
+                let _ = try b2?.goTo(xPath: "/a/b[2]/c[2]/text()[2]/node()[1]")
+            } catch {
+                errorText = String(describing: error)
+            }
+            XCTAssertEqual(errorText, #"cannot execute XPath "/a/b[2]/c[2]/text()[2]/node()[1]": expression after "text()[...]""#)
         }
         
         // attribute condition:
