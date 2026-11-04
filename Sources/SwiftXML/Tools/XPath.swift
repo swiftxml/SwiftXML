@@ -107,7 +107,7 @@ public extension XNode {
                 throw XPathError("\(generalErrorMessage) \"\(originalXPath)\": cannot interpret \"\(designation)\"")
             }
             
-            return (designation: designation, number: number ?? 1, attributeCondition: attributeCondition)
+            return (designation: designation, number: number, attributeCondition: attributeCondition)
         }
         
         let enumeratedParts = Array(xPath.split(separator: "/", omittingEmptySubsequences: false).enumerated())
@@ -160,7 +160,11 @@ public extension XNode {
                         if let number {
                             nextNode = sequence.dropFirst(number-1).first
                         } else {
-                            nextNode = sequence.first
+                            var iterator = sequence.makeIterator()
+                            nextNode = iterator.next()
+                            if iterator.next() != nil {
+                                throw XPathError("\(generalErrorMessage) \"\(originalXPath)\": number is missing because multiple nodes meet the condition")
+                            }
                         }
                     }
                     if let nextNode {
