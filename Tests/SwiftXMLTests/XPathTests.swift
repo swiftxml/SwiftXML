@@ -54,7 +54,7 @@ final class XPathTests: XCTestCase {
                     <c id="c1"/>
                     <d id="d1"/>
                     <c id="c2">This is an <i>italic</i> text.</c>
-                    <d id="d2"/>
+                    <d id="d2"><e><f/></e></d>
                 </b>
                 <b id="b3"/>
                 <x/>
@@ -118,12 +118,16 @@ final class XPathTests: XCTestCase {
             } catch {
                 errorText = String(describing: error)
             }
-            XCTAssertEqual(errorText, #"cannot execute XPath "/a/b[2]/*": "*" without index or attribute condition is not suitable for determining a position within the document"#)
+            XCTAssertEqual(errorText, #"cannot execute XPath "/a/b[2]/*": number is missing because multiple nodes meet the condition"#)
         }
+        XCTAssertEqual(try document.goTo(xPath: "/*[1]/b[2]/d[2]/*")?.description, #"<e>"#)
+        XCTAssertEqual(try document.goTo(xPath: "/*[1]/b[2]/d[2]/*/*")?.description, #"<f>"#)
         
         // "node()":
         XCTAssertEqual(try b2?.goTo(xPath: "c[2]/node()[1]")?.description, #""This is an ""#)
         XCTAssertEqual(try b2?.goTo(xPath: "c[2]/node()[2]")?.description, #"<i>"#)
+        XCTAssertEqual(try document.goTo(xPath: "/*[1]/b[2]/d[2]/node()")?.description, #"<e>"#)
+        XCTAssertEqual(try document.goTo(xPath: "/*[1]/b[2]/d[2]/node()/node()")?.description, #"<f>"#)
         do {
             var errorText: String? = nil
             do {
@@ -131,7 +135,7 @@ final class XPathTests: XCTestCase {
             } catch {
                 errorText = String(describing: error)
             }
-            XCTAssertEqual(errorText, #"cannot execute XPath "c[2]/node()": "node()" without an index is not suitable for determining a position within the document"#)
+            XCTAssertEqual(errorText, #"cannot execute XPath "c[2]/node()": number is missing because multiple nodes meet the condition"#)
         }
         // subsequent node()[...] expressions:
         do {
@@ -140,6 +144,16 @@ final class XPathTests: XCTestCase {
             let text = try document.goTo(xPath: "/a/b[2]/node()[6]/node()[1]")
             XCTAssertEqual(text?.description, #""This is an ""#)
         }
+        
+        // mixed "node()" and "*" without number:
+        XCTAssertEqual(try document.goTo(xPath: "/*[1]/b[2]/d[2]/node()/*")?.description, #"<f>"#)
+        XCTAssertEqual(try document.goTo(xPath: "/*[1]/b[2]/d[2]/*/node()")?.description, #"<f>"#)
+        XCTAssertEqual(try document.goTo(xPath: "/*[1]/b[2]/d[2]/node()[1]/*")?.description, #"<f>"#)
+        XCTAssertEqual(try document.goTo(xPath: "/*[1]/b[2]/d[2]/*[1]/node()")?.description, #"<f>"#)
+        XCTAssertEqual(try document.goTo(xPath: "/*[1]/b[2]/d[2]/node()/*[1]")?.description, #"<f>"#)
+        XCTAssertEqual(try document.goTo(xPath: "/*[1]/b[2]/d[2]/*/node()[1]")?.description, #"<f>"#)
+        XCTAssertEqual(try document.goTo(xPath: "/*[1]/b[2]/d[2]/node()[1]/*[1]")?.description, #"<f>"#)
+        XCTAssertEqual(try document.goTo(xPath: "/*[1]/b[2]/d[2]/*[1]/node()[1]")?.description, #"<f>"#)
         
         // "text()":
         XCTAssertEqual(try document.goTo(xPath: "/a/b[2]/c[2]/text()[2]")?.description, "\" text.\"")

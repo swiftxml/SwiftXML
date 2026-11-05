@@ -117,7 +117,7 @@ public extension XNode {
                 throw XPathError("\(generalErrorMessage) \"\(originalXPath)\": expression after \"text()[...]\"")
             }
             let (designation: designation, number: number, attributeCondition: attributeCondition) = try decompose(stepExpression: enumeratedPart.element)
-            if let designation, designation == "node()" || designation == "text()" {
+            if let designation, designation == "text()" {
                 if attributeCondition != nil {
                     throw XPathError("\(generalErrorMessage) \"\(originalXPath)\": \"\(designation)\" should not have an attribute condition")
                 }
@@ -127,18 +127,10 @@ public extension XNode {
                 if enumeratedPart.offset >= enumeratedParts.count {
                     throw XPathError("\(generalErrorMessage) \"\(originalXPath)\": \"\(designation)[...]\" should be the last part expression")
                 }
-                if designation == "node()" {
-                    if let node = currentNode.content.dropFirst(number-1).first {
-                        currentNode = node
-                    } else {
-                        return nil
-                    }
-                } else { // designation == "text()"
-                    if let node = currentNode.immediateTexts.dropFirst(number-1).first {
-                        currentNode = node
-                    } else {
-                        return nil
-                    }
+                if let node = currentNode.immediateTexts.dropFirst(number-1).first {
+                    currentNode = node
+                } else {
+                    return nil
                 }
             } else {
                 if designation == "." {
@@ -156,13 +148,18 @@ public extension XNode {
                         }
                     }
                 } else {
-                    if designation == nil && number == nil && attributeCondition == nil {
-                        throw XPathError("\(generalErrorMessage) \"\(originalXPath)\": \"*\" without index or attribute condition is not suitable for determining a position within the document")
-                    }
                     let nextNode: XNode?
-                    let sequence = if let designation { currentNode.children(String(designation)) } else { currentNode.children }
+                    let sequence = if let designation {
+                        if designation == "node()" {
+                            currentNode.content
+                        } else {
+                            currentNode.content({ ($0 as? XElement)?.name == String(designation) })
+                        }
+                    } else {
+                        currentNode.content({ $0 is XElement })
+                    }
                     if let attributeCondition {
-                        let _seq = sequence.filter{ $0[attributeCondition.attributeName] == attributeCondition.attributeValue }
+                        let _seq = sequence.filter{ ($0 as? XElement)?[attributeCondition.attributeName] == attributeCondition.attributeValue }
                         if let number {
                             nextNode = _seq.dropFirst(number-1).first
                         } else {
@@ -172,7 +169,7 @@ public extension XNode {
                         if let number {
                             nextNode = sequence.dropFirst(number-1).first
                         } else {
-                            var iterator = sequence.makeIterator()
+                            let iterator = sequence.makeIterator()
                             nextNode = iterator.next()
                             if iterator.next() != nil {
                                 throw XPathError("\(generalErrorMessage) \"\(originalXPath)\": number is missing because multiple nodes meet the condition")
